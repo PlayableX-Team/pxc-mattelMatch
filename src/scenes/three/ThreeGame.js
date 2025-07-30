@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 import SphericalCamera from './scripts/sphericalCamera';
 import globals from '../../../globals';
 import { PhysicsManager } from '../../../engine/physics/PhysicsManager';
@@ -20,6 +21,15 @@ export default class ThreeGame {
     this.slotAvailable = [true, true, true, true, true, true, true];
     this.slotObjects = [];
     this.slotPlanes = []; // Plane referansları için
+
+    // Enhanced tray system
+    this.tray = [];
+    this.onTray = [];
+    this.platforms = [];
+    this.trayObj = null;
+    this.tweening = false;
+    this.itemsCollected = 0;
+
     this.gameMap = new GameMap(
       this.slotPositions,
       this.slotAvailable,
@@ -32,11 +42,19 @@ export default class ThreeGame {
     // Store animations and mixers
     this.animations = {};
     globals.threeUpdateList = [];
+
+    document.addEventListener('keydown', (event) => {
+      // console.log(event);
+      if (event.key == 'e') {
+        console.log('e');
+        this.tornado();
+      }
+    });
   }
 
   start() {
     console.log('ThreeGame start');
-    this.physicsManager = new PhysicsManager(true);
+    this.physicsManager = new PhysicsManager(false);
     globals.physicsManager = this.physicsManager;
 
     let test_cube = new THREE.Mesh(
@@ -51,13 +69,13 @@ export default class ThreeGame {
 
     // Create array to store 30 MapObjects
     this.mapObjects = [];
-
+    this.objOffset = 7;
     // Create 30 objects with random positions within ground collider area
     for (let i = 0; i < 10; i++) {
       // Random positions within ground area (with padding to avoid walls)
       // Ground is 10x10, so we use -4 to +4 range for safety buffer
-      const randomX = randFloat(-4, 4);
-      const randomZ = randFloat(-4, 4);
+      const randomX = randFloat(-this.objOffset, this.objOffset);
+      const randomZ = randFloat(-this.objOffset, this.objOffset);
       const yPosition = 5; // Keep same height as original
 
       const mapObject = new MapObject(
@@ -68,27 +86,67 @@ export default class ThreeGame {
       );
       this.mapObjects.push(mapObject);
       console.log(mapObject.objectType);
+    }
 
-      const mapObject2 = new MapObject(
+    for (let i = 0; i < 10; i++) {
+      const randomX = randFloat(-this.objOffset, this.objOffset);
+      const randomZ = randFloat(-this.objOffset, this.objOffset);
+      const yPosition = 5;
+
+      const mapObject = new MapObject(
         'tv-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         2
       );
-      this.mapObjects.push(mapObject2);
+      this.mapObjects.push(mapObject);
+    }
 
-      const mapObject3 = new MapObject(
+    for (let i = 0; i < 10; i++) {
+      const randomX = randFloat(-this.objOffset, this.objOffset);
+      const randomZ = randFloat(-this.objOffset, this.objOffset);
+      const yPosition = 5;
+
+      const mapObject = new MapObject(
         'junk_07-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         3
       );
-      this.mapObjects.push(mapObject3);
+      this.mapObjects.push(mapObject);
+    }
+
+    for (let i = 0; i < 10; i++) {
+      const randomX = randFloat(-this.objOffset, this.objOffset);
+      const randomZ = randFloat(-this.objOffset, this.objOffset);
+      const yPosition = 5;
+
+      const mapObject = new MapObject(
+        'junk_02-v1',
+        1,
+        new THREE.Vector3(randomX, yPosition, randomZ),
+        4
+      );
+      this.mapObjects.push(mapObject);
+    }
+
+    for (let i = 0; i < 10; i++) {
+      const randomX = randFloat(-this.objOffset, this.objOffset);
+      const randomZ = randFloat(-this.objOffset, this.objOffset);
+      const yPosition = 5;
+
+      const mapObject = new MapObject(
+        'junk_04-v1',
+        1,
+        new THREE.Vector3(randomX, yPosition, randomZ),
+        5
+      );
+      this.mapObjects.push(mapObject);
     }
 
     this.addGroundCollider();
     this.createClickListener();
-    this.addCollectArea();
+    this.addEnhancedTray(7); // Create enhanced tray with 7 slots
   }
 
   addGroundCollider() {
@@ -209,97 +267,87 @@ export default class ThreeGame {
         if (clickedMapObject) {
           console.log('Map object clicked!', clickedMapObject.objectType);
 
-          // İlk true olan slot pozisyonunu bul
-          let availableSlotIndex = this.gameMap.slotAvailable.findIndex(
-            (slot) => slot === true
-          );
-
-          if (availableSlotIndex !== -1) {
-            // Slot pozisyonunu al
-            let targetPosition = this.gameMap.slotPositions[availableSlotIndex];
-
-            // Debug: slot bilgisi
-            console.log('Collecting to slot:', availableSlotIndex);
-
-            // Physics body'yi kapat
-            if (clickedMapObject.body) {
-              globals.physicsManager.world.removeBody(clickedMapObject.body);
-              clickedMapObject.body = null;
-            }
-
-            // Polish collect animasyonu - başka projeden adapt edildi
-            this.collectObject(
-              clickedMapObject,
-              targetPosition,
-              availableSlotIndex
-            );
-
-            // mapObjects'ten çıkar
-            let objectIndex = this.mapObjects.indexOf(clickedMapObject);
-            if (objectIndex > -1) {
-              this.mapObjects.splice(objectIndex, 1);
-            }
-
-            // slotObjects'e ekle
-            this.gameMap.slotObjects[availableSlotIndex] = clickedMapObject;
-
-            // slotAvailable'ı false yap
-            this.gameMap.slotAvailable[availableSlotIndex] = false;
-
-            // Slot güncellendi
-          } else {
-            console.log('No available slots!');
+          // Check if tray is full or tweening in progress
+          if (this.tweening || this.tray.length >= 7) {
+            console.log('Cannot collect: tray full or animation in progress');
+            return;
           }
+
+          // Enhanced collection with sophisticated animations
+          this.gather(clickedMapObject);
         }
       }
     });
   }
 
-  collectObject(obj, targetPosition, slotIndex) {
-    // İlgili plane'i al
-    const targetPlane = this.slotPlanes[slotIndex];
-    // Mevcut animasyonları durdur
+  // Enhanced collection system with sophisticated animations
+  gather(obj) {
+    this.itemsCollected++;
+
+    // Play collection sound effect
+    if (AudioManager) {
+      AudioManager.playSFX('collect'); // Add collect sound to your audio assets
+    }
+
+    const platformCount = 7;
+    const diff = Math.abs(platformCount - 5);
+    const scl = 0.6 - diff * 0.1;
+
+    // Remove physics body
+    if (obj.body) {
+      globals.physicsManager.world.removeBody(obj.body);
+      obj.body = null;
+    }
+
+    // Remove from mapObjects array
+    const objectIndex = this.mapObjects.indexOf(obj);
+    if (objectIndex > -1) {
+      this.mapObjects.splice(objectIndex, 1);
+    }
+
+    // Add to tray system
+    this.trayObj.attach(obj);
+    this.insertToTray(obj);
+
+    // Kill existing animations
     gsap.killTweensOf(obj.rotation);
     gsap.killTweensOf(obj.scale);
     gsap.killTweensOf(obj.position);
 
-    // Plane animasyonlarını da durdur
-    if (targetPlane) {
-      gsap.killTweensOf(targetPlane.position);
-      gsap.killTweensOf(targetPlane.rotation);
-      gsap.killTweensOf(targetPlane.scale);
-    }
-
-    // Rotation animasyonu - objeyi plane ile aynı hizada yap (yatay)
+    // Rotation animation - align with platform
     gsap.to(obj.rotation, {
-      x: -Math.PI / 2, // Plane ile aynı rotasyon
+      x: -Math.PI / 2,
       y: 0,
       z: 0,
-      duration: 0.6,
+      duration: 0.3,
       ease: 'sine.inOut',
     });
 
-    // Scale animasyonu - 3 aşamalı büyütme/küçültme/bounce
-    const targetScale = 0.8; // Final scale (biraz küçük)
+    // Scale animation - 3-stage: grow, shrink, bounce
     gsap.to(obj.scale, {
       x: '+=0.3',
       y: '+=0.3',
       z: '+=0.3',
-      duration: 0.5,
+      duration: 0.25,
       ease: 'sine.inOut',
       onComplete: () => {
         gsap.to(obj.scale, {
-          x: targetScale,
-          y: targetScale,
-          z: targetScale,
-          duration: 0.5,
+          x: scl,
+          y: scl,
+          z: scl,
+          duration: 0.25,
           onComplete: () => {
-            // Bounce efekti
+            // Platform landing sound
+            if (AudioManager) {
+              AudioManager.playSFX('platform');
+            }
+
+            // Bounce effect
             gsap.to(obj.scale, {
-              x: targetScale * 1.2,
-              y: targetScale * 1.2,
-              z: targetScale * 1.2,
-              duration: 0.3,
+              x: scl * 1.2,
+              y: scl * 1.2,
+              z: scl * 1.2,
+              duration: 0.15,
               delay: 0.1,
               ease: 'sine.inOut',
               yoyo: true,
@@ -310,77 +358,159 @@ export default class ThreeGame {
       },
     });
 
-    // X pozisyon animasyonu
-    gsap.to(obj.position, {
-      x: targetPosition.x,
-      duration: 0.8,
-      ease: 'sine.inOut',
-    });
+    // Mark as tapped for animation system
+    obj.isTapped = true;
 
-    // Y pozisyon animasyonu - parabolik hareket
-    gsap.to(obj.position, {
-      y: targetPosition.y + 7,
-      duration: 0.4,
-      ease: 'sine.in',
-      onComplete: () => {
-        gsap.to(obj.position, {
-          y: targetPosition.y,
+    // Sort and assign positions
+    this.sortAssign();
+  }
+
+  // Enhanced tray system with sophisticated platform management
+  addEnhancedTray(count) {
+    const diff = Math.abs(count - 5);
+    let scalar = 1;
+
+    const scl = scalar - diff * 0.01;
+    const offset = 1.2 - diff * 0.01;
+    let tray = new THREE.Object3D();
+    this.trayObj = tray;
+
+    // Create platforms with enhanced materials and animations
+    for (let i = 0; i < count; i++) {
+      // Create platform geometry
+      let platform = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({
+          color: 0x4caf50,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.8,
+        })
+      );
+
+      // Position and scale platforms
+      platform.position.set(i * offset, 2, 0);
+      platform.scale.set(scl, scl, scl);
+      platform.rotation.x = Math.PI / 6;
+      platform.oScale = scl;
+      platform.oPos = platform.position.clone();
+
+      // Add visual enhancements
+      platform.receiveShadow = true;
+
+      tray.add(platform);
+      this.platforms.push(platform);
+
+      // Store in legacy arrays for compatibility
+      let worldPosition = new THREE.Vector3();
+      platform.getWorldPosition(worldPosition);
+      this.slotPositions.push(worldPosition);
+      this.slotPlanes.push(platform);
+    }
+
+    tray.updateMatrixWorld(true);
+    this.scene.add(tray);
+
+    // Position the entire tray
+    tray.position.x = ((-offset * (count - 1)) / 2) * 1.4;
+    tray.position.z = 12;
+    tray.scale.setScalar(1.4);
+    //tray.rotation.x = -Math.PI / 2;
+
+    console.log('Enhanced tray system initialized with', count, 'platforms');
+  }
+
+  // Smart item insertion for organized placement
+  insertToTray(obj) {
+    let lastIndex = this.tray.findLast(
+      (item) => item.objectType === obj.objectType
+    );
+    let filtered = this.tray.filter(
+      (item) => item.objectType === obj.objectType
+    );
+
+    if (filtered.length >= 3) {
+      this.tray.push(obj);
+      return;
+    }
+
+    if (lastIndex) {
+      this.tray.splice(this.tray.indexOf(lastIndex) + 1, 0, obj);
+    } else {
+      this.tray.push(obj);
+    }
+  }
+
+  // Sophisticated assignment and animation system
+  sortAssign() {
+    this.tray.forEach((item, index) => {
+      if (item.platform === this.platforms[index]) return;
+
+      item.platform = this.platforms[index];
+
+      if (!item.platform) {
+        console.log('No more platforms available!');
+        return;
+      }
+
+      let dest = item.platform.oPos.clone();
+      dest.y += 0.3;
+      dest.z -= 0.32;
+      item.dest = dest;
+
+      gsap.killTweensOf(item.position);
+
+      if (item.isTapped) {
+        // Multi-stage sophisticated movement animation
+
+        // Z-axis movement with platform interaction
+        gsap.to(item.position, {
+          z: dest.z,
           duration: 0.4,
-          ease: 'sine.out',
-        });
-      },
-    });
-
-    // Z pozisyon animasyonu - bounce efektli iniş
-    gsap.to(obj.position, {
-      z: targetPosition.z,
-      duration: 0.8,
-      ease: 'power1.in',
-      onComplete: () => {
-        // İleri bounce - hem obje hem plane
-        gsap.to(obj.position, {
-          z: targetPosition.z + 0.2,
-          duration: 0.2,
-          ease: 'sine.out',
-        });
-
-        // Plane bounce - ileri
-        gsap.to(targetPlane.position, {
-          z: targetPlane.position.z + 1.3,
-          duration: 0.1,
-          ease: 'sine.out',
+          ease: 'power1.in',
+          onStart: () => {
+            console.log('Starting sophisticated movement for', item.objectType);
+          },
           onComplete: () => {
-            // Geri bounce - hem obje hem plane
-            gsap.to(obj.position, {
-              z: targetPosition.z - 0.8,
-              duration: 0.3,
-              ease: 'sine.inOut',
-              delay: 0.1,
+            // First bounce forward
+            gsap.to(item.position, {
+              z: '+=0.2',
+              duration: 0.1,
+              ease: 'sine.out',
             });
 
-            // // Plane bounce - geri
-            gsap.to(targetPlane.position, {
-              z: targetPlane.position.z - 0.8,
-              duration: 0.3,
+            // Platform bounce animation
+            gsap.killTweensOf(item.platform.position);
+            item.platform.position.copy(item.platform.oPos);
+            gsap.to(item.platform.position, {
+              z: '+=0.2',
+              duration: 0.1,
+              ease: 'sine.out',
+              yoyo: true,
+              repeat: 1,
+            });
+
+            // Complex multi-stage bounce sequence
+            gsap.to(item.position, {
+              z: '-=0.8',
+              duration: 0.15,
               ease: 'sine.inOut',
               delay: 0.1,
               onComplete: () => {
-                // Final pozisyon - hem obje hem plane
-                gsap.to(obj.position, {
-                  z: targetPosition.z - 0.5,
-                  duration: 0.3,
-                  ease: 'sine.inOut',
-                });
-
-                // Plane final pozisyon
-                gsap.to(targetPlane.position, {
-                  z: 13, // Original plane Z position
-                  duration: 0.3,
+                // Final settling animation
+                gsap.to(item.position, {
+                  z: '+=0.6',
+                  duration: 0.2,
                   ease: 'sine.inOut',
                   onComplete: () => {
-                    console.log('Object collected to slot', slotIndex);
-                    // Shadow'ları kapat (performance için)
-                    obj.traverse((child) => {
+                    item.isTapped = false;
+                    if (this.onTray.includes(item)) return;
+
+                    this.onTray.push(item);
+                    this.checkMatches();
+
+                    // Disable shadows for performance
+                    item.traverse((child) => {
                       child.castShadow = false;
                     });
                   },
@@ -389,36 +519,171 @@ export default class ThreeGame {
             });
           },
         });
-      },
+
+        // X-axis movement - smooth horizontal slide
+        gsap.to(item.position, {
+          x: dest.x,
+          duration: 0.4,
+          ease: 'sine.inOut',
+        });
+
+        // Y-axis movement - parabolic arc
+        gsap.to(item.position, {
+          y: dest.y + 3,
+          duration: 0.2,
+          ease: 'sine.in',
+          onComplete: () => {
+            gsap.to(item.position, {
+              y: dest.y,
+              duration: 0.2,
+              ease: 'sine.out',
+            });
+          },
+        });
+      } else {
+        // Smooth repositioning for non-tapped items
+        gsap.killTweensOf(item.position);
+        gsap.to(item.position, {
+          x: dest.x,
+          y: dest.y,
+          ease: 'sine.inOut',
+          duration: 0.2,
+          delay: 0.2,
+        });
+        gsap.to(item.position, {
+          z: dest.z - 0.2,
+          duration: 0.1,
+          ease: 'sine.inOut',
+          delay: 0.2,
+          onComplete: () => {
+            gsap.to(item.position, {
+              z: dest.z,
+              duration: 0.1,
+              ease: 'sine.inOut',
+            });
+          },
+        });
+      }
     });
   }
 
-  addCollectArea() {
-    // 7 tane yan yana dizilmiş plane ekle
-    for (let i = 0; i < 7; i++) {
-      let plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(1, 1),
-        new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
-          side: THREE.DoubleSide,
-        })
-      );
+  // Check for matches and handle match animations
+  checkMatches() {
+    console.log('Checking for matches...');
 
-      // Plane'leri yan yana diz (x ekseninde)
-      plane.position.set(i * 1.8 - 5.4, 0, 13); // Ortalanmış pozisyon (scale 1.5 için aralık ayarlandı)
-      plane.scale.set(1.5, 1.5, 1.5); // Scale 1.5x1.5 yap
+    const groupedItems = this.onTray.reduce((acc, item) => {
+      if (!acc[item.objectType]) {
+        acc[item.objectType] = [];
+      }
+      acc[item.objectType].push(item);
+      return acc;
+    }, {});
 
-      this.scene.add(plane);
+    let isMatch = false;
 
-      // World pozisyonu al
-      let worldPosition = new THREE.Vector3();
-      plane.getWorldPosition(worldPosition);
-      this.slotPositions.push(worldPosition);
+    for (const key in groupedItems) {
+      if (groupedItems[key].length >= 3) {
+        isMatch = true;
+        this.tweening = true;
 
-      // Plane referansını sakla
-      this.slotPlanes.push(plane);
+        console.log('Match found for', key, '- processing match animation...');
 
-      // Slot pozisyonu eklendi
+        // Play match sound
+        if (AudioManager) {
+          AudioManager.playSFX('match');
+        }
+
+        // Sophisticated match animation
+        for (let i = 0; i < 3; i++) {
+          const element = groupedItems[key][i];
+
+          this.onTray.splice(this.onTray.indexOf(element), 1);
+          this.tray.splice(this.tray.indexOf(element), 1);
+
+          gsap.killTweensOf(element.position);
+          gsap.killTweensOf(element.scale);
+
+          const dest = groupedItems[key][1].platform.position.clone();
+
+          if (i === 1) {
+            // Center item - scale and disappear animation
+            gsap.to(element.scale, {
+              x: element.scale.x * 1.3,
+              y: element.scale.y * 1.3,
+              z: element.scale.z * 1.3,
+              duration: 0.2,
+              delay: 0.15,
+              ease: 'sine.out',
+              onComplete: () => {
+                gsap.to(element.scale, {
+                  x: 0,
+                  y: 0,
+                  z: 0,
+                  duration: 0.25,
+                  ease: 'back.in(3)',
+                  onComplete: () => {
+                    element.visible = false;
+                  },
+                });
+              },
+            });
+
+            // Platform bounce for center item
+            gsap.killTweensOf(element.platform.position);
+            element.platform.position.copy(element.platform.oPos);
+            gsap.to(element.platform.position, {
+              z: '+=0.3',
+              duration: 0.15,
+              ease: 'sine.out',
+              yoyo: true,
+              repeat: 1,
+            });
+          } else {
+            // Side items - converge to center
+            gsap.to(element.position, {
+              x: dest.x,
+              delay: 0.15,
+              ease: 'back.in(3)',
+              duration: 0.35,
+              onStart: () => {
+                this.matchOnProgress = false;
+              },
+              onComplete: () => {
+                element.visible = false;
+                if (i === 2) {
+                  this.tweening = false;
+                  console.log(
+                    'Match animation completed - reorganizing tray...'
+                  );
+                  this.sortAssign();
+                }
+              },
+            });
+
+            gsap.to(element.position, {
+              z: dest.z - 0.7,
+              duration: 0.3,
+              ease: 'back.in(3)',
+            });
+
+            // Platform bounce animation
+            gsap.killTweensOf(element.platform.position);
+            element.platform.position.copy(element.platform.oPos);
+            gsap.to(element.platform.position, {
+              z: '+=0.2',
+              duration: 0.15,
+              ease: 'sine.out',
+              yoyo: true,
+              repeat: 1,
+            });
+          }
+        }
+      }
+    }
+
+    if (!isMatch && this.tray.length === this.platforms.length) {
+      console.log('Tray full - no matches possible');
+      // Handle game over state here
     }
   }
 
@@ -432,7 +697,5 @@ export default class ThreeGame {
     this.mapObjects.forEach((mapObject) => {
       mapObject.update(time, delta);
     });
-
-    // Update any other game logic here
   }
 }
