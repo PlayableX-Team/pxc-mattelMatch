@@ -28,7 +28,7 @@ export default class MapObject extends THREE.Object3D {
   addPhysicsBody() {
     this.body = globals.physicsManager.createBodyFromObject(this.model, {
       type: 'dynamic',
-      mass: 0.5,
+      mass: 5,
       sizeMultiplier: new THREE.Vector3(1, 1, 1),
     });
     this.body.position.copy(this.position);
@@ -52,8 +52,8 @@ export default class MapObject extends THREE.Object3D {
 
     this.body.applyLocalImpulse(randomImpulse);
 
-    this.body.linearDamping = 0.05; // Hareketi yavaş yavaş durdur
-    this.body.angularDamping = 0.05; // Dönmeyi yavaş yavaş durdur
+    this.body.linearDamping = 0.7; // Hareketi yavaş yavaş durdur
+    this.body.angularDamping = 0.7; // Dönmeyi yavaş yavaş durdur
   }
 
   update(ratio, delta) {

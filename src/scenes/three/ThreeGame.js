@@ -43,24 +43,41 @@ export default class ThreeGame {
     this.mapObjects = [];
 
     // Create 30 objects with random positions within ground collider area
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 10; i++) {
       // Random positions within ground area (with padding to avoid walls)
       // Ground is 10x10, so we use -4 to +4 range for safety buffer
-      const randomX = randFloat(-2, 2);
-      const randomZ = randFloat(-2, 2);
+      const randomX = randFloat(-4, 4);
+      const randomZ = randFloat(-4, 4);
       const yPosition = 5; // Keep same height as original
 
       const mapObject = new MapObject(
         'tyre-v1',
-        0.8,
+        1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         1
       );
       this.mapObjects.push(mapObject);
       console.log(mapObject.objectType);
+
+      const mapObject2 = new MapObject(
+        'tv-v1',
+        1,
+        new THREE.Vector3(randomX, yPosition, randomZ),
+        2
+      );
+      this.mapObjects.push(mapObject2);
+
+      const mapObject3 = new MapObject(
+        'junk_07-v1',
+        1,
+        new THREE.Vector3(randomX, yPosition, randomZ),
+        3
+      );
+      this.mapObjects.push(mapObject3);
     }
 
     this.addGroundCollider();
+    this.createClickListener();
   }
 
   addGroundCollider() {
@@ -148,6 +165,49 @@ export default class ThreeGame {
     westWall.body = this.physicsManager.createBodyFromObject(westWall, {
       type: 'static',
       mass: 0,
+    });
+  }
+
+  createClickListener() {
+    // Initialize TouchTransformer with the camera
+    this.touchTransformer = new TouchTransformer(globals.threeCamera);
+
+    // Add pointer down event listener
+    document.addEventListener('pointerdown', (event) => {
+      // Get all the models from mapObjects for raycasting
+      let allMapObjectModels = this.mapObjects.map((mapObj) => mapObj.model);
+
+      // Get intersections with map object models
+      let intersects = this.touchTransformer.getIntersects(
+        event.clientX,
+        event.clientY,
+        allMapObjectModels
+      );
+
+      if (intersects.length > 0) {
+        // Find which mapObject was clicked by matching the model
+        let clickedModel = intersects[0].object;
+        let clickedMapObject = this.mapObjects.find((mapObj) => {
+          // Check if the clicked object is the model or a child of the model
+          return (
+            mapObj.model === clickedModel ||
+            mapObj.model.children.includes(clickedModel)
+          );
+        });
+
+        if (clickedMapObject) {
+          console.log('Map object clicked!', clickedMapObject.objectType);
+
+          // Make the clicked map object invisible
+          clickedMapObject.visible = false;
+
+          // disable the physics body to prevent invisible collisions
+          if (clickedMapObject.body) {
+            globals.physicsManager.world.removeBody(clickedMapObject.body);
+            clickedMapObject.body = null;
+          }
+        }
+      }
     });
   }
 
