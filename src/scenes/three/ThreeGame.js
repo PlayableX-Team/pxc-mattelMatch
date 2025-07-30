@@ -8,6 +8,7 @@ import AudioManager from '../../../engine/audio/AudioManager';
 import data from '../../config/data';
 import MapObject from './mapObjects';
 import TouchTransformer from '../../../engine/utils/TouchTransformer';
+import GameMap from './gameMap';
 
 export default class ThreeGame {
   constructor() {
@@ -15,6 +16,11 @@ export default class ThreeGame {
     this.scene = globals.threeScene;
     this.renderManager = globals.renderManager;
     this.models = this.renderManager.threeRenderer.models;
+    this.slotPositions = [];
+    this.slotAvailable = [true, true, true, true, true, true, true];
+    this.gameMap = new GameMap(this.slotPositions, this.slotAvailable);
+
+    console.log(this.gameMap);
 
     // Setup orbit controls if needed
     // this.controls = new OrbitControls(this.renderManager.threeRenderer.camera, this.renderManager.threeRenderer.view);
@@ -78,6 +84,7 @@ export default class ThreeGame {
 
     this.addGroundCollider();
     this.createClickListener();
+    this.addCollectArea();
   }
 
   addGroundCollider() {
@@ -209,6 +216,28 @@ export default class ThreeGame {
         }
       }
     });
+  }
+
+  addCollectArea() {
+    // 7 tane yan yana dizilmiş plane ekle
+    for (let i = 0; i < 7; i++) {
+      let plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+          side: THREE.DoubleSide,
+        })
+      );
+
+      // Plane'leri yan yana diz (x ekseninde)
+      plane.position.set(i * 1.8 - 5.4, 0, 15); // Ortalanmış pozisyon (scale 1.5 için aralık ayarlandı)
+      plane.rotation.x = -Math.PI / 2; // Yatay plane için rotasyon
+      plane.scale.set(1.5, 1.5, 1.5); // Scale 1.5x1.5 yap
+
+      this.slotPositions.push(plane.position);
+
+      this.scene.add(plane);
+    }
   }
 
   update(time, delta) {
