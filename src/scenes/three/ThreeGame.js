@@ -70,13 +70,14 @@ export default class ThreeGame {
     // Create array to store 30 MapObjects
     this.mapObjects = [];
     this.objOffset = 7;
+
+    let yPosition = 10;
     // Create 30 objects with random positions within ground collider area
     for (let i = 0; i < 10; i++) {
       // Random positions within ground area (with padding to avoid walls)
       // Ground is 10x10, so we use -4 to +4 range for safety buffer
       const randomX = randFloat(-this.objOffset, this.objOffset);
       const randomZ = randFloat(-this.objOffset, this.objOffset);
-      const yPosition = 5; // Keep same height as original
 
       const mapObject = new MapObject(
         'tyre-v1',
@@ -91,7 +92,6 @@ export default class ThreeGame {
     for (let i = 0; i < 10; i++) {
       const randomX = randFloat(-this.objOffset, this.objOffset);
       const randomZ = randFloat(-this.objOffset, this.objOffset);
-      const yPosition = 5;
 
       const mapObject = new MapObject(
         'tv-v1',
@@ -105,7 +105,6 @@ export default class ThreeGame {
     for (let i = 0; i < 10; i++) {
       const randomX = randFloat(-this.objOffset, this.objOffset);
       const randomZ = randFloat(-this.objOffset, this.objOffset);
-      const yPosition = 5;
 
       const mapObject = new MapObject(
         'junk_07-v1',
@@ -119,7 +118,6 @@ export default class ThreeGame {
     for (let i = 0; i < 10; i++) {
       const randomX = randFloat(-this.objOffset, this.objOffset);
       const randomZ = randFloat(-this.objOffset, this.objOffset);
-      const yPosition = 5;
 
       const mapObject = new MapObject(
         'junk_02-v1',
@@ -133,7 +131,6 @@ export default class ThreeGame {
     for (let i = 0; i < 10; i++) {
       const randomX = randFloat(-this.objOffset, this.objOffset);
       const randomZ = randFloat(-this.objOffset, this.objOffset);
-      const yPosition = 5;
 
       const mapObject = new MapObject(
         'junk_04-v1',
@@ -389,9 +386,9 @@ export default class ThreeGame {
       );
 
       // Position and scale platforms
-      platform.position.set(i * offset, 2, 0);
+      platform.position.set(i * offset, 0, 0);
       platform.scale.set(scl, scl, scl);
-      platform.rotation.x = Math.PI / 6;
+      platform.rotation.x = Math.PI / 4;
       platform.oScale = scl;
       platform.oPos = platform.position.clone();
 

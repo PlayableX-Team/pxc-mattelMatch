@@ -1,12 +1,12 @@
 const data = window.gameData ?? {
   //CAMERA
-  camFov: 105,
-  camRadius: 15,
+  camFov: 50,
+  camRadius: 34,
   camTheta: 0, // -3.14 3.14
-  camPhi: 0.2, // -3.14 3.14
+  camPhi: 0.26, // -3.14 3.14
   camOffsetX: 0,
   camOffsetY: 0,
-  camOffsetZ: 0.5,
+  camOffsetZ: 0.8,
 
   //hand
   handSrc: null,
