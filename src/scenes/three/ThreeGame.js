@@ -18,9 +18,13 @@ export default class ThreeGame {
     this.models = this.renderManager.threeRenderer.models;
     this.slotPositions = [];
     this.slotAvailable = [true, true, true, true, true, true, true];
-    this.gameMap = new GameMap(this.slotPositions, this.slotAvailable);
-
-    console.log(this.gameMap);
+    this.slotObjects = [];
+    this.slotPlanes = []; // Plane referansları için
+    this.gameMap = new GameMap(
+      this.slotPositions,
+      this.slotAvailable,
+      this.slotObjects
+    );
 
     // Setup orbit controls if needed
     // this.controls = new OrbitControls(this.renderManager.threeRenderer.camera, this.renderManager.threeRenderer.view);
@@ -205,16 +209,187 @@ export default class ThreeGame {
         if (clickedMapObject) {
           console.log('Map object clicked!', clickedMapObject.objectType);
 
-          // Make the clicked map object invisible
-          clickedMapObject.visible = false;
+          // İlk true olan slot pozisyonunu bul
+          let availableSlotIndex = this.gameMap.slotAvailable.findIndex(
+            (slot) => slot === true
+          );
 
-          // disable the physics body to prevent invisible collisions
-          if (clickedMapObject.body) {
-            globals.physicsManager.world.removeBody(clickedMapObject.body);
-            clickedMapObject.body = null;
+          if (availableSlotIndex !== -1) {
+            // Slot pozisyonunu al
+            let targetPosition = this.gameMap.slotPositions[availableSlotIndex];
+
+            // Debug: slot bilgisi
+            console.log('Collecting to slot:', availableSlotIndex);
+
+            // Physics body'yi kapat
+            if (clickedMapObject.body) {
+              globals.physicsManager.world.removeBody(clickedMapObject.body);
+              clickedMapObject.body = null;
+            }
+
+            // Polish collect animasyonu - başka projeden adapt edildi
+            this.collectObject(
+              clickedMapObject,
+              targetPosition,
+              availableSlotIndex
+            );
+
+            // mapObjects'ten çıkar
+            let objectIndex = this.mapObjects.indexOf(clickedMapObject);
+            if (objectIndex > -1) {
+              this.mapObjects.splice(objectIndex, 1);
+            }
+
+            // slotObjects'e ekle
+            this.gameMap.slotObjects[availableSlotIndex] = clickedMapObject;
+
+            // slotAvailable'ı false yap
+            this.gameMap.slotAvailable[availableSlotIndex] = false;
+
+            // Slot güncellendi
+          } else {
+            console.log('No available slots!');
           }
         }
       }
+    });
+  }
+
+  collectObject(obj, targetPosition, slotIndex) {
+    // İlgili plane'i al
+    const targetPlane = this.slotPlanes[slotIndex];
+    // Mevcut animasyonları durdur
+    gsap.killTweensOf(obj.rotation);
+    gsap.killTweensOf(obj.scale);
+    gsap.killTweensOf(obj.position);
+
+    // Plane animasyonlarını da durdur
+    if (targetPlane) {
+      gsap.killTweensOf(targetPlane.position);
+      gsap.killTweensOf(targetPlane.rotation);
+      gsap.killTweensOf(targetPlane.scale);
+    }
+
+    // Rotation animasyonu - objeyi plane ile aynı hizada yap (yatay)
+    gsap.to(obj.rotation, {
+      x: -Math.PI / 2, // Plane ile aynı rotasyon
+      y: 0,
+      z: 0,
+      duration: 0.6,
+      ease: 'sine.inOut',
+    });
+
+    // Scale animasyonu - 3 aşamalı büyütme/küçültme/bounce
+    const targetScale = 0.8; // Final scale (biraz küçük)
+    gsap.to(obj.scale, {
+      x: '+=0.3',
+      y: '+=0.3',
+      z: '+=0.3',
+      duration: 0.5,
+      ease: 'sine.inOut',
+      onComplete: () => {
+        gsap.to(obj.scale, {
+          x: targetScale,
+          y: targetScale,
+          z: targetScale,
+          duration: 0.5,
+          onComplete: () => {
+            // Bounce efekti
+            gsap.to(obj.scale, {
+              x: targetScale * 1.2,
+              y: targetScale * 1.2,
+              z: targetScale * 1.2,
+              duration: 0.3,
+              delay: 0.1,
+              ease: 'sine.inOut',
+              yoyo: true,
+              repeat: 1,
+            });
+          },
+        });
+      },
+    });
+
+    // X pozisyon animasyonu
+    gsap.to(obj.position, {
+      x: targetPosition.x,
+      duration: 0.8,
+      ease: 'sine.inOut',
+    });
+
+    // Y pozisyon animasyonu - parabolik hareket
+    gsap.to(obj.position, {
+      y: targetPosition.y + 7,
+      duration: 0.4,
+      ease: 'sine.in',
+      onComplete: () => {
+        gsap.to(obj.position, {
+          y: targetPosition.y,
+          duration: 0.4,
+          ease: 'sine.out',
+        });
+      },
+    });
+
+    // Z pozisyon animasyonu - bounce efektli iniş
+    gsap.to(obj.position, {
+      z: targetPosition.z,
+      duration: 0.8,
+      ease: 'power1.in',
+      onComplete: () => {
+        // İleri bounce - hem obje hem plane
+        gsap.to(obj.position, {
+          z: targetPosition.z + 0.2,
+          duration: 0.2,
+          ease: 'sine.out',
+        });
+
+        // Plane bounce - ileri
+        gsap.to(targetPlane.position, {
+          z: targetPlane.position.z + 1.3,
+          duration: 0.1,
+          ease: 'sine.out',
+          onComplete: () => {
+            // Geri bounce - hem obje hem plane
+            gsap.to(obj.position, {
+              z: targetPosition.z - 0.8,
+              duration: 0.3,
+              ease: 'sine.inOut',
+              delay: 0.1,
+            });
+
+            // // Plane bounce - geri
+            gsap.to(targetPlane.position, {
+              z: targetPlane.position.z - 0.8,
+              duration: 0.3,
+              ease: 'sine.inOut',
+              delay: 0.1,
+              onComplete: () => {
+                // Final pozisyon - hem obje hem plane
+                gsap.to(obj.position, {
+                  z: targetPosition.z - 0.5,
+                  duration: 0.3,
+                  ease: 'sine.inOut',
+                });
+
+                // Plane final pozisyon
+                gsap.to(targetPlane.position, {
+                  z: 13, // Original plane Z position
+                  duration: 0.3,
+                  ease: 'sine.inOut',
+                  onComplete: () => {
+                    console.log('Object collected to slot', slotIndex);
+                    // Shadow'ları kapat (performance için)
+                    obj.traverse((child) => {
+                      child.castShadow = false;
+                    });
+                  },
+                });
+              },
+            });
+          },
+        });
+      },
     });
   }
 
@@ -230,13 +405,20 @@ export default class ThreeGame {
       );
 
       // Plane'leri yan yana diz (x ekseninde)
-      plane.position.set(i * 1.8 - 5.4, 0, 15); // Ortalanmış pozisyon (scale 1.5 için aralık ayarlandı)
-      plane.rotation.x = -Math.PI / 2; // Yatay plane için rotasyon
+      plane.position.set(i * 1.8 - 5.4, 0, 13); // Ortalanmış pozisyon (scale 1.5 için aralık ayarlandı)
       plane.scale.set(1.5, 1.5, 1.5); // Scale 1.5x1.5 yap
 
-      this.slotPositions.push(plane.position);
-
       this.scene.add(plane);
+
+      // World pozisyonu al
+      let worldPosition = new THREE.Vector3();
+      plane.getWorldPosition(worldPosition);
+      this.slotPositions.push(worldPosition);
+
+      // Plane referansını sakla
+      this.slotPlanes.push(plane);
+
+      // Slot pozisyonu eklendi
     }
   }
 
