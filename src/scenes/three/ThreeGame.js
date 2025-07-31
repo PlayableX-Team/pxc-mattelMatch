@@ -684,6 +684,89 @@ export default class ThreeGame {
     }
   }
 
+  tornado() {
+    // Tüm map objelerine tornado efekti uygula
+
+    // Tornado efektinin sürekli olması için interval kullan (5 saniye)
+    if (this.tornadoInterval) {
+      clearInterval(this.tornadoInterval);
+    }
+
+    this.tornadoInterval = setInterval(() => {
+      this.applyTornadoForces();
+    }, 50); // Her 50ms'de bir kuvvet uygula
+
+    // 5 saniye sonra tornado'yu durdur
+    setTimeout(() => {
+      if (this.tornadoInterval) {
+        clearInterval(this.tornadoInterval);
+        this.tornadoInterval = null;
+        console.log('Tornado ended');
+      }
+    }, 5000);
+  }
+
+  // Tornado kuvvetlerini sürekli uygulayan yardımcı metod
+  applyTornadoForces() {
+    const tornadoStrength = 120; // Sürekli efekt için dairesel hareket gücü artırıldı
+    const upwardForce = 20;
+    const centerPoint = new THREE.Vector3(0, 0, 0);
+    const maxTornadoDistance = 300; // Maksimum tornado etki mesafesi (yeni!)
+
+    this.mapObjects.forEach((mapObject) => {
+      if (!mapObject.body) return;
+
+      // Angular damping'i artır (objelerin dönmesini yavaşlatır)
+      mapObject.body.angularDamping = 0.8; // 0-1 arası, yüksek değer daha fazla dampening
+
+      const objPosition = new THREE.Vector3(
+        mapObject.body.position.x,
+        mapObject.body.position.y,
+        mapObject.body.position.z
+      );
+
+      const radialVector = objPosition.clone().sub(centerPoint);
+      const distance = radialVector.length();
+
+      // Distance kontrolü güncellendi
+      if (distance < 0.5 || distance > maxTornadoDistance) return; // 0.1'den 0.5'e artırıldı
+
+      // Dairesel hareket
+      const tangentVector = new THREE.Vector3(
+        -radialVector.z,
+        0,
+        radialVector.x
+      ).normalize();
+
+      // Merkeze çekme - daha az çekme kuvveti
+      const pullVector = radialVector.clone().normalize().multiplyScalar(-2);
+
+      // Distance multiplier güncellendi - uzak objeler için daha iyi
+      const distanceMultiplier = Math.max(0.2, Math.min(1.5, 15 / distance)); // 10'dan 15'e artırıldı, min 0.3
+      const tangentForce = tangentVector.multiplyScalar(
+        tornadoStrength * distanceMultiplier
+      );
+      const upwardForceVector = new THREE.Vector3(
+        0,
+        upwardForce * distanceMultiplier,
+        0
+      );
+
+      // Kuvveti kütle merkezine uygula (dönmeyi azaltır)
+      mapObject.body.applyForce(
+        new CANNON.Vec3(
+          tangentForce.x + pullVector.x * 0.3, // Pull kuvvetini daha da azalt
+          upwardForceVector.y,
+          tangentForce.z + pullVector.z * 0.3
+        ),
+        new CANNON.Vec3(0, 0, 0) // Kütle merkezine uygula (yerel koordinat sistemi)
+      );
+
+      // Angular velocity'i tamamen sıfırlamak yerine yumuşak bir şekilde azalt
+      mapObject.body.angularVelocity.scale(0.9); // Mevcut dönme hızını yarıya indir
+    });
+  }
+
   update(time, delta) {
     // Update animations
     globals.threeUpdateList.forEach((obj) => obj.update(time, delta));
