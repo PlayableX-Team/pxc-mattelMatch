@@ -704,12 +704,12 @@ export default class ThreeGame {
         this.tornadoInterval = null;
         console.log('Tornado ended');
       }
-    }, 5000);
+    }, 2500);
   }
 
   // Tornado kuvvetlerini sürekli uygulayan yardımcı metod
   applyTornadoForces() {
-    const tornadoStrength = 20; // Sürekli efekt için dairesel hareket gücü artırıldı
+    const tornadoStrength = 40; // Sürekli efekt için dairesel hareket gücü artırıldı
     const upwardForce = 20;
     const centerPoint = new THREE.Vector3(0, 0, 0);
     const maxTornadoDistance = 300; // Maksimum tornado etki mesafesi (yeni!)
@@ -766,6 +766,229 @@ export default class ThreeGame {
       // Angular velocity'i tamamen sıfırlamak yerine yumuşak bir şekilde azalt
       mapObject.body.angularVelocity.scale(0.9); // Mevcut dönme hızını yarıya indir
     });
+  }
+
+  magnet() {
+    // magnetSprite yoksa çık
+    if (!globals.pixiGame.magnetSprite) {
+      console.log('magnetSprite bulunamadı!');
+      return;
+    }
+
+    // 2D sprite pozisyonunu dünya koordinatlarına çevir
+    const magnetSprite = globals.pixiGame.magnetSprite;
+    const spriteWorldPos = magnetSprite.getGlobalPosition();
+
+    // 3D dünya koordinatlarına çevir
+    const worldPos = this.touchTransformer.getPlaneIntersection(
+      spriteWorldPos.x,
+      spriteWorldPos.y
+    );
+
+    // Sadece 3 veya daha fazla objeye sahip tipleri filtrele
+    const typeGroups = this.mapObjects.reduce((groups, obj) => {
+      if (!groups[obj.objectType]) {
+        groups[obj.objectType] = [];
+      }
+      groups[obj.objectType].push(obj);
+      return groups;
+    }, {});
+
+    // 3 veya daha fazla objeye sahip tipleri bul
+    const availableTypes = Object.keys(typeGroups).filter(
+      (type) => typeGroups[type].length >= 3
+    );
+
+    if (availableTypes.length === 0) {
+      console.log('Magnet için en az 3 adet objeye sahip tip bulunamadı!');
+      return;
+    }
+
+    const selectedType =
+      availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    const objectsToMagnet = typeGroups[selectedType].slice(0, 3);
+
+    console.log(
+      `3 adet ${selectedType} tipinde obje magnet pozisyonuna çekiliyor...`
+    );
+
+    // Ses efekti çal
+    if (AudioManager) {
+      AudioManager.playSFX('collect');
+    }
+
+    // Her obje için magnet işlemi
+    objectsToMagnet.forEach((obj, index) => {
+      // Physics body'yi kaldır
+      if (obj.body) {
+        globals.physicsManager.world.removeBody(obj.body);
+        obj.body = null;
+      }
+
+      // mapObjects array'inden çıkar
+      const objectIndex = this.mapObjects.indexOf(obj);
+      if (objectIndex > -1) {
+        this.mapObjects.splice(objectIndex, 1);
+      }
+
+      // Mevcut animasyonları durdur
+      gsap.killTweensOf(obj.rotation);
+      gsap.killTweensOf(obj.scale);
+      gsap.killTweensOf(obj.position);
+
+      // Her obje için farklı delay ve offset
+      const delay = index * 0.15;
+      const offsetX = (Math.random() - 0.5) * 1;
+      const offsetZ = (Math.random() - 0.5) * 1;
+      const dest = {
+        x: worldPos.x + offsetX,
+        y: worldPos.y,
+        z: worldPos.z + offsetZ,
+      };
+
+      // X-axis movement - smooth horizontal slide (gather stilinde)
+      gsap.to(obj.position, {
+        x: dest.x,
+        duration: 0.4,
+        delay: delay,
+        ease: 'sine.inOut',
+      });
+
+      // Z-axis movement - gather stilindeki karmaşık animasyon
+      gsap.to(obj.position, {
+        z: dest.z,
+        duration: 0.4,
+        delay: delay,
+        ease: 'power1.in',
+        onComplete: () => {
+          // Zıplama animasyonlarını kaldır - direkt objeyi scene'den çıkar
+          globals.threeScene.remove(obj);
+          console.log(`Obje ${obj.objectType} magnet tarafından toplandı!`);
+        },
+      });
+
+      // Y-axis movement - parabolic arc (gather stilinde)
+      gsap.to(obj.position, {
+        y: dest.y + 3,
+        duration: 0.2,
+        delay: delay,
+        ease: 'sine.in',
+        onComplete: () => {
+          gsap.to(obj.position, {
+            y: dest.y,
+            duration: 0.2,
+            ease: 'sine.out',
+          });
+        },
+      });
+
+      // Rotation animation - gather stilinde align
+      gsap.to(obj.rotation, {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+        duration: 0.3,
+        delay: delay,
+        ease: 'sine.inOut',
+      });
+
+      // Scale animation - gather stilindeki 3-stage: grow, shrink, bounce
+      gsap.to(obj.scale, {
+        x: '+=0.3',
+        y: '+=0.3',
+        z: '+=0.3',
+        duration: 0.25,
+        delay: delay,
+        ease: 'sine.inOut',
+        onComplete: () => {
+          gsap.to(obj.scale, {
+            x: 0.6,
+            y: 0.6,
+            z: 0.6,
+            duration: 0.25,
+            onComplete: () => {
+              // Bounce effect
+              gsap.to(obj.scale, {
+                x: 0.6 * 1.2,
+                y: 0.6 * 1.2,
+                z: 0.6 * 1.2,
+                duration: 0.15,
+                delay: 0.1,
+                ease: 'sine.inOut',
+                yoyo: true,
+                repeat: 1,
+              });
+            },
+          });
+        },
+      });
+    });
+  }
+
+  reverse() {
+    console.log('Reverse powerup clicked');
+
+    // Tray'de obje yoksa çık
+    if (this.tray.length === 0) {
+      console.log("Tray'de geri döndürülecek obje bulunamadı!");
+      return;
+    }
+
+    // Tray'deki son objeyi al
+    const lastObject = this.tray[this.tray.length - 1];
+    console.log("Tray'deki son obje geri döndürülüyor:", lastObject.objectType);
+
+    // Objeyi tray'den çıkar
+    this.tray.splice(this.tray.length - 1, 1);
+
+    // onTray array'inden de çıkar (eğer oradaysa)
+    const onTrayIndex = this.onTray.indexOf(lastObject);
+    if (onTrayIndex > -1) {
+      this.onTray.splice(onTrayIndex, 1);
+    }
+
+    // Objeyi trayObj'den ayır (parent'tan çıkar)
+    if (lastObject.parent === this.trayObj) {
+      this.trayObj.remove(lastObject);
+    }
+
+    // Ground collider alanı içinde random pozisyon oluştur (x ve z için)
+    const randomX = randFloat(-this.objOffset / 2, this.objOffset / 2);
+    const randomZ = randFloat(-this.objOffset / 2, this.objOffset / 2);
+    const newPosition = new THREE.Vector3(randomX, 20, randomZ);
+
+    // Objeyi yeni pozisyona taşı
+    lastObject.position.copy(newPosition);
+
+    // Rotasyonu sıfırla (tray'deki rotasyondan kurtul)
+    lastObject.rotation.set(0, 0, 0);
+
+    // Scale'i normale döndür
+    lastObject.scale.setScalar(1);
+
+    // Objeyi ana scene'e ekle
+    globals.threeScene.add(lastObject);
+
+    // Physics body'sini yeniden oluştur
+    lastObject.addPhysicsBody();
+
+    // mapObjects array'ine geri ekle
+    this.mapObjects.push(lastObject);
+    console.log('mapObjects', lastObject.objectType);
+
+    // Tray'i yeniden düzenle
+    this.sortAssign();
+
+    console.log(
+      `Obje ${lastObject.objectType} pozisyonu (${randomX.toFixed(
+        2
+      )}, 5, ${randomZ.toFixed(2)}) konumuna geri döndürüldü`
+    );
+
+    // Ses efekti çal
+    if (AudioManager) {
+      AudioManager.playSFX('upgrade');
+    }
   }
 
   update(time, delta) {

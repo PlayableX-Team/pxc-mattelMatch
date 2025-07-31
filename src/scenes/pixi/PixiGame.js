@@ -19,6 +19,8 @@ export default class PixiGame {
 
     pixiScene = globals.pixiScene;
     pixiApp = globals.pixiApp;
+    globals.pixiGame = this;
+    this.magnetSprite = null;
 
     this.text = null;
   }
@@ -107,7 +109,7 @@ export default class PixiGame {
 
     // Aktif powerup'ları dinamik olarak oluştur
     activePowerups.forEach((powerupConfig, index) => {
-      new Powerup(
+      const powerup = new Powerup(
         cont,
         powerupConfig.name,
         powerupConfig.type,
@@ -116,6 +118,10 @@ export default class PixiGame {
         positionConfig[index] || 0,
         0
       );
+
+      if (powerupConfig.type === 'magnet') {
+        this.magnetSprite = powerup.sprite;
+      }
     });
 
     cont.resize = (w, h) => {

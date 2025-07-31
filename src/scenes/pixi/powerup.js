@@ -24,6 +24,7 @@ export default class Powerup {
     this.posXPowerUp = posXPowerUp;
     this.posYPowerUp = posYPowerUp;
     this.type = type;
+    this.sprite = null;
     this.init();
   }
 
@@ -31,6 +32,7 @@ export default class Powerup {
     console.log('Powerup constructor');
 
     const button = PIXI.Sprite.from(TextureCache[this.asset]);
+    this.sprite = button;
     button.anchor.set(0.5);
 
     button.scale.set(this.scale);
@@ -40,10 +42,24 @@ export default class Powerup {
     button.buttonMode = true;
 
     button.on('pointerdown', () => {
+      button.interactive = false;
+      gsap.to(button.scale, {
+        x: button.scale.x * 0.9,
+        y: button.scale.y * 0.9,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.delayedCall(0.3, () => {
+            button.interactive = true;
+          });
+        },
+      });
       if (this.type === 'magnet') {
-        console.log('Magnet powerup clicked');
+        globals.threeGame.magnet();
       } else if (this.type === 'reverse') {
-        console.log('Reverse powerup clicked');
+        globals.threeGame.reverse();
       } else if (this.type === 'time') {
         console.log('Time powerup clicked');
       } else if (this.type === 'tornado') {
