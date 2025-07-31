@@ -410,7 +410,7 @@ export default class ThreeGame {
 
     // Position the entire tray
     tray.position.x = ((-offset * (count - 1)) / 2) * 1.4;
-    tray.position.z = 12;
+    tray.position.z = 11;
     tray.scale.setScalar(1.4);
     //tray.rotation.x = -Math.PI / 2;
 
@@ -708,7 +708,7 @@ export default class ThreeGame {
 
   // Tornado kuvvetlerini sürekli uygulayan yardımcı metod
   applyTornadoForces() {
-    const tornadoStrength = 120; // Sürekli efekt için dairesel hareket gücü artırıldı
+    const tornadoStrength = 20; // Sürekli efekt için dairesel hareket gücü artırıldı
     const upwardForce = 20;
     const centerPoint = new THREE.Vector3(0, 0, 0);
     const maxTornadoDistance = 300; // Maksimum tornado etki mesafesi (yeni!)

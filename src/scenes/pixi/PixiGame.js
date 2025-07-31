@@ -6,6 +6,7 @@ import Endcard from './Endcard';
 // import { Spine } from "@pixi-spine/all-4.1";
 import data from '../../config/data';
 import AudioManager from '../../../engine/audio/AudioManager';
+import Powerup from './powerup';
 
 let pixiScene = null;
 let pixiApp = null;
@@ -34,6 +35,38 @@ export default class PixiGame {
       globals.gameFinished = true;
       AudioManager.stopAllSFX();
     });
+    this.addPowerUpPanel();
+  }
+
+  addPowerUpPanel() {
+    const cont = new PIXI.Container();
+    pixiScene.addChild(cont);
+    const bg = PIXI.Sprite.from(TextureCache['powerupBg']);
+    cont.iWidth = bg.width;
+    cont.iHeight = bg.height;
+    bg.anchor.set(0.5);
+
+    cont.addChild(bg);
+    this.powerUpPanel = cont;
+
+    new Powerup(cont, 'powerupMagnet', 'magnet', 0.5, 1, 0, 0);
+    new Powerup(cont, 'powerupReverse', 'reverse', 0.5, 1, 0, 0);
+    new Powerup(cont, 'powerupTime', 'time', 0.5, 1, 0, 0);
+    new Powerup(cont, 'powerupTornado', 'tornado', 0.5, 1, 0, 0);
+
+    cont.resize = (w, h) => {
+      globals.threesc;
+      cont.scale.set(
+        Math.min((w * 0.8) / cont.iWidth, (h * 0.1) / cont.iHeight)
+      );
+
+      if (w < h) {
+        cont.position.set(w * 0.5, h * 0.92);
+      } else {
+        cont.position.set(w * 0.5, h * 0.92);
+      }
+    };
+    cont.resize(window.innerWidth, window.innerHeight);
   }
 
   addHeaderText() {

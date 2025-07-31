@@ -21,6 +21,12 @@ const data = window.gameData ?? {
 
   //AUDIO
   bgmSrc: null, // background music source
+
+  //POWERUP
+  powerupMagnetSrc: null,
+  powerupReverseSrc: null,
+  powerupTimeSrc: null,
+  powerupTornadoSrc: null,
 };
 
 export default data;

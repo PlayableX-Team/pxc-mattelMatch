@@ -5,6 +5,11 @@ const assets = {
     //   src: require("@assets/2d/adidas/adidas.jpg"),
     //   type: "image",
     // },
+    {
+      name: 'powerupBg',
+      src: require('@assets/2d/Powerup/powerupBg.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [
@@ -79,6 +84,34 @@ export function insertAssets(data) {
       loop: true,
       volume: 0.5,
     };
+  }
+  if (data.powerupMagnetSrc) {
+    assets.pixi.push({
+      name: 'powerupMagnet',
+      src: data.powerupMagnetSrc,
+      type: 'image',
+    });
+  }
+  if (data.powerupReverseSrc) {
+    assets.pixi.push({
+      name: 'powerupReverse',
+      src: data.powerupReverseSrc,
+      type: 'image',
+    });
+  }
+  if (data.powerupTimeSrc) {
+    assets.pixi.push({
+      name: 'powerupTime',
+      src: data.powerupTimeSrc,
+      type: 'image',
+    });
+  }
+  if (data.powerupTornadoSrc) {
+    assets.pixi.push({
+      name: 'powerupTornado',
+      src: data.powerupTornadoSrc,
+      type: 'image',
+    });
   }
 }
 
