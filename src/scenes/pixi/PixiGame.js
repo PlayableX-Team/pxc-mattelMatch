@@ -49,10 +49,70 @@ export default class PixiGame {
     cont.addChild(bg);
     this.powerUpPanel = cont;
 
-    new Powerup(cont, 'powerupMagnet', 'magnet', 0.5, 1, 0, 0);
-    new Powerup(cont, 'powerupReverse', 'reverse', 0.5, 1, 0, 0);
-    new Powerup(cont, 'powerupTime', 'time', 0.5, 1, 0, 0);
-    new Powerup(cont, 'powerupTornado', 'tornado', 0.5, 1, 0, 0);
+    const FourPowerupPosConfig = [-150, -50, 50, 150];
+    const ThreePowerupPosConfig = [-100, 0, 100];
+    const TwoPowerupPosConfig = [-50, 50];
+    const OnePowerupPosConfig = [0];
+
+    // Aktif powerup'ları belirle
+    const powerupConfigs = [
+      {
+        name: 'powerupMagnet',
+        type: 'magnet',
+        isOpen: data.isPowerUpMagnetOpen,
+      },
+      {
+        name: 'powerupReverse',
+        type: 'reverse',
+        isOpen: data.isPowerUpReverseOpen,
+      },
+      {
+        name: 'powerupTornado',
+        type: 'tornado',
+        isOpen: data.isPowerUpTornadoOpen,
+      },
+      {
+        name: 'powerupTime',
+        type: 'time',
+        isOpen: data.isPowerUpTimeOpen,
+      },
+    ];
+
+    // True olan powerup'ları filtrele
+    const activePowerups = powerupConfigs.filter((config) => config.isOpen);
+    const powerupCount = activePowerups.length;
+
+    // Sayıya göre pozisyon config'ini seç
+    let positionConfig;
+    switch (powerupCount) {
+      case 1:
+        positionConfig = OnePowerupPosConfig;
+        break;
+      case 2:
+        positionConfig = TwoPowerupPosConfig;
+        break;
+      case 3:
+        positionConfig = ThreePowerupPosConfig;
+        break;
+      case 4:
+        positionConfig = FourPowerupPosConfig;
+        break;
+      default:
+        positionConfig = [];
+    }
+
+    // Aktif powerup'ları dinamik olarak oluştur
+    activePowerups.forEach((powerupConfig, index) => {
+      new Powerup(
+        cont,
+        powerupConfig.name,
+        powerupConfig.type,
+        0.4,
+        1,
+        positionConfig[index] || 0,
+        0
+      );
+    });
 
     cont.resize = (w, h) => {
       globals.threesc;

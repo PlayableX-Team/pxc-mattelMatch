@@ -23,9 +23,17 @@ const data = window.gameData ?? {
   bgmSrc: null, // background music source
 
   //POWERUP
+
+  isPowerUpMagnetOpen: true,
   powerupMagnetSrc: null,
+
+  isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
+
+  isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
+
+  isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
 };
 
