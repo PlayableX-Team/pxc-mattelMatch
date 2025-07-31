@@ -945,6 +945,11 @@ export default class ThreeGame {
     const lastObject = this.tray[this.tray.length - 1];
     console.log("Tray'deki son obje geri döndürülüyor:", lastObject.objectType);
 
+    // Tüm animasyonları durdur
+    gsap.killTweensOf(lastObject.rotation);
+    gsap.killTweensOf(lastObject.scale);
+    gsap.killTweensOf(lastObject.position);
+
     // Objeyi tray'den çıkar
     this.tray.splice(this.tray.length - 1, 1);
 
@@ -954,46 +959,66 @@ export default class ThreeGame {
       this.onTray.splice(onTrayIndex, 1);
     }
 
-    // Objeyi trayObj'den ayır (parent'tan çıkar)
+    // Platform referansını temizle
+    if (lastObject.platform) {
+      lastObject.platform = null;
+    }
+
+    // Objeyi trayObj'den detach et (attach() ile bağlandığı için detach() kullan)
     if (lastObject.parent === this.trayObj) {
-      this.trayObj.remove(lastObject);
+      this.scene.attach(lastObject); // Ana scene'e attach et
+      lastObject.isTapped = false;
+      lastObject.isReversed = true;
     }
 
     // Ground collider alanı içinde random pozisyon oluştur (x ve z için)
     const randomX = randFloat(-this.objOffset / 2, this.objOffset / 2);
     const randomZ = randFloat(-this.objOffset / 2, this.objOffset / 2);
-    const newPosition = new THREE.Vector3(randomX, 10, randomZ);
+    const targetPosition = new THREE.Vector3(randomX, 2, randomZ);
 
-    // Objeyi yeni pozisyona taşı
-    lastObject.position.copy(newPosition);
+    // GSAP ile pozisyon animasyonu
+    gsap.to(lastObject.position, {
+      x: targetPosition.x,
+      y: targetPosition.y,
+      z: targetPosition.z,
+      duration: 0.8,
+      ease: 'back.out(1.7)',
+      onComplete: () => {
+        // Animasyon tamamlandıktan sonra physics body'sini ekle
+        lastObject.addPhysicsBody();
 
-    // Rotasyonu sıfırla (tray'deki rotasyondan kurtul)
-    lastObject.rotation.set(0, 0, 0);
+        // mapObjects array'ine geri ekle
+        this.mapObjects.push(lastObject);
+        console.log('mapObjects', lastObject.objectType);
 
-    // Scale'i normale döndür
-    lastObject.scale.setScalar(1);
+        console.log(
+          `Obje ${lastObject.objectType} pozisyonu (${randomX.toFixed(
+            2
+          )}, 10, ${randomZ.toFixed(2)}) konumuna geri döndürüldü`
+        );
+      },
+    });
 
-    // Objeyi ana scene'e ekle
-    globals.threeScene.add(lastObject);
+    // Rotasyon animasyonu - tray'deki rotasyondan normale döndür
+    gsap.to(lastObject.rotation, {
+      x: 0,
+      y: 0,
+      z: 0,
+      duration: 0.6,
+      ease: 'sine.inOut',
+    });
 
-    // Pozisyonu tekrar ayarla (scene'e ekledikten sonra)
-    lastObject.position.copy(newPosition);
-    lastObject.updateMatrixWorld(true);
-
-    // Physics body'sini yeniden oluştur
-    lastObject.addPhysicsBody();
-    // mapObjects array'ine geri ekle
-    this.mapObjects.push(lastObject);
-    console.log('mapObjects', lastObject.objectType);
+    // Scale animasyonu - normale döndür
+    gsap.to(lastObject.scale, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 0.5,
+      ease: 'back.out(1.7)',
+    });
 
     // Tray'i yeniden düzenle
     this.sortAssign();
-
-    console.log(
-      `Obje ${lastObject.objectType} pozisyonu (${randomX.toFixed(
-        2
-      )}, 5, ${randomZ.toFixed(2)}) konumuna geri döndürüldü`
-    );
 
     // Ses efekti çal
     if (AudioManager) {
