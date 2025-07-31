@@ -148,7 +148,20 @@ export default class ThreeGame {
   }
 
   addGroundCollider() {
-    // Create the ground
+    // Create a very flat box as ground
+    const groundShape = new CANNON.Box(new CANNON.Vec3(7.5, 0.1, 7.5)); // 15x0.2x15 boyutunda
+    const groundBody = new CANNON.Body({
+      mass: 0,
+      type: CANNON.Body.STATIC,
+    });
+
+    groundBody.addShape(groundShape);
+    groundBody.position.set(0, -0.1, 0); // Biraz aşağıda konumlandır
+
+    // Add body to physics world
+    this.physicsManager.world.addBody(groundBody);
+
+    // Optional: Create visual ground for debugging (keep invisible)
     let ground = new THREE.Mesh(
       new THREE.PlaneGeometry(15, 15),
       new THREE.MeshBasicMaterial({ color: 0x00ff00 })
@@ -157,13 +170,7 @@ export default class ThreeGame {
     ground.material.transparent = true;
     ground.position.set(0, 0, 0);
     ground.rotateX(-Math.PI / 2);
-    ground.scale.setScalar(1);
     globals.threeScene.add(ground);
-
-    ground.body = this.physicsManager.createBodyFromObject(ground, {
-      type: 'static',
-      mass: 0,
-    });
 
     // Add walls around the ground perimeter
     const wallHeight = 10;
@@ -955,7 +962,7 @@ export default class ThreeGame {
     // Ground collider alanı içinde random pozisyon oluştur (x ve z için)
     const randomX = randFloat(-this.objOffset / 2, this.objOffset / 2);
     const randomZ = randFloat(-this.objOffset / 2, this.objOffset / 2);
-    const newPosition = new THREE.Vector3(randomX, 20, randomZ);
+    const newPosition = new THREE.Vector3(randomX, 10, randomZ);
 
     // Objeyi yeni pozisyona taşı
     lastObject.position.copy(newPosition);
@@ -969,9 +976,12 @@ export default class ThreeGame {
     // Objeyi ana scene'e ekle
     globals.threeScene.add(lastObject);
 
+    // Pozisyonu tekrar ayarla (scene'e ekledikten sonra)
+    lastObject.position.copy(newPosition);
+    lastObject.updateMatrixWorld(true);
+
     // Physics body'sini yeniden oluştur
     lastObject.addPhysicsBody();
-
     // mapObjects array'ine geri ekle
     this.mapObjects.push(lastObject);
     console.log('mapObjects', lastObject.objectType);

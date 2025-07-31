@@ -26,6 +26,12 @@ export default class MapObject extends THREE.Object3D {
   }
 
   addPhysicsBody() {
+    // Eğer mevcut bir physics body varsa önce onu temizle
+    if (this.body) {
+      globals.physicsManager.world.removeBody(this.body);
+      this.body = null;
+    }
+
     this.body = globals.physicsManager.createBodyFromObject(this.model, {
       type: 'dynamic',
       mass: 1.5,
