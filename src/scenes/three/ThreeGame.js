@@ -81,7 +81,7 @@ export default class ThreeGame {
       const randomZ = randFloat(-this.objOffset, this.objOffset);
 
       const mapObject = new MapObject(
-        'tyre-v1',
+        'barbie_boat-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         1
@@ -95,7 +95,7 @@ export default class ThreeGame {
       const randomZ = randFloat(-this.objOffset, this.objOffset);
 
       const mapObject = new MapObject(
-        'tv-v1',
+        'barbie_car-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         2
@@ -108,7 +108,7 @@ export default class ThreeGame {
       const randomZ = randFloat(-this.objOffset, this.objOffset);
 
       const mapObject = new MapObject(
-        'junk_07-v1',
+        'barbie_girl1-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         3
@@ -121,7 +121,7 @@ export default class ThreeGame {
       const randomZ = randFloat(-this.objOffset, this.objOffset);
 
       const mapObject = new MapObject(
-        'junk_02-v1',
+        'barbie_girl2-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         4
@@ -134,10 +134,23 @@ export default class ThreeGame {
       const randomZ = randFloat(-this.objOffset, this.objOffset);
 
       const mapObject = new MapObject(
-        'junk_04-v1',
+        'barbie_house-v1',
         1,
         new THREE.Vector3(randomX, yPosition, randomZ),
         5
+      );
+      this.mapObjects.push(mapObject);
+    }
+
+    for (let i = 0; i < 10; i++) {
+      const randomX = randFloat(-this.objOffset, this.objOffset);
+      const randomZ = randFloat(-this.objOffset, this.objOffset);
+
+      const mapObject = new MapObject(
+        'barbie_ken-v1',
+        1,
+        new THREE.Vector3(randomX, yPosition, randomZ),
+        6
       );
       this.mapObjects.push(mapObject);
     }

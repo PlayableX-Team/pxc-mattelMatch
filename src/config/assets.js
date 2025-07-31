@@ -58,6 +58,36 @@ const assets = {
       src: require('@assets/models/junks/junk_08-v2.glb'),
       type: 'glb',
     },
+    {
+      name: 'barbie_boat-v1',
+      src: require('@assets/models/items/barbie_boat-v1.glb'),
+      type: 'glb',
+    },
+    {
+      name: 'barbie_car-v1',
+      src: require('@assets/models/items/barbie_car-v1.glb'),
+      type: 'glb',
+    },
+    {
+      name: 'barbie_girl1-v1',
+      src: require('@assets/models/items/barbie_girl1-v1.glb'),
+      type: 'glb',
+    },
+    {
+      name: 'barbie_girl2-v1',
+      src: require('@assets/models/items/barbie_girl2-v1.glb'),
+      type: 'glb',
+    },
+    {
+      name: 'barbie_house-v1',
+      src: require('@assets/models/items/barbie_house-v1.glb'),
+      type: 'glb',
+    },
+    {
+      name: 'barbie_ken-v1',
+      src: require('@assets/models/items/barbie_ken-v1.glb'),
+      type: 'glb',
+    },
   ],
   three_textures: [],
   audio: {},

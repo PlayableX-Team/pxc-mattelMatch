@@ -6,12 +6,7 @@ import data from '../../config/data';
 import * as CANNON from 'cannon-es';
 
 export default class MapObject extends THREE.Object3D {
-  constructor(
-    model,
-    scale = 1,
-    position = new THREE.Vector3(0, 0, 0),
-    objectType
-  ) {
+  constructor(model, scale, position = new THREE.Vector3(0, 0, 0), objectType) {
     super();
     this.animations = {};
     this.model = globals.cloneModel(model);
