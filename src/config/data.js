@@ -26,15 +26,19 @@ const data = window.gameData ?? {
 
   isPowerUpMagnetOpen: true,
   powerupMagnetSrc: null,
+  powerupMagnetScale: 0.4,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
+  powerupReverseScale: 0.4,
 
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
+  powerupTimeScale: 0.4,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
+  powerupTornadoScale: 0.4,
 };
 
 export default data;

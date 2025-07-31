@@ -36,5 +36,19 @@ export default class Powerup {
     button.scale.set(this.scale);
     this.parent.addChild(button);
     button.position.set(this.posXPowerUp, this.posYPowerUp);
+    button.interactive = true;
+    button.buttonMode = true;
+
+    button.on('pointerdown', () => {
+      if (this.type === 'magnet') {
+        console.log('Magnet powerup clicked');
+      } else if (this.type === 'reverse') {
+        console.log('Reverse powerup clicked');
+      } else if (this.type === 'time') {
+        console.log('Time powerup clicked');
+      } else if (this.type === 'tornado') {
+        globals.threeGame.tornado();
+      }
+    });
   }
 }

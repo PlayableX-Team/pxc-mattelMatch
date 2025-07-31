@@ -60,21 +60,25 @@ export default class PixiGame {
         name: 'powerupMagnet',
         type: 'magnet',
         isOpen: data.isPowerUpMagnetOpen,
+        scale: data.powerupMagnetScale,
       },
       {
         name: 'powerupReverse',
         type: 'reverse',
         isOpen: data.isPowerUpReverseOpen,
+        scale: data.powerupReverseScale,
       },
       {
         name: 'powerupTornado',
         type: 'tornado',
         isOpen: data.isPowerUpTornadoOpen,
+        scale: data.powerupTornadoScale,
       },
       {
         name: 'powerupTime',
         type: 'time',
         isOpen: data.isPowerUpTimeOpen,
+        scale: data.powerupTimeScale,
       },
     ];
 
@@ -107,7 +111,7 @@ export default class PixiGame {
         cont,
         powerupConfig.name,
         powerupConfig.type,
-        0.4,
+        powerupConfig.scale,
         1,
         positionConfig[index] || 0,
         0

@@ -16,6 +16,7 @@ export default class ThreeGame {
     console.log('ThreeGame constructor');
     this.scene = globals.threeScene;
     this.renderManager = globals.renderManager;
+    globals.threeGame = this;
     this.models = this.renderManager.threeRenderer.models;
     this.slotPositions = [];
     this.slotAvailable = [true, true, true, true, true, true, true];

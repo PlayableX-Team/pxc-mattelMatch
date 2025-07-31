@@ -28,7 +28,7 @@ export default class MapObject extends THREE.Object3D {
   addPhysicsBody() {
     this.body = globals.physicsManager.createBodyFromObject(this.model, {
       type: 'dynamic',
-      mass: 1,
+      mass: 1.5,
       sizeMultiplier: new THREE.Vector3(1, 1, 1),
     });
     this.body.position.copy(this.position);
