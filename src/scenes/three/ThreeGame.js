@@ -332,7 +332,11 @@ export default class ThreeGame {
 
     const platformCount = 7;
     const diff = Math.abs(platformCount - 5);
-    const scl = 0.6 - diff * 0.1;
+    const scaleRatio = 0.6 - diff * 0.1; // Platform scale ratio
+
+    // Objenin mevcut scale'ini al ve ratio'yu uygula
+    const currentScale = obj.scale.x; // x, y, z aynı olduğunu varsayıyoruz
+    const targetScale = currentScale * scaleRatio;
 
     // Remove physics body
     if (obj.body) {
@@ -366,16 +370,16 @@ export default class ThreeGame {
 
     // Scale animation - 3-stage: grow, shrink, bounce
     gsap.to(obj.scale, {
-      x: '+=0.3',
-      y: '+=0.3',
-      z: '+=0.3',
+      x: currentScale + 0.3,
+      y: currentScale + 0.3,
+      z: currentScale + 0.3,
       duration: 0.25,
       ease: 'sine.inOut',
       onComplete: () => {
         gsap.to(obj.scale, {
-          x: scl,
-          y: scl,
-          z: scl,
+          x: targetScale,
+          y: targetScale,
+          z: targetScale,
           duration: 0.25,
           onComplete: () => {
             // Platform landing sound
@@ -385,9 +389,9 @@ export default class ThreeGame {
 
             // Bounce effect
             gsap.to(obj.scale, {
-              x: scl * 1.2,
-              y: scl * 1.2,
-              z: scl * 1.2,
+              x: targetScale * 1.2,
+              y: targetScale * 1.2,
+              z: targetScale * 1.2,
               duration: 0.15,
               delay: 0.1,
               ease: 'sine.inOut',
@@ -411,7 +415,7 @@ export default class ThreeGame {
     const diff = Math.abs(count - 5);
     let scalar = 1;
 
-    const scl = scalar - diff * 0.01;
+    const platformScale = scalar - diff * 0.01;
     const offset = 1.2 - diff * 0.01;
     let tray = new THREE.Object3D();
     this.trayObj = tray;
@@ -430,10 +434,10 @@ export default class ThreeGame {
       );
 
       // Position and scale platforms
-      platform.position.set(i * offset, 0, 0);
-      platform.scale.set(scl, scl, scl);
+      platform.position.set(i * offset, 0, 0.5);
+      platform.scale.set(platformScale, platformScale, platformScale);
       platform.rotation.x = Math.PI / 4;
-      platform.oScale = scl;
+      platform.oScale = platformScale;
       platform.oPos = platform.position.clone();
 
       // Add visual enhancements
@@ -752,7 +756,7 @@ export default class ThreeGame {
 
   // Tornado kuvvetlerini sürekli uygulayan yardımcı metod
   applyTornadoForces() {
-    const tornadoStrength = 40; // Sürekli efekt için dairesel hareket gücü artırıldı
+    const tornadoStrength = 100; // Sürekli efekt için dairesel hareket gücü artırıldı
     const upwardForce = 20;
     const centerPoint = new THREE.Vector3(0, 0, 0);
     const maxTornadoDistance = 300; // Maksimum tornado etki mesafesi (yeni!)
@@ -761,7 +765,7 @@ export default class ThreeGame {
       if (!mapObject.body) return;
 
       // Angular damping'i artır (objelerin dönmesini yavaşlatır)
-      mapObject.body.angularDamping = 0.8; // 0-1 arası, yüksek değer daha fazla dampening
+      // mapObject.body.angularDamping = 0.8; // 0-1 arası, yüksek değer daha fazla dampening
 
       const objPosition = new THREE.Vector3(
         mapObject.body.position.x,
@@ -944,17 +948,22 @@ export default class ThreeGame {
         delay: delay,
         ease: 'sine.inOut',
         onComplete: () => {
+          // Objenin mevcut scale'ini al ve ratio'yu uygula (magnet için)
+          const currentScale = obj.scale.x;
+          const magnetScaleRatio = 0.6; // Magnet scale ratio
+          const magnetTargetScale = currentScale * magnetScaleRatio;
+
           gsap.to(obj.scale, {
-            x: 0.6,
-            y: 0.6,
-            z: 0.6,
+            x: magnetTargetScale,
+            y: magnetTargetScale,
+            z: magnetTargetScale,
             duration: 0.25,
             onComplete: () => {
               // Bounce effect
               gsap.to(obj.scale, {
-                x: 0.6 * 1.2,
-                y: 0.6 * 1.2,
-                z: 0.6 * 1.2,
+                x: magnetTargetScale * 1.2,
+                y: magnetTargetScale * 1.2,
+                z: magnetTargetScale * 1.2,
                 duration: 0.15,
                 delay: 0.1,
                 ease: 'sine.inOut',
@@ -1027,9 +1036,11 @@ export default class ThreeGame {
         console.log('mapObjects', lastObject.objectType);
 
         console.log(
-          `Obje ${lastObject.objectType} pozisyonu (${randomX.toFixed(
+          `Obje ${lastObject.objectType} pozisyonu (${targetPosition.x.toFixed(
             2
-          )}, 10, ${randomZ.toFixed(2)}) konumuna geri döndürüldü`
+          )}, ${targetPosition.y.toFixed(2)}, ${targetPosition.z.toFixed(
+            2
+          )}) konumuna geri döndürüldü`
         );
       },
     });
@@ -1043,11 +1054,11 @@ export default class ThreeGame {
       ease: 'sine.inOut',
     });
 
-    // Scale animasyonu - normale döndür
+    // Scale animasyonu - orijinal scale'e döndür
     gsap.to(lastObject.scale, {
-      x: 1,
-      y: 1,
-      z: 1,
+      x: lastObject.originalScale,
+      y: lastObject.originalScale,
+      z: lastObject.originalScale,
       duration: 0.5,
       ease: 'back.out(1.7)',
     });

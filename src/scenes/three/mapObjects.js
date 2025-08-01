@@ -10,6 +10,7 @@ export default class MapObject extends THREE.Object3D {
     super();
     this.animations = {};
     this.model = globals.cloneModel(model);
+    this.originalScale = scale; // Orijinal scale'i sakla
     this.scale.setScalar(scale);
     this.add(this.model);
     this.position.copy(position);
