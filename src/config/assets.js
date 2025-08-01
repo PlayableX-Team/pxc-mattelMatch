@@ -143,6 +143,48 @@ export function insertAssets(data) {
       type: 'image',
     });
   }
+  if (data.barbieBoatSrc) {
+    assets.three.push({
+      name: 'barbieBoat',
+      src: data.barbieBoatSrc,
+      type: 'glb',
+    });
+  }
+  if (data.barbieCarSrc) {
+    assets.three.push({
+      name: 'barbieCar',
+      src: data.barbieCarSrc,
+      type: 'glb',
+    });
+  }
+  if (data.barbieGirl1Src) {
+    assets.three.push({
+      name: 'barbieGirl1',
+      src: data.barbieGirl1Src,
+      type: 'glb',
+    });
+  }
+  if (data.barbieGirl2Src) {
+    assets.three.push({
+      name: 'barbieGirl2',
+      src: data.barbieGirl2Src,
+      type: 'glb',
+    });
+  }
+  if (data.barbieHouseSrc) {
+    assets.three.push({
+      name: 'barbieHouse',
+      src: data.barbieHouseSrc,
+      type: 'glb',
+    });
+  }
+  if (data.barbieKenSrc) {
+    assets.three.push({
+      name: 'barbieKen',
+      src: data.barbieKenSrc,
+      type: 'glb',
+    });
+  }
 }
 
 export default assets;

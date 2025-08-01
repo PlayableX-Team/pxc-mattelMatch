@@ -53,6 +53,35 @@ export default class ThreeGame {
     });
   }
 
+  // Helper function to check if position is safe (no overlap)
+  isSafePosition(x, z, minDistance = 2) {
+    return !this.usedPositions.some((pos) => {
+      const distance = Math.sqrt(
+        Math.pow(pos.x - x, 2) + Math.pow(pos.z - z, 2)
+      );
+      return distance < minDistance;
+    });
+  }
+
+  // Helper function to get safe random position
+  getSafePosition(minDistance = 2, maxAttempts = 50) {
+    let attempts = 0;
+    let randomX, randomZ;
+
+    do {
+      randomX = randFloat(-this.objOffset, this.objOffset);
+      randomZ = randFloat(-this.objOffset, this.objOffset);
+      attempts++;
+    } while (
+      !this.isSafePosition(randomX, randomZ, minDistance) &&
+      attempts < maxAttempts
+    );
+
+    // Store the used position
+    this.usedPositions.push({ x: randomX, z: randomZ });
+    return { x: randomX, z: randomZ };
+  }
+
   start() {
     console.log('ThreeGame start');
     this.physicsManager = new PhysicsManager(false);
@@ -70,86 +99,79 @@ export default class ThreeGame {
 
     // Create array to store 30 MapObjects
     this.mapObjects = [];
-    this.objOffset = 7;
+    this.objOffset = 6.5; // Increased for 20x20 ground (ground size 20, offset 9 = safe buffer)
+    this.usedPositions = []; // Track used positions to prevent overlap
 
     let yPosition = 10;
-    // Create 30 objects with random positions within ground collider area
-    for (let i = 0; i < 10; i++) {
-      // Random positions within ground area (with padding to avoid walls)
-      // Ground is 10x10, so we use -4 to +4 range for safety buffer
-      const randomX = randFloat(-this.objOffset, this.objOffset);
-      const randomZ = randFloat(-this.objOffset, this.objOffset);
+    // Create objects with safe positions to prevent overlap
+    for (let i = 0; i < data.barbieBoatCount; i++) {
+      const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
 
       const mapObject = new MapObject(
-        'barbie_boat-v1',
-        1,
-        new THREE.Vector3(randomX, yPosition, randomZ),
+        'barbieBoat',
+        data.barbieBoatScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z),
         1
       );
       this.mapObjects.push(mapObject);
       console.log(mapObject.objectType);
     }
 
-    for (let i = 0; i < 10; i++) {
-      const randomX = randFloat(-this.objOffset, this.objOffset);
-      const randomZ = randFloat(-this.objOffset, this.objOffset);
+    for (let i = 0; i < data.barbieCarCount; i++) {
+      const safePos = this.getSafePosition(1.5);
 
       const mapObject = new MapObject(
-        'barbie_car-v1',
-        1,
-        new THREE.Vector3(randomX, yPosition, randomZ),
+        'barbieCar',
+        data.barbieCarScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z),
         2
       );
       this.mapObjects.push(mapObject);
     }
 
-    for (let i = 0; i < 10; i++) {
-      const randomX = randFloat(-this.objOffset, this.objOffset);
-      const randomZ = randFloat(-this.objOffset, this.objOffset);
+    for (let i = 0; i < data.barbieGirl1Count; i++) {
+      const safePos = this.getSafePosition(1.5);
 
       const mapObject = new MapObject(
-        'barbie_girl1-v1',
-        1,
-        new THREE.Vector3(randomX, yPosition, randomZ),
+        'barbieGirl1',
+        data.barbieGirl1Scale,
+        new THREE.Vector3(safePos.x, 10, safePos.z),
         3
       );
       this.mapObjects.push(mapObject);
     }
 
-    for (let i = 0; i < 10; i++) {
-      const randomX = randFloat(-this.objOffset, this.objOffset);
-      const randomZ = randFloat(-this.objOffset, this.objOffset);
+    for (let i = 0; i < data.barbieGirl2Count; i++) {
+      const safePos = this.getSafePosition(1.5);
 
       const mapObject = new MapObject(
-        'barbie_girl2-v1',
-        1,
-        new THREE.Vector3(randomX, yPosition, randomZ),
+        'barbieGirl2',
+        data.barbieGirl2Scale,
+        new THREE.Vector3(safePos.x, 10, safePos.z),
         4
       );
       this.mapObjects.push(mapObject);
     }
 
-    for (let i = 0; i < 10; i++) {
-      const randomX = randFloat(-this.objOffset, this.objOffset);
-      const randomZ = randFloat(-this.objOffset, this.objOffset);
+    for (let i = 0; i < data.barbieHouseCount; i++) {
+      const safePos = this.getSafePosition(2.0); // Larger objects need more space
 
       const mapObject = new MapObject(
-        'barbie_house-v1',
-        1,
-        new THREE.Vector3(randomX, yPosition, randomZ),
+        'barbieHouse',
+        data.barbieHouseScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z),
         5
       );
       this.mapObjects.push(mapObject);
     }
 
-    for (let i = 0; i < 10; i++) {
-      const randomX = randFloat(-this.objOffset, this.objOffset);
-      const randomZ = randFloat(-this.objOffset, this.objOffset);
+    for (let i = 0; i < data.barbieKenCount; i++) {
+      const safePos = this.getSafePosition(1.5);
 
       const mapObject = new MapObject(
-        'barbie_ken-v1',
-        1,
-        new THREE.Vector3(randomX, yPosition, randomZ),
+        'barbieKen',
+        data.barbieKenScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z),
         6
       );
       this.mapObjects.push(mapObject);
@@ -162,7 +184,7 @@ export default class ThreeGame {
 
   addGroundCollider() {
     // Create a very flat box as ground
-    const groundShape = new CANNON.Box(new CANNON.Vec3(7.5, 0.1, 7.5)); // 15x0.2x15 boyutunda
+    const groundShape = new CANNON.Box(new CANNON.Vec3(7, 0.1, 10)); // 20x0.2x20 boyutunda
     const groundBody = new CANNON.Body({
       mass: 0,
       type: CANNON.Body.STATIC,
@@ -176,7 +198,7 @@ export default class ThreeGame {
 
     // Optional: Create visual ground for debugging (keep invisible)
     let ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(15, 15),
+      new THREE.PlaneGeometry(14, 20),
       new THREE.MeshBasicMaterial({ color: 0x00ff00 })
     );
     ground.material.opacity = 0;
@@ -186,20 +208,21 @@ export default class ThreeGame {
     globals.threeScene.add(ground);
 
     // Add walls around the ground perimeter
-    const wallHeight = 10;
+    const wallHeight = 100;
     const wallThickness = 0.2;
-    const groundSize = 15; // Changed from 10 to 15 to match ground dimensions
+    const groundSizeX = 14; // X axis ground size (14 width)
+    const groundSizeZ = 20; // Z axis ground size (20 depth)
 
     // North wall (positive Z)
     let northWall = new THREE.Mesh(
-      new THREE.BoxGeometry(groundSize, wallHeight, wallThickness),
+      new THREE.BoxGeometry(groundSizeX, wallHeight, wallThickness),
       new THREE.MeshBasicMaterial({
         color: 0xff0000,
         opacity: 0.0,
         transparent: true,
       })
     );
-    northWall.position.set(0, wallHeight / 2, groundSize / 2);
+    northWall.position.set(0, wallHeight / 2, groundSizeZ / 2);
     globals.threeScene.add(northWall);
     northWall.body = this.physicsManager.createBodyFromObject(northWall, {
       type: 'static',
@@ -208,14 +231,14 @@ export default class ThreeGame {
 
     // South wall (negative Z)
     let southWall = new THREE.Mesh(
-      new THREE.BoxGeometry(groundSize, wallHeight, wallThickness),
+      new THREE.BoxGeometry(groundSizeX, wallHeight, wallThickness),
       new THREE.MeshBasicMaterial({
         color: 0xff0000,
         opacity: 0.0,
         transparent: true,
       })
     );
-    southWall.position.set(0, wallHeight / 2, -groundSize / 2);
+    southWall.position.set(0, wallHeight / 2, -groundSizeZ / 2);
     globals.threeScene.add(southWall);
     southWall.body = this.physicsManager.createBodyFromObject(southWall, {
       type: 'static',
@@ -224,14 +247,14 @@ export default class ThreeGame {
 
     // East wall (positive X)
     let eastWall = new THREE.Mesh(
-      new THREE.BoxGeometry(wallThickness, wallHeight, groundSize),
+      new THREE.BoxGeometry(wallThickness, wallHeight, groundSizeZ),
       new THREE.MeshBasicMaterial({
         color: 0xff0000,
         opacity: 0.0,
         transparent: true,
       })
     );
-    eastWall.position.set(groundSize / 2, wallHeight / 2, 0);
+    eastWall.position.set(groundSizeX / 2, wallHeight / 2, 0);
     globals.threeScene.add(eastWall);
     eastWall.body = this.physicsManager.createBodyFromObject(eastWall, {
       type: 'static',
@@ -240,14 +263,14 @@ export default class ThreeGame {
 
     // West wall (negative X)
     let westWall = new THREE.Mesh(
-      new THREE.BoxGeometry(wallThickness, wallHeight, groundSize),
+      new THREE.BoxGeometry(wallThickness, wallHeight, groundSizeZ),
       new THREE.MeshBasicMaterial({
         color: 0xff0000,
         opacity: 0.0,
         transparent: true,
       })
     );
-    westWall.position.set(-groundSize / 2, wallHeight / 2, 0);
+    westWall.position.set(-groundSizeX / 2, wallHeight / 2, 0);
     globals.threeScene.add(westWall);
     westWall.body = this.physicsManager.createBodyFromObject(westWall, {
       type: 'static',
@@ -984,10 +1007,9 @@ export default class ThreeGame {
       lastObject.isReversed = true;
     }
 
-    // Ground collider alanı içinde random pozisyon oluştur (x ve z için)
-    const randomX = randFloat(-this.objOffset / 2, this.objOffset / 2);
-    const randomZ = randFloat(-this.objOffset / 2, this.objOffset / 2);
-    const targetPosition = new THREE.Vector3(randomX, 2, randomZ);
+    // Ground collider alanı içinde güvenli pozisyon oluştur (x ve z için)
+    const safePos = this.getSafePosition(1.5);
+    const targetPosition = new THREE.Vector3(safePos.x, 2, safePos.z);
 
     // GSAP ile pozisyon animasyonu
     gsap.to(lastObject.position, {

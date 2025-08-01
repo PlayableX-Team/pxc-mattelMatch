@@ -22,8 +22,27 @@ const data = window.gameData ?? {
   //AUDIO
   bgmSrc: null, // background music source
 
-  //POWERUP
+  //MAP MODELS
+  barbieBoatSrc: null,
+  barbieBoatScale: 1.5,
+  barbieBoatCount: 20,
+  barbieCarSrc: null,
+  barbieCarScale: 1.5,
+  barbieCarCount: 20,
+  barbieGirl1Src: null,
+  barbieGirl1Scale: 1.5,
+  barbieGirl1Count: 20,
+  barbieGirl2Src: null,
+  barbieGirl2Scale: 1.5,
+  barbieGirl2Count: 20,
+  barbieHouseSrc: null,
+  barbieHouseScale: 1.5,
+  barbieHouseCount: 20,
+  barbieKenSrc: null,
+  barbieKenScale: 1.5,
+  barbieKenCount: 20,
 
+  //POWERUP
   isPowerUpMagnetOpen: true,
   powerupMagnetSrc: null,
   powerupMagnetScale: 0.4,
