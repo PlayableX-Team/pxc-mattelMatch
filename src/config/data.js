@@ -23,7 +23,7 @@ const data = window.gameData ?? {
   bgmSrc: null, // background music source
 
   //GAME OPTIONS
-  gameTime: 100,
+  gameTime: 120,
 
   //MAP MODELS
   barbieBoatSrc: null,

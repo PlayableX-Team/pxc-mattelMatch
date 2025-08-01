@@ -23,6 +23,12 @@ export default class PixiGame {
     this.magnetSprite = null;
 
     this.text = null;
+    this.timerProgress = 1.0; // 1'den başlayıp 0'a inecek
+    this.timerDuration = data.gameTime; // 60 saniye
+    this.timerContainer = null;
+    this.timerMask = null;
+    this.timerFillBar = null;
+    this.timerText = null; // Timer text referansı
   }
 
   start() {
@@ -165,29 +171,59 @@ export default class PixiGame {
     };
     bg.resize(window.innerWidth, window.innerHeight);
 
-    const cont = new PIXI.Container();
-    pixiScene.addChild(cont);
+    // Timer Container oluştur
+    this.timerContainer = new PIXI.Container();
+    pixiScene.addChild(this.timerContainer);
+
+    // Timer arka plan bar
     const timerBarBg = PIXI.Sprite.from(TextureCache['timer_bar_bg']);
-    cont.iWidth = timerBarBg.width;
-    cont.iHeight = timerBarBg.height;
+    this.timerContainer.iWidth = timerBarBg.width;
+    this.timerContainer.iHeight = timerBarBg.height;
     timerBarBg.anchor.set(0.5);
+    this.timerContainer.addChild(timerBarBg);
 
-    cont.addChild(timerBarBg);
+    // Timer dolum bar (yeşilden kırmızıya değişecek)
+    this.timerFillBar = PIXI.Sprite.from(TextureCache['timer_fill_bar']);
+    this.timerFillBar.anchor.set(0, 0.5); // Sol orta noktadan anchor
+    this.timerFillBar.position.x = -timerBarBg.width * 0.5 + 5; // Sol kenardan başlat
+    this.timerFillBar.position.y -= 2;
+    this.timerContainer.addChild(this.timerFillBar);
 
-    const timerFillBar = PIXI.Sprite.from(TextureCache['timer_fill_bar']);
-    cont.iWidth = timerFillBar.width;
-    cont.iHeight = timerFillBar.height;
-    timerFillBar.anchor.set(0.5);
-    timerFillBar.position.set(0, timerBarBg.position.y);
+    // Maskeleme için Graphics objesi oluştur
+    this.timerMask = new PIXI.Graphics();
+    this.timerMask.position.set(0, 0);
+    this.timerContainer.addChild(this.timerMask);
 
-    cont.resize = (w, h) => {
-      cont.position.set(w * 0.5, bg.position.y);
-      cont.scale.set(
-        Math.min((w * 0.45) / cont.iWidth, (h * 0.05) / cont.iHeight)
+    // Timer resize fonksiyonu
+    this.timerContainer.resize = (w, h) => {
+      this.timerContainer.position.set(w * 0.5, bg.position.y);
+      this.timerContainer.scale.set(
+        Math.min(
+          (w * 0.45) / this.timerContainer.iWidth,
+          (h * 0.05) / this.timerContainer.iHeight
+        )
       );
     };
-    cont.addChild(timerFillBar);
-    cont.resize(window.innerWidth, window.innerHeight);
+    this.timerContainer.resize(window.innerWidth, window.innerHeight);
+    // Timer text'ini oluştur ve referansını sakla
+    this.timerText = new PIXI.Text(this.formatTime(data.gameTime), {
+      fontFamily: 'game-font',
+      fontSize: 50,
+      fill: 0xffffff,
+      strokeThickness: 5,
+      stroke: 0x000000,
+      wordWrap: false,
+      align: 'center',
+    });
+    timerBarBg.addChild(this.timerText);
+    this.timerText.position.set(-timerBarBg.width * 0.7, -5);
+    this.timerText.anchor.set(0.5);
+
+    // İlk timer maskesini uygula
+    this.updateTimerBar();
+
+    // Timer'ı başlat
+    this.startTimer();
   }
 
   addHeaderText() {
@@ -285,6 +321,102 @@ export default class PixiGame {
 
     this.video = videoSprite;
     this.video.controller = videoElement;
+  }
+
+  // Timer bar'ını güncelleyen fonksiyon
+  updateTimerBar() {
+    // Progress değerini 0-1 arasında sınırla
+    const clampedProgress = Math.max(0, Math.min(1, this.timerProgress));
+
+    // Maskeyi temizle ve yeniden çiz
+    this.timerMask.clear();
+    this.timerMask.beginFill(0xffffff);
+
+    // Maskeyı yatay olarak progress'e göre çiz (soldan sağa dolum)
+    const barWidth = this.timerContainer.iWidth;
+    const progressWidth = barWidth * clampedProgress;
+
+    this.timerMask.drawRect(
+      -barWidth / 2, // Sol kenar
+      -this.timerContainer.iHeight * 0.5, // Üst kenar
+      progressWidth, // Progress'e göre genişlik
+      this.timerContainer.iHeight // Tam yükseklik
+    );
+    this.timerMask.endFill();
+
+    // Maskeyi dolum bar'ına uygula
+    this.timerFillBar.mask = this.timerMask;
+
+    // Timer text'ini güncelle
+    if (this.timerText) {
+      const remainingTime = Math.ceil(this.timerProgress * this.timerDuration);
+      this.timerText.text = this.formatTime(remainingTime);
+    }
+  }
+
+  // Zamanı dakika:saniye formatına çeviren fonksiyon
+  formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+
+  // Timer'ı başlatan fonksiyon
+  startTimer() {
+    // İlk progress değerini hemen göster
+    this.updateTimerBar();
+
+    // GSAP ile 60 saniyede progress'i 1'den 0'a indiren animasyon
+    gsap.to(this, {
+      timerProgress: 0,
+      duration: this.timerDuration, // 60 saniye
+      ease: 'none', // Linear animasyon
+      delay: 0, // Gecikme yok
+      onStart: () => {
+        // Animasyon başladığında ilk güncellemeyi yap
+        this.updateTimerBar();
+        console.log('Timer başladı!');
+      },
+      onUpdate: () => {
+        // Her frame'de timer bar'ını güncelle
+        this.updateTimerBar();
+      },
+      onComplete: () => {
+        // Timer bittiğinde
+        console.log('Timer bitti!');
+        this.onTimerComplete();
+      },
+    });
+  }
+
+  // Timer tamamlandığında çağrılan fonksiyon
+  onTimerComplete() {
+    // GameFinished event'ini fire et
+    //globals.EventEmitter.emit('gameFinished');
+
+    // Ek işlemler burada yapılabilir
+    console.log('Oyun süresi bitti!');
+  }
+
+  // Timer'ı duraklatma fonksiyonu (isteğe bağlı)
+  pauseTimer() {
+    gsap.killTweensOf(this);
+  }
+
+  // Timer'ı devam ettirme fonksiyonu (isteğe bağlı)
+  resumeTimer() {
+    const remainingTime = this.timerProgress * this.timerDuration;
+    gsap.to(this, {
+      timerProgress: 0,
+      duration: remainingTime,
+      ease: 'none',
+      onUpdate: () => {
+        this.updateTimerBar();
+      },
+      onComplete: () => {
+        this.onTimerComplete();
+      },
+    });
   }
 
   update(time, delta) {}
