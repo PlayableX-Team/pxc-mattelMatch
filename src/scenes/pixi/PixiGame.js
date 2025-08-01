@@ -38,6 +38,7 @@ export default class PixiGame {
       AudioManager.stopAllSFX();
     });
     this.addPowerUpPanel();
+    this.addUpsidePanel();
   }
 
   addPowerUpPanel() {
@@ -131,11 +132,61 @@ export default class PixiGame {
       );
 
       if (w < h) {
-        cont.position.set(w * 0.5, h * 0.92);
+        cont.position.set(w * 0.5, h * 0.94);
       } else {
-        cont.position.set(w * 0.5, h * 0.92);
+        cont.position.set(w * 0.5, h * 0.94);
       }
     };
+    cont.resize(window.innerWidth, window.innerHeight);
+  }
+
+  addUpsidePanel() {
+    const bg = PIXI.Sprite.from(TextureCache['headerBg']);
+    pixiScene.addChild(bg);
+    bg.anchor.set(0.5);
+    bg.resize = (w, h) => {
+      // Ekranın tam üstünde konumlandır
+      bg.position.set(w * 0.5, bg.texture.height * bg.scale.y * 0.5);
+
+      // X scale'ini ekran genişliği kadar yap
+      bg.scale.x = w / bg.texture.width;
+
+      // Y scale'ini ekran tipine göre adaptif yap
+      const minScale =
+        Math.min(w, h) / Math.max(bg.texture.width, bg.texture.height);
+      const adaptiveScale = Math.min(
+        minScale * 0.7,
+        (h * 0.1) / bg.texture.height
+      );
+      bg.scale.y = adaptiveScale;
+
+      // Pozisyonu scale'e göre yeniden ayarla
+      bg.position.y = bg.texture.height * bg.scale.y * 0.5;
+    };
+    bg.resize(window.innerWidth, window.innerHeight);
+
+    const cont = new PIXI.Container();
+    pixiScene.addChild(cont);
+    const timerBarBg = PIXI.Sprite.from(TextureCache['timer_bar_bg']);
+    cont.iWidth = timerBarBg.width;
+    cont.iHeight = timerBarBg.height;
+    timerBarBg.anchor.set(0.5);
+
+    cont.addChild(timerBarBg);
+
+    const timerFillBar = PIXI.Sprite.from(TextureCache['timer_fill_bar']);
+    cont.iWidth = timerFillBar.width;
+    cont.iHeight = timerFillBar.height;
+    timerFillBar.anchor.set(0.5);
+    timerFillBar.position.set(0, timerBarBg.position.y);
+
+    cont.resize = (w, h) => {
+      cont.position.set(w * 0.5, bg.position.y);
+      cont.scale.set(
+        Math.min((w * 0.45) / cont.iWidth, (h * 0.05) / cont.iHeight)
+      );
+    };
+    cont.addChild(timerFillBar);
     cont.resize(window.innerWidth, window.innerHeight);
   }
 

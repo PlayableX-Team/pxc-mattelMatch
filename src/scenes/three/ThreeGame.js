@@ -87,6 +87,11 @@ export default class ThreeGame {
     this.physicsManager = new PhysicsManager(false);
     globals.physicsManager = this.physicsManager;
 
+    // Ground parametrelerini tanımla (tüm sistemde kullanılacak)
+    this.groundHalfX = 7;
+    this.groundHalfZ = 8;
+    this.groundHeight = 0.1;
+
     let test_cube = new THREE.Mesh(
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshStandardMaterial({ color: 0x00ff00 })
@@ -99,7 +104,8 @@ export default class ThreeGame {
 
     // Create array to store 30 MapObjects
     this.mapObjects = [];
-    this.objOffset = 6.5; // Increased for 20x20 ground (ground size 20, offset 9 = safe buffer)
+    // objOffset'i ground size'a göre dinamik hesapla (güvenli buffer için biraz küçük tut)
+    this.objOffset = Math.min(this.groundHalfX - 0.5, this.groundHalfZ - 0.5);
     this.usedPositions = []; // Track used positions to prevent overlap
 
     let yPosition = 10;
@@ -183,22 +189,28 @@ export default class ThreeGame {
   }
 
   addGroundCollider() {
+    // Class değişkenlerinden ground boyutlarını kullan
+    const groundSizeX = this.groundHalfX * 2;
+    const groundSizeZ = this.groundHalfZ * 2;
+
     // Create a very flat box as ground
-    const groundShape = new CANNON.Box(new CANNON.Vec3(7, 0.1, 10)); // 20x0.2x20 boyutunda
+    const groundShape = new CANNON.Box(
+      new CANNON.Vec3(this.groundHalfX, this.groundHeight, this.groundHalfZ)
+    );
     const groundBody = new CANNON.Body({
       mass: 0,
       type: CANNON.Body.STATIC,
     });
 
     groundBody.addShape(groundShape);
-    groundBody.position.set(0, -0.1, 0); // Biraz aşağıda konumlandır
+    groundBody.position.set(0, -this.groundHeight, 0); // Biraz aşağıda konumlandır
 
     // Add body to physics world
     this.physicsManager.world.addBody(groundBody);
 
     // Optional: Create visual ground for debugging (keep invisible)
     let ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(14, 20),
+      new THREE.PlaneGeometry(groundSizeX, groundSizeZ),
       new THREE.MeshBasicMaterial({ color: 0x00ff00 })
     );
     ground.material.opacity = 0;
@@ -207,13 +219,11 @@ export default class ThreeGame {
     ground.rotateX(-Math.PI / 2);
     globals.threeScene.add(ground);
 
-    // Add walls around the ground perimeter
+    // Add walls around the ground perimeter - dinamik pozisyonlama
     const wallHeight = 100;
     const wallThickness = 0.2;
-    const groundSizeX = 14; // X axis ground size (14 width)
-    const groundSizeZ = 20; // Z axis ground size (20 depth)
 
-    // North wall (positive Z)
+    // North wall (positive Z) - ground size'a göre otomatik pozisyonlama
     let northWall = new THREE.Mesh(
       new THREE.BoxGeometry(groundSizeX, wallHeight, wallThickness),
       new THREE.MeshBasicMaterial({
@@ -222,14 +232,14 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    northWall.position.set(0, wallHeight / 2, groundSizeZ / 2);
+    northWall.position.set(0, wallHeight / 2, this.groundHalfZ); // this.groundHalfZ kullan
     globals.threeScene.add(northWall);
     northWall.body = this.physicsManager.createBodyFromObject(northWall, {
       type: 'static',
       mass: 0,
     });
 
-    // South wall (negative Z)
+    // South wall (negative Z) - ground size'a göre otomatik pozisyonlama
     let southWall = new THREE.Mesh(
       new THREE.BoxGeometry(groundSizeX, wallHeight, wallThickness),
       new THREE.MeshBasicMaterial({
@@ -238,14 +248,14 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    southWall.position.set(0, wallHeight / 2, -groundSizeZ / 2);
+    southWall.position.set(0, wallHeight / 2, -this.groundHalfZ); // -this.groundHalfZ kullan
     globals.threeScene.add(southWall);
     southWall.body = this.physicsManager.createBodyFromObject(southWall, {
       type: 'static',
       mass: 0,
     });
 
-    // East wall (positive X)
+    // East wall (positive X) - ground size'a göre otomatik pozisyonlama
     let eastWall = new THREE.Mesh(
       new THREE.BoxGeometry(wallThickness, wallHeight, groundSizeZ),
       new THREE.MeshBasicMaterial({
@@ -254,14 +264,14 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    eastWall.position.set(groundSizeX / 2, wallHeight / 2, 0);
+    eastWall.position.set(this.groundHalfX, wallHeight / 2, 0); // this.groundHalfX kullan
     globals.threeScene.add(eastWall);
     eastWall.body = this.physicsManager.createBodyFromObject(eastWall, {
       type: 'static',
       mass: 0,
     });
 
-    // West wall (negative X)
+    // West wall (negative X) - ground size'a göre otomatik pozisyonlama
     let westWall = new THREE.Mesh(
       new THREE.BoxGeometry(wallThickness, wallHeight, groundSizeZ),
       new THREE.MeshBasicMaterial({
@@ -270,7 +280,7 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    westWall.position.set(-groundSizeX / 2, wallHeight / 2, 0);
+    westWall.position.set(-this.groundHalfX, wallHeight / 2, 0); // -this.groundHalfX kullan
     globals.threeScene.add(westWall);
     westWall.body = this.physicsManager.createBodyFromObject(westWall, {
       type: 'static',

@@ -22,6 +22,9 @@ const data = window.gameData ?? {
   //AUDIO
   bgmSrc: null, // background music source
 
+  //GAME OPTIONS
+  gameTime: 100,
+
   //MAP MODELS
   barbieBoatSrc: null,
   barbieBoatScale: 1.5,

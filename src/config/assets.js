@@ -10,6 +10,21 @@ const assets = {
       src: require('@assets/2d/Powerup/powerupBg.png'),
       type: 'image',
     },
+    {
+      name: 'headerBg',
+      src: require('@assets/2d/headerBg.png'),
+      type: 'image',
+    },
+    {
+      name: 'timer_bar_bg',
+      src: require('@assets/2d/timer/timer_bar_bg.png'),
+      type: 'image',
+    },
+    {
+      name: 'timer_fill_bar',
+      src: require('@assets/2d/timer/timer_fill_bar.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [
