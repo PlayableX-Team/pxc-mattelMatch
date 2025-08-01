@@ -61,6 +61,10 @@ export default class Powerup {
       } else if (this.type === 'reverse') {
         globals.threeGame.reverse();
       } else if (this.type === 'time') {
+        globals.pixiGame.pauseTimer();
+        gsap.delayedCall(5, () => {
+          globals.pixiGame.resumeTimer();
+        });
         console.log('Time powerup clicked');
       } else if (this.type === 'tornado') {
         globals.threeGame.tornado();
