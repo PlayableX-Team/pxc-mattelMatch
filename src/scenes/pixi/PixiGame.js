@@ -7,6 +7,7 @@ import Endcard from './Endcard';
 import data from '../../config/data';
 import AudioManager from '../../../engine/audio/AudioManager';
 import Powerup from './powerup';
+import RemainingObj from './remainingObj';
 
 let pixiScene = null;
 let pixiApp = null;
@@ -29,6 +30,7 @@ export default class PixiGame {
     this.timerMask = null;
     this.timerFillBar = null;
     this.timerText = null; // Timer text referansı
+    this.remainingObjs = []; // RemainingObj referansları
   }
 
   start() {
@@ -43,8 +45,15 @@ export default class PixiGame {
       globals.gameFinished = true;
       AudioManager.stopAllSFX();
     });
+
+    // Object match eventi dinle
+    globals.EventEmitter.on('objectMatched', (matchData) => {
+      this.updateRemainingObjCount(matchData.objectType, matchData.count);
+    });
+
     this.addPowerUpPanel();
     this.addUpsidePanel();
+    this.addRemainingObjPanel();
   }
 
   addPowerUpPanel() {
@@ -142,6 +151,107 @@ export default class PixiGame {
       } else {
         cont.position.set(w * 0.5, h * 0.94);
       }
+    };
+    cont.resize(window.innerWidth, window.innerHeight);
+  }
+
+  addRemainingObjPanel() {
+    const cont = new PIXI.Container();
+    pixiScene.addChild(cont);
+    const bg = PIXI.Sprite.from(TextureCache['obj1Bg']);
+
+    // Tüm obje konfigürasyonlarını tanımla
+    const objConfigs = [
+      {
+        asset: 'obj1Bg',
+        isOpen: data.isBarbieBoatRemainingOpen,
+        count: data.barbieBoatCount,
+      },
+      {
+        asset: 'obj2Bg',
+        isOpen: data.isBarbieCarRemainingOpen,
+        count: data.barbieCarCount,
+      },
+      {
+        asset: 'obj3Bg',
+        isOpen: data.isBarbieGirl1RemainingOpen,
+        count: data.barbieGirl1Count,
+      },
+      {
+        asset: 'obj4Bg',
+        isOpen: data.isBarbieGirl2RemainingOpen,
+        count: data.barbieGirl2Count,
+      },
+      {
+        asset: 'obj5Bg',
+        isOpen: data.isBarbieHouseRemainingOpen,
+        count: data.barbieHouseCount,
+      },
+      {
+        asset: 'obj6Bg',
+        isOpen: data.isBarbieKenRemainingOpen,
+        count: data.barbieKenCount,
+      },
+    ];
+
+    // Sadece açık olanları filtrele
+    const activeObjConfigs = objConfigs.filter((config) => config.isOpen);
+    const activeObjCount = activeObjConfigs.length;
+
+    // Container boyutlarını açık obje sayısına göre ayarla
+    const singleObjWidth = 200; // Her obje için ayrılan genişlik
+    cont.iWidth = singleObjWidth * activeObjCount;
+    cont.iHeight = 140;
+
+    console.log(
+      'Toplam obje sayısı:',
+      activeObjCount,
+      'Container genişlik:',
+      cont.iWidth
+    );
+
+    // Container width'i eşit bölümlere ayır
+    const totalWidth = cont.iWidth;
+    const sectionWidth = totalWidth / activeObjCount;
+    const offsetX = 10; // Yatay offset (pozitif: sağa, negatif: sola)
+    const offsetSpacing = 0; // Objeler arası ekstra boşluk
+
+    // Sadece açık objeleri eşit aralıklarla yerleştir
+    const remainingObjs = [];
+    activeObjConfigs.forEach((config, index) => {
+      // Her objeyi kendi bölümünün ortasına yerleştir + offset
+      const basePosition =
+        index * sectionWidth + sectionWidth / 2 - totalWidth / 2;
+      const spacingOffset = index * offsetSpacing; // Her obje için artan boşluk
+      const xPosition = basePosition + offsetX + spacingOffset;
+
+      const remainingObj = new RemainingObj(
+        cont,
+        config.asset,
+        1.85,
+        xPosition,
+        0,
+        config.count
+      );
+
+      // RemainingObj'e obje tipini ekle (match kontrolü için)
+      remainingObj.objectType = this.getObjectTypeFromAsset(config.asset);
+
+      remainingObjs.push(remainingObj);
+      this.remainingObjs.push(remainingObj); // Global referans
+    });
+
+    console.log(cont.iWidth, cont.iHeight);
+
+    cont.resize = (w, h) => {
+      if (w < h) {
+        cont.position.set(w * 0.5, h * 0.15);
+      } else {
+        cont.position.set(w * 0.5, h * 0.15);
+      }
+      cont.scale.set(
+        Math.min((w * 0.8) / cont.iWidth, (h * 0.05) / cont.iHeight)
+      );
     };
     cont.resize(window.innerWidth, window.innerHeight);
   }
@@ -417,6 +527,71 @@ export default class PixiGame {
         this.onTimerComplete();
       },
     });
+  }
+
+  // Asset isminden veya sayıdan obje tipini çıkaran fonksiyon
+  getObjectTypeFromAsset(asset) {
+    const typeMap = {
+      obj1Bg: 'barbieBoat',
+      obj2Bg: 'barbieCar',
+      obj3Bg: 'barbieGirl1',
+      obj4Bg: 'barbieGirl2',
+      obj5Bg: 'barbieHouse',
+      obj6Bg: 'barbieKen',
+      // ThreeGame'den gelen sayılar için mapping
+      1: 'barbieBoat',
+      2: 'barbieCar',
+      3: 'barbieGirl1',
+      4: 'barbieGirl2',
+      5: 'barbieHouse',
+      6: 'barbieKen',
+    };
+    return typeMap[asset] || asset;
+  }
+
+  // Match olduğunda remaining obj count'unu güncelleyen fonksiyon
+  updateRemainingObjCount(objectType, matchedCount) {
+    // ThreeGame'den gelen sayıyı obje tipine çevir
+    const mappedObjectType = this.getObjectTypeFromAsset(objectType);
+
+    // Debug: Mevcut tüm remainingObjs'leri listele
+    console.log(
+      '🔍 Mevcut remainingObjs:',
+      this.remainingObjs.map((obj) => ({
+        objectType: obj.objectType,
+        count: obj.count,
+      }))
+    );
+
+    // İlgili remainingObj'i bul ve count'unu güncelle (mapped type kullan)
+    const remainingObj = this.remainingObjs.find(
+      (obj) => obj.objectType === mappedObjectType
+    );
+
+    console.log(
+      '🎯 Bulunan remainingObj:',
+      remainingObj
+        ? {
+            objectType: remainingObj.objectType,
+            count: remainingObj.count,
+            hasUpdateCount: typeof remainingObj.updateCount === 'function',
+          }
+        : 'YOK'
+    );
+
+    if (remainingObj && remainingObj.updateCount) {
+      console.log(
+        `📝 ${mappedObjectType} için updateCount(-${matchedCount}) çağrılıyor...`
+      );
+      remainingObj.updateCount(-matchedCount); // Count'u azalt
+      console.log(
+        `✅ ${mappedObjectType} için remaining count güncellendi, yeni count: ${remainingObj.count}`
+      );
+    } else {
+      console.log(
+        `❌ ${mappedObjectType} için remainingObj bulunamadı veya updateCount metodu yok`
+      );
+    }
   }
 
   update(time, delta) {}

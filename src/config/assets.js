@@ -25,6 +25,36 @@ const assets = {
       src: require('@assets/2d/timer/timer_fill_bar.png'),
       type: 'image',
     },
+    {
+      name: 'obj1Bg',
+      src: require('@assets/2d/RemainingObj/obj1Bg.png'),
+      type: 'image',
+    },
+    {
+      name: 'obj2Bg',
+      src: require('@assets/2d/RemainingObj/obj2Bg.png'),
+      type: 'image',
+    },
+    {
+      name: 'obj3Bg',
+      src: require('@assets/2d/RemainingObj/obj3Bg.png'),
+      type: 'image',
+    },
+    {
+      name: 'obj4Bg',
+      src: require('@assets/2d/RemainingObj/obj4Bg.png'),
+      type: 'image',
+    },
+    {
+      name: 'obj5Bg',
+      src: require('@assets/2d/RemainingObj/obj5Bg.png'),
+      type: 'image',
+    },
+    {
+      name: 'obj6Bg',
+      src: require('@assets/2d/RemainingObj/obj6Bg.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

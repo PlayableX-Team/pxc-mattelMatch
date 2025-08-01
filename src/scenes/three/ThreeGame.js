@@ -648,6 +648,13 @@ export default class ThreeGame {
           AudioManager.playSFX('match');
         }
 
+        // Match olan obje tipini PixiGame'e bildir
+        globals.EventEmitter.emit('objectMatched', {
+          objectType: key,
+          count: 3,
+        });
+        `📡 Event emit edildi: objectMatched, ${key}, count: 3`;
+
         // Sophisticated match animation
         for (let i = 0; i < 3; i++) {
           const element = groupedItems[key][i];
@@ -707,9 +714,7 @@ export default class ThreeGame {
                 element.visible = false;
                 if (i === 2) {
                   this.tweening = false;
-                  console.log(
-                    'Match animation completed - reorganizing tray...'
-                  );
+
                   this.sortAssign();
                 }
               },
