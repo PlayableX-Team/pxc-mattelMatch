@@ -96,7 +96,7 @@ export default class ThreeGame {
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshStandardMaterial({ color: 0x00ff00 })
     );
-    test_cube.position.set(0, 0, 0);
+    test_cube.position.set(0, 0, 2); // Ground merkez z=2'ye göre
     //  globals.threeScene.add(test_cube);
 
     // Add a spherical camera
@@ -116,7 +116,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieBoat',
         data.barbieBoatScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z),
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
         1
       );
       this.mapObjects.push(mapObject);
@@ -129,7 +129,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieCar',
         data.barbieCarScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z),
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
         2
       );
       this.mapObjects.push(mapObject);
@@ -141,7 +141,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl1',
         data.barbieGirl1Scale,
-        new THREE.Vector3(safePos.x, 10, safePos.z),
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
         3
       );
       this.mapObjects.push(mapObject);
@@ -153,7 +153,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl2',
         data.barbieGirl2Scale,
-        new THREE.Vector3(safePos.x, 10, safePos.z),
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
         4
       );
       this.mapObjects.push(mapObject);
@@ -165,7 +165,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z),
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
         5
       );
       this.mapObjects.push(mapObject);
@@ -177,7 +177,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieKen',
         data.barbieKenScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z),
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
         6
       );
       this.mapObjects.push(mapObject);
@@ -203,7 +203,7 @@ export default class ThreeGame {
     });
 
     groundBody.addShape(groundShape);
-    groundBody.position.set(0, -this.groundHeight, 0); // Biraz aşağıda konumlandır
+    groundBody.position.set(0, -this.groundHeight, 2); // Biraz aşağıda konumlandır
 
     // Add body to physics world
     this.physicsManager.world.addBody(groundBody);
@@ -232,7 +232,7 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    northWall.position.set(0, wallHeight / 2, this.groundHalfZ); // this.groundHalfZ kullan
+    northWall.position.set(0, wallHeight / 2, this.groundHalfZ + 2); // Ground'un z pozisyonuna göre ayarla
     globals.threeScene.add(northWall);
     northWall.body = this.physicsManager.createBodyFromObject(northWall, {
       type: 'static',
@@ -248,7 +248,7 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    southWall.position.set(0, wallHeight / 2, -this.groundHalfZ); // -this.groundHalfZ kullan
+    southWall.position.set(0, wallHeight / 2, -this.groundHalfZ + 2); // Ground'un z pozisyonuna göre ayarla
     globals.threeScene.add(southWall);
     southWall.body = this.physicsManager.createBodyFromObject(southWall, {
       type: 'static',
@@ -264,7 +264,7 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    eastWall.position.set(this.groundHalfX, wallHeight / 2, 0); // this.groundHalfX kullan
+    eastWall.position.set(this.groundHalfX, wallHeight / 2, 2); // Ground'un z pozisyonuna göre ayarla
     globals.threeScene.add(eastWall);
     eastWall.body = this.physicsManager.createBodyFromObject(eastWall, {
       type: 'static',
@@ -280,7 +280,7 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    westWall.position.set(-this.groundHalfX, wallHeight / 2, 0); // -this.groundHalfX kullan
+    westWall.position.set(-this.groundHalfX, wallHeight / 2, 2); // Ground'un z pozisyonuna göre ayarla
     globals.threeScene.add(westWall);
     westWall.body = this.physicsManager.createBodyFromObject(westWall, {
       type: 'static',
@@ -444,7 +444,7 @@ export default class ThreeGame {
       );
 
       // Position and scale platforms
-      platform.position.set(i * offset, 0, 0.5);
+      platform.position.set(i * offset, 0, 1.5);
       platform.scale.set(platformScale, platformScale, platformScale);
       platform.rotation.x = Math.PI / 4;
       platform.oScale = platformScale;
