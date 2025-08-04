@@ -40,6 +40,9 @@ export default class Powerup {
         canActivate: () => this.count > 0 && globals.threeGame.tray.length > 0,
         action: () => {
           globals.threeGame.reverse();
+          gsap.delayedCall(0.1, () => {
+            this.checkReverseGrayAsset();
+          });
         },
       },
       time: {
