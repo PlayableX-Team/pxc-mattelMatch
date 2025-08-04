@@ -11,10 +11,6 @@ const data = window.gameData ?? {
   //hand
   handSrc: null,
 
-  //BACKGROUND
-  bgSrc: null,
-  flatBgColor: 0x718c5f,
-
   //HEADER
   headerText: 'placeholder text!',
   headerTextColor: 0x000000,
@@ -24,6 +20,7 @@ const data = window.gameData ?? {
 
   //GAME OPTIONS
   gameTime: 120,
+  gameBgColor: 0x6b8cae, // Gri-mavi karışımı renk
 
   //HAND
   handScale: 0.3,

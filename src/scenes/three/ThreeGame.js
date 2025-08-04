@@ -47,36 +47,6 @@ export default class ThreeGame {
     this.animations = {};
     globals.threeUpdateList = [];
   }
-
-  // Helper function to check if position is safe (no overlap)
-  isSafePosition(x, z, minDistance = 2) {
-    return !this.usedPositions.some((pos) => {
-      const distance = Math.sqrt(
-        Math.pow(pos.x - x, 2) + Math.pow(pos.z - z, 2)
-      );
-      return distance < minDistance;
-    });
-  }
-
-  // Helper function to get safe random position
-  getSafePosition(minDistance = 2, maxAttempts = 50) {
-    let attempts = 0;
-    let randomX, randomZ;
-
-    do {
-      randomX = randFloat(-this.objOffset, this.objOffset);
-      randomZ = randFloat(-this.objOffset, this.objOffset);
-      attempts++;
-    } while (
-      !this.isSafePosition(randomX, randomZ, minDistance) &&
-      attempts < maxAttempts
-    );
-
-    // Store the used position
-    this.usedPositions.push({ x: randomX, z: randomZ });
-    return { x: randomX, z: randomZ };
-  }
-
   start() {
     console.log('ThreeGame start');
     this.physicsManager = new PhysicsManager(false);
@@ -181,6 +151,46 @@ export default class ThreeGame {
     this.addGroundCollider();
     this.createClickListener();
     this.addEnhancedTray(7); // Create enhanced tray with 7 slots
+    this.addBgPlane();
+  }
+
+  addBgPlane() {
+    let bgPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(100, 100),
+      new THREE.MeshBasicMaterial({ color: data.gameBgColor })
+    );
+    bgPlane.position.set(0, -5, 0);
+    bgPlane.rotation.x = -Math.PI / 2;
+    globals.threeScene.add(bgPlane);
+  }
+
+  // Helper function to check if position is safe (no overlap)
+  isSafePosition(x, z, minDistance = 2) {
+    return !this.usedPositions.some((pos) => {
+      const distance = Math.sqrt(
+        Math.pow(pos.x - x, 2) + Math.pow(pos.z - z, 2)
+      );
+      return distance < minDistance;
+    });
+  }
+
+  // Helper function to get safe random position
+  getSafePosition(minDistance = 2, maxAttempts = 50) {
+    let attempts = 0;
+    let randomX, randomZ;
+
+    do {
+      randomX = randFloat(-this.objOffset, this.objOffset);
+      randomZ = randFloat(-this.objOffset, this.objOffset);
+      attempts++;
+    } while (
+      !this.isSafePosition(randomX, randomZ, minDistance) &&
+      attempts < maxAttempts
+    );
+
+    // Store the used position
+    this.usedPositions.push({ x: randomX, z: randomZ });
+    return { x: randomX, z: randomZ };
   }
 
   addGroundCollider() {
@@ -1011,7 +1021,7 @@ export default class ThreeGame {
         onComplete: () => {
           // Objenin mevcut scale'ini al ve ratio'yu uygula (magnet için)
           const currentScale = obj.scale.x;
-          const magnetScaleRatio = 0.6; // Magnet scale ratio
+          const magnetScaleRatio = 0.5; // Magnet scale ratio
           const magnetTargetScale = currentScale * magnetScaleRatio;
 
           gsap.to(obj.scale, {
