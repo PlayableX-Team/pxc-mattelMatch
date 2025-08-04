@@ -28,6 +28,8 @@ const data = window.gameData ?? {
   //HAND
   handScale: 0.3,
   handSrc: null,
+  handSpawnOffsetX: 30,
+  handSpawnOffsetY: 20,
 
   //MAP MODELS
   barbieBoatSrc: null,

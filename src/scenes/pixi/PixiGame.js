@@ -217,6 +217,15 @@ export default class PixiGame {
     this.hand.anchor.set(0.5); // Merkezi anchor yap
     this.hand.visible = false;
 
+    gsap.to(this.hand.scale, {
+      x: this.hand.scale.x * 0.9,
+      y: this.hand.scale.y * 0.9,
+      duration: 0.5,
+      ease: 'power1.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+
     pixiScene.addChild(this.hand);
   }
 
@@ -258,7 +267,10 @@ export default class PixiGame {
     const y = (-vector.y * 0.5 + 0.5) * window.innerHeight;
 
     // Hand'i bu pozisyona yerleştir
-    this.hand.position.set(x + 50, y + 25);
+    this.hand.position.set(
+      x + data.handSpawnOffsetX,
+      y + data.handSpawnOffsetY
+    );
   }
 
   addPowerUpPanel() {
