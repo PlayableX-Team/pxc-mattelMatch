@@ -33,6 +33,7 @@ export default class PixiGame {
     this.timerFillBar = null;
     this.timerText = null; // Timer text referansı
     this.remainingObjs = []; // RemainingObj referansları
+    this.clickCount = 0;
   }
 
   start() {
@@ -82,6 +83,35 @@ export default class PixiGame {
           });
         });
         new Endcard(true);
+      }
+    });
+
+    if (data.xSecondsToOpenEndcard > 0) {
+      gsap.delayedCall(data.xSecondsToOpenEndcard, () => {
+        globals.EventEmitter.emit('gameFinished');
+      });
+    }
+    if (data.xSecondsToOpenStore > 0) {
+      gsap.delayedCall(data.xSecondsToOpenStore, () => {
+        openStorePage();
+      });
+    }
+    document.addEventListener('pointerdown', () => {
+      this.clickCount++;
+
+      if (
+        this.clickCount >= data.xClicksToOpenStore &&
+        data.xClicksToOpenStore > 0
+      ) {
+        openStorePage();
+      }
+      if (
+        this.clickCount >= data.xClicksToOpenEndcard &&
+        data.xClicksToOpenEndcard > 0
+      ) {
+        gsap.delayedCall(0.2, () => {
+          globals.EventEmitter.emit('gameFinished');
+        });
       }
     });
   }

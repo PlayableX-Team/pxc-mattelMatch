@@ -88,6 +88,18 @@ const data = window.gameData ?? {
   //SOTORE && MARKET PARAMETERS
 
   //ENDCARD
+  xSecondsToOpenEndcard: 0, //step 1 min 0 max 200
+  xSecondsToOpenStore: 0, //step 1 min 0 max 200
+
+  xClicksToOpenStore: 0, //step 1 min 0 max 200
+  xClicksToOpenEndcard: 0, //step 1 min 0 max 200
+
+  xMatchesToOpenStore: 0, //step 1 min 0 max 30
+  xMatchesToOpenEndcard: 0, //step 1 min 0 max 30
+
+  xObjCollectedToOpenStore: 0, //step 1 min 0 max 90
+  xObjCollectedToOpenEndcard: 0, //step 1 min 0 max 90
+
   //LOGO
   isEndcardLogoOpen: true,
   endcardBackgroundColor: 0x000000,

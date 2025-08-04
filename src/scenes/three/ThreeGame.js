@@ -23,6 +23,8 @@ export default class ThreeGame {
     this.slotAvailable = [true, true, true, true, true, true, true];
     this.slotObjects = [];
     this.slotPlanes = []; // Plane referansları için
+    this.matches = 0;
+    this.objCollected = 0;
 
     // Enhanced tray system
     this.tray = [];
@@ -404,6 +406,22 @@ export default class ThreeGame {
               AudioManager.playSFX('platform');
             }
 
+            this.objCollected++;
+            if (
+              this.objCollected >= data.xObjCollectedToOpenStore &&
+              data.xObjCollectedToOpenStore > 0
+            ) {
+              openStorePage();
+            }
+            if (
+              this.objCollected >= data.xObjCollectedToOpenEndcard &&
+              data.xObjCollectedToOpenEndcard > 0
+            ) {
+              gsap.delayedCall(0.2, () => {
+                globals.EventEmitter.emit('gameFinished');
+              });
+            }
+
             // Bounce effect
             gsap.to(obj.scale, {
               x: targetScale * 1.2,
@@ -653,6 +671,22 @@ export default class ThreeGame {
           this.firstMatch = true;
           globals.pixiGame.canHandPointer = false;
           globals.pixiGame.hand.visible = false;
+        }
+
+        this.matches++;
+        if (
+          this.matches >= data.xMatchesToOpenStore &&
+          data.xMatchesToOpenStore > 0
+        ) {
+          openStorePage();
+        }
+        if (
+          this.matches >= data.xMatchesToOpenEndcard &&
+          data.xMatchesToOpenEndcard > 0
+        ) {
+          gsap.delayedCall(0.2, () => {
+            globals.EventEmitter.emit('gameFinished');
+          });
         }
 
         console.log('Match found for', key, '- processing match animation...');
