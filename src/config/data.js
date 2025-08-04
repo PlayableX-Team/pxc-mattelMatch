@@ -34,22 +34,22 @@ const data = window.gameData ?? {
   //MAP MODELS
   barbieBoatSrc: null,
   barbieBoatScale: 1,
-  barbieBoatCount: 18, //max 18 min 3 step 3
+  barbieBoatCount: 15, //max 15 min 3 step 3
   barbieCarSrc: null,
   barbieCarScale: 1,
-  barbieCarCount: 18, //max 18 min 3 step 3
+  barbieCarCount: 15, //max 15 min 3 step 3
   barbieGirl1Src: null,
   barbieGirl1Scale: 1,
-  barbieGirl1Count: 18, //max 18 min 3 step 3
+  barbieGirl1Count: 15, //max 15 min 3 step 3
   barbieGirl2Src: null,
   barbieGirl2Scale: 1,
-  barbieGirl2Count: 18, //max 18 min 3 step 3
+  barbieGirl2Count: 15, //max 15 min 3 step 3
   barbieHouseSrc: null,
   barbieHouseScale: 1,
-  barbieHouseCount: 18, //max 18 min 3 step 3
+  barbieHouseCount: 15, //max 15 min 3 step 3
   barbieKenSrc: null,
   barbieKenScale: 1,
-  barbieKenCount: 18, //max 18 min 3 step 3
+  barbieKenCount: 15, //max 15 min 3 step 3
 
   //REMAINING OBJ
   isBarbieBoatRemainingOpen: true,
@@ -85,8 +85,11 @@ const data = window.gameData ?? {
   powerupTornadoScale: 0.4,
   powerupTornadoCounter: 5,
 
+  //SOTORE && MARKET PARAMETERS
+
   //ENDCARD
   //LOGO
+  isEndcardLogoOpen: true,
   endcardBackgroundColor: 0x000000,
   endcardBackgroundAlpha: 0.5,
   endcardLogoSrc: null,
@@ -110,6 +113,7 @@ const data = window.gameData ?? {
   endcardHeaderTextPosXVertical: 0.5,
 
   //BUTTON
+  isEndcardButtonOpen: true,
   endcardButtonSrc: null,
   endcardButtonScale: 0.75,
   endcardButtonPosXHorizontal: 0.5,

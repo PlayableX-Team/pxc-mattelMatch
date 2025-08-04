@@ -33,6 +33,7 @@ export default class Endcard {
     button.on('pointerdown', () => {
       openStorePage();
     });
+    cont.visible = data.isEndcardButtonOpen;
 
     cont.addChild(button);
     cont.iWidth = button.width;
@@ -102,6 +103,7 @@ export default class Endcard {
     cont.width = cont.iWidth = logo.width;
     cont.width = cont.iHeight = logo.height;
     cont.addChild(logo);
+    cont.visible = data.isEndcardLogoOpen;
 
     cont.resize = (w, h) => {
       if (w < h) {
