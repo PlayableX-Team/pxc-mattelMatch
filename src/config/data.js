@@ -28,22 +28,22 @@ const data = window.gameData ?? {
   //MAP MODELS
 
   barbieBoatSrc: null,
-  barbieBoatScale: 1.5,
+  barbieBoatScale: 1,
   barbieBoatCount: 19,
   barbieCarSrc: null,
-  barbieCarScale: 1.5,
+  barbieCarScale: 1,
   barbieCarCount: 18,
   barbieGirl1Src: null,
-  barbieGirl1Scale: 1.5,
+  barbieGirl1Scale: 1,
   barbieGirl1Count: 17,
   barbieGirl2Src: null,
-  barbieGirl2Scale: 1.5,
+  barbieGirl2Scale: 1,
   barbieGirl2Count: 16,
   barbieHouseSrc: null,
-  barbieHouseScale: 1.5,
+  barbieHouseScale: 1,
   barbieHouseCount: 15,
   barbieKenSrc: null,
-  barbieKenScale: 1.5,
+  barbieKenScale: 1,
   barbieKenCount: 14,
 
   //REMAINING OBJ

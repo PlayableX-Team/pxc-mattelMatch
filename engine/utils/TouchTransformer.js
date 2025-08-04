@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 
 export default class TouchTransformer {
   constructor(camera) {
@@ -24,10 +24,10 @@ export default class TouchTransformer {
     return this.planeVector;
   }
 
-  getIntersects(mouseX, mouseY, objects) {
+  getIntersects(mouseX, mouseY, objects, recursive = false) {
     this.updateMousePosition(mouseX, mouseY);
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(objects);
+    const intersects = this.raycaster.intersectObjects(objects, recursive);
     return intersects;
   }
 

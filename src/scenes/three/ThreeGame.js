@@ -297,21 +297,23 @@ export default class ThreeGame {
       // Get all the models from mapObjects for raycasting
       let allMapObjectModels = this.mapObjects.map((mapObj) => mapObj.model);
 
-      // Get intersections with map object models
+      // Get intersections with map object models (recursive = true)
       let intersects = this.touchTransformer.getIntersects(
         event.clientX,
         event.clientY,
-        allMapObjectModels
+        allMapObjectModels,
+        true // Recursive olarak child objeleri de kontrol et
       );
 
       if (intersects.length > 0) {
         // Find which mapObject was clicked by matching the model
         let clickedModel = intersects[0].object;
         let clickedMapObject = this.mapObjects.find((mapObj) => {
-          // Check if the clicked object is the model or a child of the model
+          // Check if the clicked object is the model or a child of the model (daha kapsamlı kontrol)
           return (
             mapObj.model === clickedModel ||
-            mapObj.model.children.includes(clickedModel)
+            mapObj.model.children.includes(clickedModel) ||
+            this.isChildOf(clickedModel, mapObj.model)
           );
         });
 
@@ -329,6 +331,18 @@ export default class ThreeGame {
         }
       }
     });
+  }
+
+  // Helper method to check if an object is a child of another object
+  isChildOf(child, parent) {
+    let currentParent = child.parent;
+    while (currentParent) {
+      if (currentParent === parent) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
   }
 
   // Enhanced collection system with sophisticated animations
@@ -1032,7 +1046,7 @@ export default class ThreeGame {
     }
 
     // Ground collider alanı içinde güvenli pozisyon oluştur (x ve z için)
-    const safePos = this.getSafePosition(1.5);
+    const safePos = this.getSafePosition(1);
     const targetPosition = new THREE.Vector3(safePos.x, 2, safePos.z);
 
     // GSAP ile pozisyon animasyonu
