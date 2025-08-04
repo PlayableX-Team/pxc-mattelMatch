@@ -18,6 +18,7 @@ export default class ThreeGame {
     this.renderManager = globals.renderManager;
     globals.threeGame = this;
     this.models = this.renderManager.threeRenderer.models;
+    this.firstMatch = false;
     this.slotPositions = [];
     this.slotAvailable = [true, true, true, true, true, true, true];
     this.slotObjects = [];
@@ -654,6 +655,13 @@ export default class ThreeGame {
       if (groupedItems[key].length >= 3) {
         isMatch = true;
         this.tweening = true;
+
+        // İlk match olduğunda eli hemen gizle
+        if (!this.firstMatch) {
+          this.firstMatch = true;
+          globals.pixiGame.canHandPointer = false;
+          globals.pixiGame.hand.visible = false;
+        }
 
         console.log('Match found for', key, '- processing match animation...');
 

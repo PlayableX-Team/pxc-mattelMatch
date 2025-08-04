@@ -7,6 +7,7 @@ import Endcard from './Endcard';
 import data from '../../config/data';
 import AudioManager from '../../../engine/audio/AudioManager';
 import Powerup from './powerup';
+import * as THREE from 'three';
 import RemainingObj from './remainingObj';
 
 let pixiScene = null;
@@ -22,6 +23,7 @@ export default class PixiGame {
     pixiApp = globals.pixiApp;
     globals.pixiGame = this;
     this.magnetSprite = null;
+    this.canHandPointer = false;
 
     this.text = null;
     this.timerProgress = 1.0; // 1'den başlayıp 0'a inecek
@@ -54,6 +56,62 @@ export default class PixiGame {
     this.addPowerUpPanel();
     this.addUpsidePanel();
     this.addRemainingObjPanel();
+    this.addHand();
+
+    gsap.delayedCall(4, () => {
+      this.canHandPointer = true;
+      this.hand.visible = true;
+    });
+  }
+
+  addHand() {
+    this.hand = PIXI.Sprite.from(TextureCache['hand']);
+    this.hand.scale.set(data.handScale);
+    this.hand.anchor.set(0.5); // Merkezi anchor yap
+    this.hand.visible = false;
+
+    pixiScene.addChild(this.hand);
+  }
+
+  updateHandPosition() {
+    // ThreeGame ve mapObjects'in hazır olup olmadığını kontrol et
+    if (!globals.threeGame || !globals.threeGame.mapObjects) {
+      // ThreeGame henüz hazır değilse ekranın ortasına yerleştir
+      this.hand.position.set(window.innerWidth * 0.5, window.innerHeight * 0.5);
+      return;
+    }
+
+    // Type = 5 olan objeleri filtrele
+    const type5Objects = globals.threeGame.mapObjects.filter(
+      (obj) => obj.objectType === 5
+    );
+
+    if (type5Objects.length === 0) {
+      // Eğer type 5 obje yoksa ekranın ortasına yerleştir
+      this.hand.position.set(window.innerWidth * 0.5, window.innerHeight * 0.5);
+      return;
+    }
+
+    // İlk type 5 objesini kullan
+    const targetObject = type5Objects[0];
+
+    // 3D objenin dünya pozisyonunu al
+    const worldPosition = new THREE.Vector3();
+    targetObject.getWorldPosition(worldPosition);
+
+    // Kamera referansını al
+    const camera = globals.threeCamera;
+
+    // 3D pozisyonu 2D screen space'e dönüştür
+    const vector = worldPosition.clone();
+    vector.project(camera);
+
+    // Normalized device coordinates (-1 to 1) to screen coordinates
+    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+    const y = (-vector.y * 0.5 + 0.5) * window.innerHeight;
+
+    // Hand'i bu pozisyona yerleştir
+    this.hand.position.set(x + 50, y + 25);
   }
 
   addPowerUpPanel() {
@@ -594,5 +652,10 @@ export default class PixiGame {
     }
   }
 
-  update(time, delta) {}
+  update(time, delta) {
+    // Hand pozisyonunu sürekli güncelle (obje hareket ettiğinde takip etmesi için)
+    if (this.hand && this.canHandPointer) {
+      this.updateHandPosition();
+    }
+  }
 }

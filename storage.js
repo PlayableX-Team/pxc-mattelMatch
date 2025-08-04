@@ -10,9 +10,26 @@ function collectStorage(data) {
   data.barbieGirl2Src = storage.barbieGirl2.items.barbieGirl2.src;
   data.barbieHouseSrc = storage.barbieHouse.items.barbieHouse.src;
   data.barbieKenSrc = storage.barbieKen.items.barbieKen.src;
+  data.handSrc = storage.hand.items.hand.src;
 }
 
 const storage = {
+  hand: {
+    label: 'Hand',
+    description: 'Uploaded Hand for the game.',
+    aiDescription: 'a collection of Hand for branding',
+    items: {
+      hand: {
+        label: 'Hand',
+        description: 'The Hand for the game.',
+        aiDescription: 'Hand used in game',
+        src: require('./assets/2d/hand.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+
   barbieBoat: {
     label: 'Barbie Boat',
     description: 'Uploaded Barbie Boat for the game.',

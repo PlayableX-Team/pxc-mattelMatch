@@ -160,6 +160,13 @@ export function insertAssets(data) {
       volume: 0.5,
     };
   }
+  if (data.handSrc) {
+    assets.pixi.push({
+      name: 'hand',
+      src: data.handSrc,
+      type: 'image',
+    });
+  }
   if (data.powerupMagnetSrc) {
     assets.pixi.push({
       name: 'powerupMagnet',

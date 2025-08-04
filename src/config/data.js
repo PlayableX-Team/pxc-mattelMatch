@@ -25,8 +25,11 @@ const data = window.gameData ?? {
   //GAME OPTIONS
   gameTime: 120,
 
-  //MAP MODELS
+  //HAND
+  handScale: 0.5,
+  handSrc: null,
 
+  //MAP MODELS
   barbieBoatSrc: null,
   barbieBoatScale: 1,
   barbieBoatCount: 19,
