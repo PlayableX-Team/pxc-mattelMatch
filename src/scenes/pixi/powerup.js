@@ -8,7 +8,17 @@ const TextureCache = PIXI.utils.TextureCache;
 import AudioManager from '../../../engine/audio/AudioManager';
 
 export default class Powerup {
-  constructor(parent, asset, type, scale = 1, count, posXPowerUp, posYPowerUp) {
+  constructor(
+    parent,
+    asset,
+    type,
+    scale = 1,
+    count,
+    posXPowerUp,
+    posYPowerUp,
+    grayAsset,
+    grayScale
+  ) {
     this.count = count;
     this.asset = asset;
     this.scale = scale;
@@ -18,7 +28,8 @@ export default class Powerup {
     this.type = type;
     this.sprite = null;
     this.counterText = null;
-
+    this.grayAsset = grayAsset;
+    this.grayScale = grayScale;
     // Powerup konfigürasyonları
     this.powerupConfigs = {
       magnet: {
@@ -27,7 +38,9 @@ export default class Powerup {
       },
       reverse: {
         canActivate: () => this.count > 0 && globals.threeGame.tray.length > 0,
-        action: () => globals.threeGame.reverse(),
+        action: () => {
+          globals.threeGame.reverse();
+        },
       },
       time: {
         canActivate: () => this.count > 0 && globals.pixiGame.isTimerRunning,
@@ -36,22 +49,83 @@ export default class Powerup {
           globals.pixiGame.timerBgAnimation();
           globals.pixiGame.addGlow();
           globals.pixiGame.timerPowerUpTextOpen();
+          this.grayAsset.visible = true;
+          this.button.visible = false;
           gsap.delayedCall(data.timerPowerUpEffect, () => {
             globals.pixiGame.resumeTimer();
             globals.pixiGame.stopTimerBgAnimation();
             globals.pixiGame.stopGlow();
             globals.pixiGame.timerPowerUpTextClose();
+            this.checkGrayAsset();
           });
           console.log('Time powerup clicked');
         },
       },
       tornado: {
         canActivate: () => this.count > 0,
-        action: () => globals.threeGame.tornado(),
+        action: () => {
+          globals.threeGame.tornado();
+          this.grayAsset.visible = true;
+          this.button.visible = false;
+          gsap.delayedCall(data.timerPowerUpEffect, () => {
+            this.checkGrayAsset();
+          });
+        },
       },
     };
 
     this.init();
+  }
+
+  init() {
+    console.log('Powerup constructor');
+
+    const button = PIXI.Sprite.from(TextureCache[this.asset]);
+    this.sprite = button;
+    button.anchor.set(0.5);
+    button.scale.set(this.scale);
+    this.parent.addChild(button);
+    button.position.set(this.posXPowerUp, this.posYPowerUp);
+    button.interactive = true;
+    button.buttonMode = true;
+    this.button = button;
+
+    const grayAsset = PIXI.Sprite.from(TextureCache[this.grayAsset]);
+    this.parent.addChild(grayAsset);
+    grayAsset.position.set(this.posXPowerUp, this.posYPowerUp);
+    grayAsset.scale.set(this.grayScale);
+    grayAsset.anchor.set(0.5);
+    this.grayAsset = grayAsset;
+    this.checkGrayAsset();
+
+    // Tek bir event handler
+    button.on('pointerdown', () => this.activatePowerup());
+
+    // Counter UI oluşturma
+    this.createCounterUI();
+    this.checkReverseGrayAsset();
+  }
+
+  checkReverseGrayAsset() {
+    if (this.type === 'reverse') {
+      if (globals.threeGame.tray.length === 0) {
+        this.grayAsset.visible = true;
+        this.button.visible = false;
+      } else if (globals.threeGame.tray.length > 0 && this.count > 0) {
+        this.grayAsset.visible = false;
+        this.button.visible = true;
+      }
+    }
+  }
+
+  checkGrayAsset() {
+    if (this.count > 0) {
+      this.grayAsset.visible = false;
+      this.button.visible = true;
+    } else {
+      this.grayAsset.visible = true;
+      this.button.visible = false;
+    }
   }
 
   // Button animasyonu için ortak metod
@@ -78,6 +152,7 @@ export default class Powerup {
     this.count--;
     this.count = Math.max(0, this.count); // 0'ın altına inmemesi için
     this.counterText.text = this.count;
+    this.checkGrayAsset();
   }
 
   // Powerup aktivasyonu için ortak metod
@@ -92,25 +167,6 @@ export default class Powerup {
       this.updateCount();
       config.action();
     });
-  }
-
-  init() {
-    console.log('Powerup constructor');
-
-    const button = PIXI.Sprite.from(TextureCache[this.asset]);
-    this.sprite = button;
-    button.anchor.set(0.5);
-    button.scale.set(this.scale);
-    this.parent.addChild(button);
-    button.position.set(this.posXPowerUp, this.posYPowerUp);
-    button.interactive = true;
-    button.buttonMode = true;
-
-    // Tek bir event handler
-    button.on('pointerdown', () => this.activatePowerup());
-
-    // Counter UI oluşturma
-    this.createCounterUI();
   }
 
   // Counter UI oluşturma metodunu ayrı çıkarıyoruz

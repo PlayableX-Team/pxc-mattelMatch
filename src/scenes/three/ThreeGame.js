@@ -33,6 +33,7 @@ export default class ThreeGame {
     this.trayObj = null;
     this.tweening = false;
     this.itemsCollected = 0;
+    this.tornadoTime = 2500;
 
     this.gameMap = new GameMap(
       this.slotPositions,
@@ -415,6 +416,8 @@ export default class ThreeGame {
             if (AudioManager) {
               AudioManager.playSFX('platform');
             }
+
+            globals.pixiGame.reversePowerup.checkReverseGrayAsset();
 
             this.objCollected++;
             if (
@@ -814,14 +817,13 @@ export default class ThreeGame {
       this.applyTornadoForces();
     }, 50); // Her 50ms'de bir kuvvet uygula
 
-    // 5 saniye sonra tornado'yu durdur
     setTimeout(() => {
       if (this.tornadoInterval) {
         clearInterval(this.tornadoInterval);
         this.tornadoInterval = null;
         console.log('Tornado ended');
       }
-    }, 2500);
+    }, this.tornadoTime);
   }
 
   // Tornado kuvvetlerini sürekli uygulayan yardımcı metod

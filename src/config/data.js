@@ -64,27 +64,31 @@ const data = window.gameData ?? {
   isPowerUpMagnetOpen: true,
   powerupMagnetSrc: null,
   powerupMagnetGraySrc: null,
+  powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 5,
+  powerupMagnetCounter: 2,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
   powerupReverseGraySrc: null,
+  powerupReverseGrayScale: 0.4,
   powerupReverseScale: 0.4,
-  powerupReverseCounter: 5,
+  powerupReverseCounter: 2,
 
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
   powerupTimeGraySrc: null,
+  powerupTimeGrayScale: 0.4,
   powerupTimeScale: 0.4,
-  powerupTimeCounter: 10,
+  powerupTimeCounter: 2,
   timerPowerUpEffect: 5,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
   powerupTornadoGraySrc: null,
+  powerupTornadoGrayScale: 0.4,
   powerupTornadoScale: 0.4,
-  powerupTornadoCounter: 5,
+  powerupTornadoCounter: 2,
 
   //SOTORE && MARKET PARAMETERS
 

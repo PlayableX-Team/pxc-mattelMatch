@@ -348,6 +348,8 @@ export default class PixiGame {
         isOpen: data.isPowerUpMagnetOpen,
         scale: data.powerupMagnetScale,
         counter: data.powerupMagnetCounter,
+        grayAsset: data.powerupMagnetGraySrc,
+        grayScale: data.powerupMagnetGrayScale,
       },
       {
         name: 'powerupReverse',
@@ -355,6 +357,8 @@ export default class PixiGame {
         isOpen: data.isPowerUpReverseOpen,
         scale: data.powerupReverseScale,
         counter: data.powerupReverseCounter,
+        grayAsset: data.powerupReverseGraySrc,
+        grayScale: data.powerupReverseGrayScale,
       },
       {
         name: 'powerupTornado',
@@ -362,6 +366,8 @@ export default class PixiGame {
         isOpen: data.isPowerUpTornadoOpen,
         scale: data.powerupTornadoScale,
         counter: data.powerupTornadoCounter,
+        grayAsset: data.powerupTornadoGraySrc,
+        grayScale: data.powerupTornadoGrayScale,
       },
       {
         name: 'powerupTime',
@@ -369,6 +375,8 @@ export default class PixiGame {
         isOpen: data.isPowerUpTimeOpen,
         scale: data.powerupTimeScale,
         counter: data.powerupTimeCounter,
+        grayAsset: data.powerupTimeGraySrc,
+        grayScale: data.powerupTimeGrayScale,
       },
     ];
 
@@ -404,11 +412,17 @@ export default class PixiGame {
         powerupConfig.scale,
         powerupConfig.counter,
         positionConfig[index] || 0,
-        0
+        0,
+        powerupConfig.grayAsset,
+        powerupConfig.grayScale
       );
 
       if (powerupConfig.type === 'magnet') {
         this.magnetSprite = powerup.sprite;
+      }
+
+      if (powerupConfig.type === 'reverse') {
+        this.reversePowerup = powerup;
       }
     });
 

@@ -13,6 +13,13 @@ function collectStorage(data) {
   data.handSrc = storage.hand.items.hand.src;
   data.endcardLogoSrc = storage.endcardLogo.items.endcardLogo.src;
   data.endcardButtonSrc = storage.endcardButton.items.endcardButton.src;
+  data.powerupMagnetGraySrc =
+    storage.powerupMagnetGray.items.powerupMagnetGray.src;
+  data.powerupReverseGraySrc =
+    storage.powerupReverseGray.items.powerupReverseGray.src;
+  data.powerupTimeGraySrc = storage.powerupTimeGray.items.powerupTimeGray.src;
+  data.powerupTornadoGraySrc =
+    storage.powerupTornadoGray.items.powerupTornadoGray.src;
 }
 
 const storage = {
