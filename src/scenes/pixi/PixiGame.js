@@ -824,7 +824,7 @@ export default class PixiGame {
     this.originalTimerFillBarTint = this.timerFillBar.tint;
 
     // Önce beyaz yap
-    this.timerFillBar.tint = 0xffffff;
+    //this.timerFillBar.tint = 0xffffff;
 
     // Sonra koyu maviye geçiş yap
     gsap.to(this.timerFillBar, {
@@ -837,7 +837,14 @@ export default class PixiGame {
   resumeTimer() {
     this.isTimerRunning = true;
     const remainingTime = this.timerProgress * this.timerDuration;
-    this.timerFillBar.tint = this.originalTimerFillBarTint;
+
+    // GSAP ile orijinal renge yumuşak geçiş
+    gsap.to(this.timerFillBar, {
+      pixi: { tint: this.originalTimerFillBarTint },
+      duration: 0.5,
+      ease: 'power2.out',
+    });
+
     gsap.to(this, {
       timerProgress: 0,
       duration: remainingTime,

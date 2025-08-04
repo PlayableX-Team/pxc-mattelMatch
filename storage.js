@@ -16,6 +16,66 @@ function collectStorage(data) {
 }
 
 const storage = {
+  powerupMagnetGray: {
+    label: 'Powerup Magnet Gray',
+    description: 'Uploaded Powerup Magnet Gray for the game.',
+    aiDescription: 'a collection of Powerup Magnet Gray for branding',
+    items: {
+      powerupMagnetGray: {
+        label: 'Powerup Magnet Gray',
+        description: 'The Powerup Magnet Gray for the game.',
+        aiDescription: 'Powerup Magnet Gray used in game',
+        src: require('./assets/2d/Powerup/powerupMagnetGray.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  powerupReverseGray: {
+    label: 'Powerup Reverse Gray',
+    description: 'Uploaded Powerup Reverse Gray for the game.',
+    aiDescription: 'a collection of Powerup Reverse Gray for branding',
+    items: {
+      powerupReverseGray: {
+        label: 'Powerup Reverse Gray',
+        description: 'The Powerup Reverse Gray for the game.',
+        aiDescription: 'Powerup Reverse Gray used in game',
+        src: require('./assets/2d/Powerup/powerupReverseGray.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  powerupTimeGray: {
+    label: 'Powerup Time Gray',
+    description: 'Uploaded Powerup Time Gray for the game.',
+    aiDescription: 'a collection of Powerup Time Gray for branding',
+    items: {
+      powerupTimeGray: {
+        label: 'Powerup Time Gray',
+        description: 'The Powerup Time Gray for the game.',
+        aiDescription: 'Powerup Time Gray used in game',
+        src: require('./assets/2d/Powerup/powerupTimeGray.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  powerupTornadoGray: {
+    label: 'Powerup Tornado Gray',
+    description: 'Uploaded Powerup Tornado Gray for the game.',
+    aiDescription: 'a collection of Powerup Tornado Gray for branding',
+    items: {
+      powerupTornadoGray: {
+        label: 'Powerup Tornado Gray',
+        description: 'The Powerup Tornado Gray for the game.',
+        aiDescription: 'Powerup Tornado Gray used in game',
+        src: require('./assets/2d/Powerup/powerupTornadoGray.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
   endcardButton: {
     label: 'Endcard Button',
     description: 'Uploaded Endcard Button for the game.',

@@ -201,6 +201,34 @@ export function insertAssets(data) {
       type: 'image',
     });
   }
+  if (data.powerupMagnetGraySrc) {
+    assets.pixi.push({
+      name: 'powerupMagnetGray',
+      src: data.powerupMagnetGraySrc,
+      type: 'image',
+    });
+  }
+  if (data.powerupReverseGraySrc) {
+    assets.pixi.push({
+      name: 'powerupReverseGray',
+      src: data.powerupReverseGraySrc,
+      type: 'image',
+    });
+  }
+  if (data.powerupTimeGraySrc) {
+    assets.pixi.push({
+      name: 'powerupTimeGray',
+      src: data.powerupTimeGraySrc,
+      type: 'image',
+    });
+  }
+  if (data.powerupTornadoGraySrc) {
+    assets.pixi.push({
+      name: 'powerupTornadoGray',
+      src: data.powerupTornadoGraySrc,
+      type: 'image',
+    });
+  }
   if (data.powerupMagnetSrc) {
     assets.pixi.push({
       name: 'powerupMagnet',
