@@ -55,6 +55,11 @@ const assets = {
       src: require('@assets/2d/RemainingObj/obj6Bg.png'),
       type: 'image',
     },
+    {
+      name: 'counterBg',
+      src: require('@assets/2d/Powerup/counterBg.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

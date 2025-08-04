@@ -34,7 +34,7 @@ const data = window.gameData ?? {
   barbieBoatScale: 1,
   barbieBoatCount: 19,
   barbieCarSrc: null,
-  barbieCarScale: 1,
+  barbieCarScale: 2,
   barbieCarCount: 18,
   barbieGirl1Src: null,
   barbieGirl1Scale: 1,
@@ -58,21 +58,29 @@ const data = window.gameData ?? {
   isBarbieKenRemainingOpen: true,
 
   //POWERUP
+  counterBgScale: 0.75,
+  counterBgPosX: 20,
+  counterBgPosY: 25,
+
   isPowerUpMagnetOpen: true,
   powerupMagnetSrc: null,
   powerupMagnetScale: 0.4,
+  powerupMagnetCounter: 1,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
   powerupReverseScale: 0.4,
+  powerupReverseCounter: 2,
 
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
   powerupTimeScale: 0.4,
+  powerupTimeCounter: 3,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
   powerupTornadoScale: 0.4,
+  powerupTornadoCounter: 1,
 };
 
 export default data;

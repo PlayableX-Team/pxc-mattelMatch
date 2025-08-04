@@ -24,7 +24,7 @@ export default class PixiGame {
     globals.pixiGame = this;
     this.magnetSprite = null;
     this.canHandPointer = false;
-
+    this.isTimerRunning = false;
     this.text = null;
     this.timerProgress = 1.0; // 1'den başlayıp 0'a inecek
     this.timerDuration = data.gameTime; // 60 saniye
@@ -137,24 +137,28 @@ export default class PixiGame {
         type: 'magnet',
         isOpen: data.isPowerUpMagnetOpen,
         scale: data.powerupMagnetScale,
+        counter: data.powerupMagnetCounter,
       },
       {
         name: 'powerupReverse',
         type: 'reverse',
         isOpen: data.isPowerUpReverseOpen,
         scale: data.powerupReverseScale,
+        counter: data.powerupReverseCounter,
       },
       {
         name: 'powerupTornado',
         type: 'tornado',
         isOpen: data.isPowerUpTornadoOpen,
         scale: data.powerupTornadoScale,
+        counter: data.powerupTornadoCounter,
       },
       {
         name: 'powerupTime',
         type: 'time',
         isOpen: data.isPowerUpTimeOpen,
         scale: data.powerupTimeScale,
+        counter: data.powerupTimeCounter,
       },
     ];
 
@@ -188,7 +192,7 @@ export default class PixiGame {
         powerupConfig.name,
         powerupConfig.type,
         powerupConfig.scale,
-        1,
+        powerupConfig.counter,
         positionConfig[index] || 0,
         0
       );
@@ -533,6 +537,7 @@ export default class PixiGame {
   startTimer() {
     // İlk progress değerini hemen göster
     this.updateTimerBar();
+    this.isTimerRunning = true;
 
     // GSAP ile 60 saniyede progress'i 1'den 0'a indiren animasyon
     gsap.to(this, {
@@ -568,11 +573,13 @@ export default class PixiGame {
 
   // Timer'ı duraklatma fonksiyonu (isteğe bağlı)
   pauseTimer() {
+    this.isTimerRunning = false;
     gsap.killTweensOf(this);
   }
 
   // Timer'ı devam ettirme fonksiyonu (isteğe bağlı)
   resumeTimer() {
+    this.isTimerRunning = true;
     const remainingTime = this.timerProgress * this.timerDuration;
     gsap.to(this, {
       timerProgress: 0,
