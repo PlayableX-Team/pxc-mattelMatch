@@ -148,6 +148,11 @@ const assets = {
       src: require('@assets/models/items/barbie_ken-v1.glb'),
       type: 'glb',
     },
+    {
+      name: 'tray',
+      src: require('@assets/models/tray.glb'),
+      type: 'glb',
+    },
   ],
   three_textures: [],
   audio: {},

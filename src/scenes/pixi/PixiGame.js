@@ -814,10 +814,7 @@ export default class PixiGame {
   // Timer tamamlandığında çağrılan fonksiyon
   onTimerComplete() {
     // GameFinished event'ini fire et
-    //globals.EventEmitter.emit('gameFinished');
-
-    // Ek işlemler burada yapılabilir
-    console.log('Oyun süresi bitti!');
+    globals.EventEmitter.emit('gameFinished');
   }
 
   // Timer'ı duraklatma fonksiyonu (isteğe bağlı)

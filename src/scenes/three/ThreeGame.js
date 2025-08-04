@@ -351,7 +351,7 @@ export default class ThreeGame {
 
     const platformCount = 7;
     const diff = Math.abs(platformCount - 5);
-    const scaleRatio = 0.6 - diff * 0.1; // Platform scale ratio
+    const scaleRatio = 0.8 - diff * 0.1; // Platform scale ratio
 
     // Objenin mevcut scale'ini al ve ratio'yu uygula
     const currentScale = obj.scale.x; // x, y, z aynı olduğunu varsayıyoruz
@@ -448,30 +448,27 @@ export default class ThreeGame {
   // Enhanced tray system with sophisticated platform management
   addEnhancedTray(count) {
     const diff = Math.abs(count - 5);
-    let scalar = 1;
+    let scalar = 1.3;
 
     const platformScale = scalar - diff * 0.01;
-    const offset = 1.2 - diff * 0.01;
+    const offset = 1.5 - diff * 0.01;
     let tray = new THREE.Object3D();
     this.trayObj = tray;
 
-    // Create platforms with enhanced materials and animations
+    // Create platforms using tray model instead of PlaneGeometry
     for (let i = 0; i < count; i++) {
-      // Create platform geometry
-      let platform = new THREE.Mesh(
-        new THREE.PlaneGeometry(1, 1),
-        new THREE.MeshBasicMaterial({
-          color: 0x4caf50,
-          side: THREE.DoubleSide,
-          transparent: true,
-          opacity: 0.8,
-        })
-      );
+      // Clone the tray model
+      let platform = globals.cloneModel('tray');
+
+      if (!platform) {
+        console.error('Tray model could not be loaded!');
+        continue;
+      }
 
       // Position and scale platforms
       platform.position.set(i * offset, 0, 1.5);
       platform.scale.set(platformScale, platformScale, platformScale);
-      platform.rotation.x = Math.PI / 4;
+      platform.rotation.x = -Math.PI / 4;
       platform.oScale = platformScale;
       platform.oPos = platform.position.clone();
 
@@ -1081,7 +1078,7 @@ export default class ThreeGame {
     }
 
     // Ground collider alanı içinde güvenli pozisyon oluştur (x ve z için)
-    const safePos = this.getSafePosition(1);
+    const safePos = this.getSafePosition(0.5);
     const targetPosition = new THREE.Vector3(safePos.x, 2, safePos.z);
 
     // GSAP ile pozisyon animasyonu
