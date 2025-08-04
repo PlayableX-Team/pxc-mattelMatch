@@ -33,8 +33,10 @@ export default class Powerup {
         canActivate: () => this.count > 0 && globals.pixiGame.isTimerRunning,
         action: () => {
           globals.pixiGame.pauseTimer();
+          globals.pixiGame.timerBgAnimation();
           gsap.delayedCall(5, () => {
             globals.pixiGame.resumeTimer();
+            globals.pixiGame.stopTimerBgAnimation();
           });
           console.log('Time powerup clicked');
         },

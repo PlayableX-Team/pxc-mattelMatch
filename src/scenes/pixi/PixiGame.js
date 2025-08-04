@@ -57,10 +57,56 @@ export default class PixiGame {
     this.addUpsidePanel();
     this.addRemainingObjPanel();
     this.addHand();
+    this.addTimeBg();
 
     gsap.delayedCall(4, () => {
       this.canHandPointer = true;
       this.hand.visible = true;
+    });
+  }
+
+  addTimeBg() {
+    const blueBg = new PIXI.Sprite.from(TextureCache['blueBg']);
+    blueBg.anchor.set(0.5);
+    blueBg.position.set(window.innerWidth / 2, window.innerHeight / 2);
+    blueBg.alpha = 0;
+    pixiScene.addChild(blueBg);
+    blueBg.zIndex = 300;
+
+    blueBg.resize = (w, h) => {
+      blueBg.width = w;
+      blueBg.height = h;
+      blueBg.position.set(w / 2, h / 2);
+    };
+    blueBg.resize(window.innerWidth, window.innerHeight);
+    this.blueBg = blueBg;
+  }
+
+  timerBgAnimation() {
+    gsap.killTweensOf(this.blueBg);
+    // Başlangıç değerini 0.5 olarak ayarla
+    gsap.to(this.blueBg, {
+      alpha: 0.5,
+      duration: 0.5,
+      ease: 'power1.inOut',
+      onComplete: () => {
+        gsap.to(this.blueBg, {
+          alpha: 1,
+          duration: 1,
+          yoyo: true,
+          repeat: -1,
+          ease: 'power1.inOut',
+        });
+      },
+    });
+  }
+
+  stopTimerBgAnimation() {
+    gsap.killTweensOf(this.blueBg);
+    gsap.to(this.blueBg, {
+      alpha: 0,
+      duration: 0.5,
+      ease: 'power1.inOut',
     });
   }
 
@@ -456,43 +502,6 @@ export default class PixiGame {
       background.height = h;
     };
     background.resize(window.innerWidth, window.innerHeight);
-  }
-
-  addVideo() {
-    // Create and position the video sprite
-    const videoElement = globals.resources.video.data; // Directly get the video element from the resource
-    videoElement.muted = true;
-    if (getDevicePlatform() === 'ios') {
-      videoElement.autoplay = true;
-    }
-
-    videoElement.setAttribute('playsinline', 'playsinline');
-
-    const videoTexture = PIXI.Texture.from(videoElement);
-
-    const videoSprite = new PIXI.Sprite(videoTexture);
-    videoSprite.zIndex = 0;
-    videoSprite.anchor.set(0.5);
-    videoSprite.iWidth = videoElement.videoWidth;
-    videoSprite.iHeight = videoElement.videoHeight;
-    videoSprite.resize = (w, h) => {
-      videoSprite.x = w / 2;
-      videoSprite.y = h / 2;
-      videoSprite.scale.set(
-        Math.min(w / videoSprite.iWidth, h / videoSprite.iHeight)
-      );
-    };
-    videoSprite.resize(window.innerWidth, window.innerHeight);
-
-    pixiScene.addChild(videoSprite);
-    gsap.delayedCall(1.45, () => {
-      // console.log("pause video");
-      videoElement.pause();
-      this.showFaces();
-    });
-
-    this.video = videoSprite;
-    this.video.controller = videoElement;
   }
 
   // Timer bar'ını güncelleyen fonksiyon

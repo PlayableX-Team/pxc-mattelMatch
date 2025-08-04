@@ -60,6 +60,11 @@ const assets = {
       src: require('@assets/2d/Powerup/counterBg.png'),
       type: 'image',
     },
+    {
+      name: 'blueBg',
+      src: require('@assets/2d/blueBg.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

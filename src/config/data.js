@@ -65,22 +65,22 @@ const data = window.gameData ?? {
   isPowerUpMagnetOpen: true,
   powerupMagnetSrc: null,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 1,
+  powerupMagnetCounter: 5,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
   powerupReverseScale: 0.4,
-  powerupReverseCounter: 2,
+  powerupReverseCounter: 5,
 
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
   powerupTimeScale: 0.4,
-  powerupTimeCounter: 3,
+  powerupTimeCounter: 5,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
   powerupTornadoScale: 0.4,
-  powerupTornadoCounter: 1,
+  powerupTornadoCounter: 5,
 };
 
 export default data;
