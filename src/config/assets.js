@@ -65,6 +65,11 @@ const assets = {
       src: require('@assets/2d/blueBg.png'),
       type: 'image',
     },
+    {
+      name: 'Snow',
+      src: require('@assets/2d/Snow.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

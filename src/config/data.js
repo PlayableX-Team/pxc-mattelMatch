@@ -26,7 +26,7 @@ const data = window.gameData ?? {
   gameTime: 120,
 
   //HAND
-  handScale: 0.5,
+  handScale: 0.3,
   handSrc: null,
 
   //MAP MODELS
@@ -75,7 +75,8 @@ const data = window.gameData ?? {
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
   powerupTimeScale: 0.4,
-  powerupTimeCounter: 5,
+  powerupTimeCounter: 10,
+  timerPowerUpEffect: 5,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,

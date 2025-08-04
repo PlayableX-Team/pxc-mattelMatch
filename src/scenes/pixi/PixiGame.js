@@ -65,6 +65,107 @@ export default class PixiGame {
     });
   }
 
+  addGlow() {
+    // Farklı glow konfigürasyonları (pozisyon ve ölçek)
+    const alpha = 0.8;
+    const glowConfigs = [
+      { x: 0.8, y: 0.2, scale: 0.5, alpha: alpha, rotation: 0 },
+      { x: 0.5, y: 0.5, scale: 0.7, alpha: alpha, rotation: 0 },
+      { x: 0.1, y: 0.8, scale: 0.6, alpha: alpha, rotation: 0 },
+      { x: 0.7, y: 0.9, scale: 0.4, alpha: alpha, rotation: 0 },
+      { x: 0.15, y: 0.5, scale: 0.7, alpha: alpha, rotation: 0 },
+      { x: 0.85, y: 0.4, scale: 0.6, alpha: alpha, rotation: 0 },
+      { x: 0.4, y: 0.8, scale: 0.3, alpha: alpha, rotation: 0 },
+      { x: 0.6, y: 0.15, scale: 0.5, alpha: alpha, rotation: 0 },
+      { x: 0.2, y: 0.1, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.9, y: 0.9, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.1, y: 0.8, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.7, y: 0.8, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.3, y: 0.3, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.7, y: 0.3, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.3, y: 0.7, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.7, y: 0.7, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.3, y: 0.7, scale: 0.2, alpha: alpha, rotation: 0 },
+      { x: 0.7, y: 0.3, scale: 0.2, alpha: alpha, rotation: 0 },
+    ];
+
+    const glowContainer = new PIXI.Container();
+    glowContainer.zIndex = 3000;
+    pixiScene.addChild(glowContainer);
+
+    this.glows = [];
+
+    glowConfigs.forEach((config, index) => {
+      const glow = PIXI.Sprite.from(TextureCache['Snow']);
+      glow.anchor.set(0.5);
+      glow.alpha = config.alpha;
+      glow.rotation = config.rotation;
+
+      glowContainer.addChild(glow);
+
+      // Her glow için konfigürasyon sakla
+      glow.config = config;
+      this.glows.push(glow);
+    });
+
+    glowContainer.resize = (w, h) => {
+      this.glows.forEach((glow) => {
+        const baseX = w * glow.config.x;
+        const baseY = h * glow.config.y;
+
+        glow.position.set(baseX, baseY);
+        glow.scale.set(glow.config.scale);
+
+        // Animasyonları temizle
+        gsap.killTweensOf(glow);
+
+        // Her glow için random salınım hareketi ekle (kendi pozisyonu etrafında)
+        const randomXOffset = (Math.random() - 0.5) * 100; // -7.5 ile +7.5 arası
+        const randomYOffset = (Math.random() - 0.5) * 100; // -7.5 ile +7.5 arası
+        const randomDuration = 2 + Math.random() * 3; // 2-5 saniye arası
+        const randomDelay = Math.random() * 2; // 0-2 saniye arası gecikme
+
+        // X ekseni salınımı (base pozisyon etrafında)
+        gsap.to(glow, {
+          x: baseX + randomXOffset,
+          duration: randomDuration,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: randomDelay,
+        });
+
+        // Y ekseni salınımı (base pozisyon etrafında)
+        gsap.to(glow, {
+          y: baseY + randomYOffset,
+          duration: randomDuration * 0.8,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: randomDelay * 0.5,
+        });
+      });
+    };
+
+    glowContainer.resize(window.innerWidth, window.innerHeight);
+    this.glowContainer = glowContainer;
+    glowContainer.alpha = 0;
+    gsap.to(glowContainer, {
+      alpha: 1,
+      duration: 0.5,
+      ease: 'power1.inOut',
+    });
+  }
+
+  stopGlow() {
+    gsap.killTweensOf(this.glowContainer);
+    gsap.to(this.glowContainer, {
+      alpha: 0,
+      duration: 0.5,
+      ease: 'power1.inOut',
+    });
+  }
+
   addTimeBg() {
     const blueBg = new PIXI.Sprite.from(TextureCache['blueBg']);
     blueBg.anchor.set(0.5);
@@ -437,11 +538,87 @@ export default class PixiGame {
     this.timerText.position.set(-timerBarBg.width * 0.7, -5);
     this.timerText.anchor.set(0.5);
 
+    const timerPowerUpText = new PIXI.Text(data.timerPowerUpEffect, {
+      fontFamily: 'game-font',
+      fontSize: 20,
+      fill: 0xffffff,
+      strokeThickness: 5,
+      stroke: 0x000000,
+    });
+    this.timerContainer.addChild(timerPowerUpText);
+    timerPowerUpText.anchor.set(0.5);
+    timerPowerUpText.alpha = 0;
+    this.timerPowerUpText = timerPowerUpText;
+
     // İlk timer maskesini uygula
     this.updateTimerBar();
 
     // Timer'ı başlat
     this.startTimer();
+  }
+
+  timerPowerUpTextOpen() {
+    // Powerup timer'ı başlat
+    this.startPowerupCountdown();
+
+    gsap.to(this.timerPowerUpText, {
+      alpha: 1,
+      duration: 0.5,
+      ease: 'power1.inOut',
+    });
+  }
+
+  // Yeni fonksiyon: Powerup countdown timer'ı
+  startPowerupCountdown() {
+    // Eğer önceki bir countdown varsa durdur
+    if (this.powerupCountdownTween) {
+      this.powerupCountdownTween.kill();
+    }
+
+    // Başlangıç değerini ayarla
+    let currentCount = data.timerPowerUpEffect;
+    this.timerPowerUpText.text = currentCount;
+
+    // GSAP ile countdown animasyonu
+    this.powerupCountdownTween = gsap.to(
+      {},
+      {
+        duration: data.timerPowerUpEffect, // 5 saniye
+        ease: 'none', // Linear
+        onUpdate: () => {
+          // Her saniyede bir güncelle
+          const remaining = Math.ceil(
+            data.timerPowerUpEffect -
+              this.powerupCountdownTween.progress() * data.timerPowerUpEffect
+          );
+          if (remaining !== currentCount && remaining >= 0) {
+            currentCount = remaining;
+            this.timerPowerUpText.text = currentCount;
+          }
+        },
+        onComplete: () => {
+          // Countdown bittiğinde
+          this.timerPowerUpText.text = 0;
+          console.log('Powerup timer bitti!');
+          // İsteğe bağlı: timer bittiğinde text'i gizle
+          this.timerPowerUpTextClose();
+        },
+      }
+    );
+  }
+
+  timerPowerUpTextClose() {
+    // Countdown timer'ı durdur
+    if (this.powerupCountdownTween) {
+      this.powerupCountdownTween.kill();
+      this.powerupCountdownTween = null;
+    }
+
+    gsap.to(this.timerPowerUpText, {
+      alpha: 0,
+      duration: 0.5,
+      ease: 'power1.inOut',
+    });
   }
 
   addHeaderText() {
@@ -513,7 +690,7 @@ export default class PixiGame {
     this.timerMask.clear();
     this.timerMask.beginFill(0xffffff);
 
-    // Maskeyı yatay olarak progress'e göre çiz (soldan sağa dolum)
+    // Maskeyi yatay olarak progress'e göre çiz (soldan sağa dolum)
     const barWidth = this.timerContainer.iWidth;
     const progressWidth = barWidth * clampedProgress;
 
@@ -584,12 +761,23 @@ export default class PixiGame {
   pauseTimer() {
     this.isTimerRunning = false;
     gsap.killTweensOf(this);
-  }
+    this.originalTimerFillBarTint = this.timerFillBar.tint;
 
+    // Önce beyaz yap
+    this.timerFillBar.tint = 0xffffff;
+
+    // Sonra koyu maviye geçiş yap
+    gsap.to(this.timerFillBar, {
+      pixi: { tint: 0x003366 },
+      duration: 0.5,
+      ease: 'power2.out',
+    });
+  }
   // Timer'ı devam ettirme fonksiyonu (isteğe bağlı)
   resumeTimer() {
     this.isTimerRunning = true;
     const remainingTime = this.timerProgress * this.timerDuration;
+    this.timerFillBar.tint = this.originalTimerFillBarTint;
     gsap.to(this, {
       timerProgress: 0,
       duration: remainingTime,

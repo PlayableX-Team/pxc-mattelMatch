@@ -34,9 +34,13 @@ export default class Powerup {
         action: () => {
           globals.pixiGame.pauseTimer();
           globals.pixiGame.timerBgAnimation();
-          gsap.delayedCall(5, () => {
+          globals.pixiGame.addGlow();
+          globals.pixiGame.timerPowerUpTextOpen();
+          gsap.delayedCall(data.timerPowerUpEffect, () => {
             globals.pixiGame.resumeTimer();
             globals.pixiGame.stopTimerBgAnimation();
+            globals.pixiGame.stopGlow();
+            globals.pixiGame.timerPowerUpTextClose();
           });
           console.log('Time powerup clicked');
         },
