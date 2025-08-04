@@ -43,6 +43,13 @@ export default class PixiGame {
 
     globals.EventEmitter.on('gameFinished', () => {
       if (globals.gameFinished) return;
+      pixiScene.children.forEach((child) => {
+        gsap.to(child, {
+          pixi: { alpha: 0 },
+          duration: 0.5,
+          ease: 'power2.out',
+        });
+      });
       new Endcard(true);
       globals.gameFinished = true;
       AudioManager.stopAllSFX();
@@ -62,6 +69,20 @@ export default class PixiGame {
     gsap.delayedCall(4, () => {
       this.canHandPointer = true;
       this.hand.visible = true;
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key == 'e') {
+        console.log('e');
+        pixiScene.children.forEach((child) => {
+          gsap.to(child, {
+            pixi: { alpha: 0 },
+            duration: 0.5,
+            ease: 'power2.out',
+          });
+        });
+        new Endcard(true);
+      }
     });
   }
 

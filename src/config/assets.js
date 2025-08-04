@@ -175,6 +175,20 @@ export function insertAssets(data) {
       volume: 0.5,
     };
   }
+  if (data.endcardButtonSrc) {
+    assets.pixi.push({
+      name: 'endcardButton',
+      src: data.endcardButtonSrc,
+      type: 'image',
+    });
+  }
+  if (data.endcardLogoSrc) {
+    assets.pixi.push({
+      name: 'endcardLogo',
+      src: data.endcardLogoSrc,
+      type: 'image',
+    });
+  }
   if (data.handSrc) {
     assets.pixi.push({
       name: 'hand',

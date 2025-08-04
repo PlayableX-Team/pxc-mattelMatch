@@ -44,14 +44,6 @@ export default class ThreeGame {
     // Store animations and mixers
     this.animations = {};
     globals.threeUpdateList = [];
-
-    document.addEventListener('keydown', (event) => {
-      // console.log(event);
-      if (event.key == 'e') {
-        console.log('e');
-        this.tornado();
-      }
-    });
   }
 
   // Helper function to check if position is safe (no overlap)
@@ -895,6 +887,7 @@ export default class ThreeGame {
     console.log(
       `3 adet ${selectedType} tipinde obje magnet pozisyonuna çekiliyor...`
     );
+    globals.pixiGame.updateRemainingObjCount(selectedType, 3);
 
     // Ses efekti çal
     if (AudioManager) {

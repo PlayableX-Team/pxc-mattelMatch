@@ -34,22 +34,22 @@ const data = window.gameData ?? {
   //MAP MODELS
   barbieBoatSrc: null,
   barbieBoatScale: 1,
-  barbieBoatCount: 19,
+  barbieBoatCount: 18, //max 18 min 3 step 3
   barbieCarSrc: null,
   barbieCarScale: 2,
-  barbieCarCount: 18,
+  barbieCarCount: 18, //max 18 min 3 step 3
   barbieGirl1Src: null,
   barbieGirl1Scale: 1,
-  barbieGirl1Count: 17,
+  barbieGirl1Count: 18, //max 18 min 3 step 3
   barbieGirl2Src: null,
   barbieGirl2Scale: 1,
-  barbieGirl2Count: 16,
+  barbieGirl2Count: 18, //max 18 min 3 step 3
   barbieHouseSrc: null,
   barbieHouseScale: 1,
-  barbieHouseCount: 15,
+  barbieHouseCount: 18, //max 18 min 3 step 3
   barbieKenSrc: null,
   barbieKenScale: 1,
-  barbieKenCount: 14,
+  barbieKenCount: 18, //max 18 min 3 step 3
 
   //REMAINING OBJ
   isBarbieBoatRemainingOpen: true,
@@ -84,6 +84,38 @@ const data = window.gameData ?? {
   powerupTornadoSrc: null,
   powerupTornadoScale: 0.4,
   powerupTornadoCounter: 5,
+
+  //ENDCARD
+  //LOGO
+  endcardBackgroundColor: 0x000000,
+  endcardBackgroundAlpha: 0.5,
+  endcardLogoSrc: null,
+  endcardLogoScaleHorizontal: 0.75,
+  endcardLogoScaleVertical: 0.75,
+  endcardLogoPosXHorizontal: 0.5,
+  endcardLogoPosYHorizontal: 0.2,
+  endcardLogoPosXVertical: 0.5,
+  endcardLogoPosYVertical: 0.2,
+
+  //HEADER TEXT
+  isEndcardHeaderTextOpen: true,
+  endcardHeaderText: 'GAME OVER',
+  endcardHeaderTextFontColor: 0xffffff,
+  endcardHeaderTextFontStroke: 0x000000,
+  endcardHeaderTextFontStrokeThickness: 6,
+  endcardHeaderTextScale: 0.75,
+  endcardHeaderTextPosYHorizontal: 0.5,
+  endcardHeaderTextPosXHorizontal: 0.5,
+  endcardHeaderTextPosYVertical: 0.5,
+  endcardHeaderTextPosXVertical: 0.5,
+
+  //BUTTON
+  endcardButtonSrc: null,
+  endcardButtonScale: 0.75,
+  endcardButtonPosXHorizontal: 0.5,
+  endcardButtonPosYHorizontal: 0.8,
+  endcardButtonPosXVertical: 0.5,
+  endcardButtonPosYVertical: 0.8,
 };
 
 export default data;

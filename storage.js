@@ -11,9 +11,41 @@ function collectStorage(data) {
   data.barbieHouseSrc = storage.barbieHouse.items.barbieHouse.src;
   data.barbieKenSrc = storage.barbieKen.items.barbieKen.src;
   data.handSrc = storage.hand.items.hand.src;
+  data.endcardLogoSrc = storage.endcardLogo.items.endcardLogo.src;
+  data.endcardButtonSrc = storage.endcardButton.items.endcardButton.src;
 }
 
 const storage = {
+  endcardButton: {
+    label: 'Endcard Button',
+    description: 'Uploaded Endcard Button for the game.',
+    aiDescription: 'a collection of Endcard Button for branding',
+    items: {
+      endcardButton: {
+        label: 'Endcard Button',
+        description: 'The Endcard Button for the game.',
+        aiDescription: 'Endcard Button used in game',
+        src: require('./assets/2d/endcard/endcardButton.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  endcardLogo: {
+    label: 'Endcard Logo',
+    description: 'Uploaded Endcard Logo for the game.',
+    aiDescription: 'a collection of Endcard Logo for branding',
+    items: {
+      endcardLogo: {
+        label: 'Endcard Logo',
+        description: 'The Endcard Logo for the game.',
+        aiDescription: 'Endcard Logo used in game',
+        src: require('./assets/2d/endcard/endcardLogo.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
   hand: {
     label: 'Hand',
     description: 'Uploaded Hand for the game.',
