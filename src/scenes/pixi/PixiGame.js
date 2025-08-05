@@ -42,7 +42,7 @@ export default class PixiGame {
     // this.addBackground();
     //this.addHeaderText();
 
-    globals.EventEmitter.on('gameFinished', () => {
+    globals.EventEmitter.on('gameFinished', (isWin) => {
       if (globals.gameFinished) return;
       pixiScene.children.forEach((child) => {
         gsap.to(child, {
@@ -51,7 +51,7 @@ export default class PixiGame {
           ease: 'power2.out',
         });
       });
-      new Endcard(true);
+      new Endcard(isWin);
       globals.gameFinished = true;
       AudioManager.stopAllSFX();
     });
@@ -424,6 +424,8 @@ export default class PixiGame {
         break;
       default:
         positionConfig = [];
+        console.log('No powerup');
+        cont.visible = false;
     }
 
     // Aktif powerup'ları dinamik olarak oluştur
@@ -977,6 +979,94 @@ export default class PixiGame {
         `❌ ${mappedObjectType} için remainingObj bulunamadı veya updateCount metodu yok`
       );
     }
+  }
+
+  nextLevel() {
+    let text = data.nextLevelText;
+
+    text = text.replace('_', '\n');
+
+    globals.gameFinished = true;
+    // this.panelImg.hidePanel();
+
+    let endingBgLayer = new PIXI.Graphics();
+    //0x00ff00 green
+    let bgLayerColor = data.nextLevelBgColor;
+
+    endingBgLayer.beginFill(bgLayerColor);
+    endingBgLayer.drawRect(0, 0, window.innerWidth, window.innerHeight);
+    endingBgLayer.endFill();
+
+    endingBgLayer.width = window.innerWidth;
+    endingBgLayer.height = window.innerHeight;
+
+    endingBgLayer.resize = (w, h) => {
+      endingBgLayer.width = w;
+      endingBgLayer.height = h;
+    };
+    endingBgLayer.resize(window.innerWidth, window.innerHeight);
+
+    endingBgLayer.alpha = 0;
+    pixiScene.addChild(endingBgLayer);
+
+    gsap.to(endingBgLayer, { alpha: data.nextLevelBgAlpha, duration: 0.25 });
+    gsap.to(this.levelButton, { alpha: 0, duration: 0.25 });
+    gsap.to(this.levelText, { alpha: 0, duration: 0.25 });
+
+    let endingText = new PIXI.Text(text, {
+      fontFamily: 'game-font',
+      fontSize: data.nextLevelTextFontSize,
+      fill: data.nextLevelTextColor,
+      align: 'center',
+      stroke: data.nextLevelTextStrokeColor,
+      strokeThickness: data.nextLevelTextStrokeThickness,
+      lineJoin: 'round',
+      wordWrap: true,
+      wordWrapWidth: 300,
+    });
+
+    endingBgLayer.zIndex = 200;
+    let textParent = new PIXI.Container();
+
+    textParent.addChild(endingText);
+
+    pixiScene.addChild(textParent);
+
+    textParent.resize = (w, h) => {
+      textParent.scale.set(Math.min((w / 500) * 0.7, (h / 100) * 0.09));
+      textParent.x = w * 0.5;
+      textParent.y = h * 0.5;
+    };
+
+    textParent.resize(window.innerWidth, window.innerHeight);
+
+    endingText.anchor.set(0.5);
+    endingText.alpha = 0;
+
+    gsap.to(endingText, { alpha: 1, duration: 0.5 });
+
+    endingText.x = -100;
+    textParent.zIndex = 300;
+
+    gsap.to(endingText, {
+      x: 0,
+      duration: 0.5,
+      delay: 0.5,
+    });
+    gsap.to(endingText, {
+      x: 100,
+      alpha: 0,
+      duration: 0.5,
+      delay: 0.5,
+    });
+    gsap.to(endingBgLayer, {
+      alpha: 0,
+      duration: 0.5,
+      delay: 0.5,
+      onComplete: () => {
+        globals.threeGame.createFakeLevel();
+      },
+    });
   }
 
   update(time, delta) {

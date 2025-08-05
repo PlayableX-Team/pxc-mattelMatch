@@ -10,6 +10,7 @@ import data from '../../config/data';
 import MapObject from './mapObjects';
 import TouchTransformer from '../../../engine/utils/TouchTransformer';
 import GameMap from './gameMap';
+import { getDevicePlatform, openStorePage } from '../../../engine';
 
 export default class ThreeGame {
   constructor() {
@@ -25,6 +26,9 @@ export default class ThreeGame {
     this.slotPlanes = []; // Plane referansları için
     this.matches = 0;
     this.objCollected = 0;
+    this.totalGameObject = 0;
+    this.winCount = 0;
+    this.isGameFinished = false;
 
     // Enhanced tray system
     this.tray = [];
@@ -75,6 +79,98 @@ export default class ThreeGame {
     this.usedPositions = []; // Track used positions to prevent overlap
 
     let yPosition = 10;
+    // Create objects with safe positions to prevent overlap
+    for (let i = 0; i < data.barbieBoatCount; i++) {
+      const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
+
+      const mapObject = new MapObject(
+        'barbieBoat',
+        data.barbieBoatScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        1
+      );
+      this.mapObjects.push(mapObject);
+      console.log(mapObject.objectType);
+      this.totalGameObject++;
+    }
+
+    for (let i = 0; i < data.barbieCarCount; i++) {
+      const safePos = this.getSafePosition(1.5);
+
+      const mapObject = new MapObject(
+        'barbieCar',
+        data.barbieCarScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        2
+      );
+      this.mapObjects.push(mapObject);
+      this.totalGameObject++;
+    }
+
+    for (let i = 0; i < data.barbieGirl1Count; i++) {
+      const safePos = this.getSafePosition(1.5);
+
+      const mapObject = new MapObject(
+        'barbieGirl1',
+        data.barbieGirl1Scale,
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        3
+      );
+      this.mapObjects.push(mapObject);
+      this.totalGameObject++;
+    }
+
+    for (let i = 0; i < data.barbieGirl2Count; i++) {
+      const safePos = this.getSafePosition(1.5);
+
+      const mapObject = new MapObject(
+        'barbieGirl2',
+        data.barbieGirl2Scale,
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        4
+      );
+      this.mapObjects.push(mapObject);
+      this.totalGameObject++;
+    }
+
+    for (let i = 0; i < data.barbieHouseCount; i++) {
+      const safePos = this.getSafePosition(2.0); // Larger objects need more space
+
+      const mapObject = new MapObject(
+        'barbieHouse',
+        data.barbieHouseScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        5
+      );
+      this.mapObjects.push(mapObject);
+      this.totalGameObject++;
+    }
+
+    for (let i = 0; i < data.barbieKenCount; i++) {
+      const safePos = this.getSafePosition(1.5);
+
+      const mapObject = new MapObject(
+        'barbieKen',
+        data.barbieKenScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        6
+      );
+      this.mapObjects.push(mapObject);
+      this.totalGameObject++;
+    }
+    this.winCount = this.totalGameObject / 3;
+
+    this.addGroundCollider();
+    this.createClickListener();
+    this.addEnhancedTray(7); // Create enhanced tray with 7 slots
+    this.addBgPlane();
+    // gsap.delayedCall(1, () => {
+    //   this.createFakeLevel();
+    // });
+  }
+
+  createFakeLevel() {
+    globals.gameFinished = true;
     // Create objects with safe positions to prevent overlap
     for (let i = 0; i < data.barbieBoatCount; i++) {
       const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
@@ -148,11 +244,6 @@ export default class ThreeGame {
       );
       this.mapObjects.push(mapObject);
     }
-
-    this.addGroundCollider();
-    this.createClickListener();
-    this.addEnhancedTray(7); // Create enhanced tray with 7 slots
-    this.addBgPlane();
   }
 
   addBgPlane() {
@@ -295,47 +386,50 @@ export default class ThreeGame {
   }
 
   createClickListener() {
-    if (globals.gameFinished) return;
     // Initialize TouchTransformer with the camera
     this.touchTransformer = new TouchTransformer(globals.threeCamera);
 
     // Add pointer down event listener
     document.addEventListener('pointerdown', (event) => {
-      // Get all the models from mapObjects for raycasting
-      let allMapObjectModels = this.mapObjects.map((mapObj) => mapObj.model);
+      if (!globals.gameFinished) {
+        // Get all the models from mapObjects for raycasting
+        let allMapObjectModels = this.mapObjects.map((mapObj) => mapObj.model);
 
-      // Get intersections with map object models (recursive = true)
-      let intersects = this.touchTransformer.getIntersects(
-        event.clientX,
-        event.clientY,
-        allMapObjectModels,
-        true // Recursive olarak child objeleri de kontrol et
-      );
+        // Get intersections with map object models (recursive = true)
+        let intersects = this.touchTransformer.getIntersects(
+          event.clientX,
+          event.clientY,
+          allMapObjectModels,
+          true // Recursive olarak child objeleri de kontrol et
+        );
 
-      if (intersects.length > 0) {
-        // Find which mapObject was clicked by matching the model
-        let clickedModel = intersects[0].object;
-        let clickedMapObject = this.mapObjects.find((mapObj) => {
-          // Check if the clicked object is the model or a child of the model (daha kapsamlı kontrol)
-          return (
-            mapObj.model === clickedModel ||
-            mapObj.model.children.includes(clickedModel) ||
-            this.isChildOf(clickedModel, mapObj.model)
-          );
-        });
+        if (intersects.length > 0) {
+          // Find which mapObject was clicked by matching the model
+          let clickedModel = intersects[0].object;
+          let clickedMapObject = this.mapObjects.find((mapObj) => {
+            // Check if the clicked object is the model or a child of the model (daha kapsamlı kontrol)
+            return (
+              mapObj.model === clickedModel ||
+              mapObj.model.children.includes(clickedModel) ||
+              this.isChildOf(clickedModel, mapObj.model)
+            );
+          });
 
-        if (clickedMapObject) {
-          console.log('Map object clicked!', clickedMapObject.objectType);
+          if (clickedMapObject) {
+            console.log('Map object clicked!', clickedMapObject.objectType);
 
-          // Check if tray is full or tweening in progress
-          if (this.tweening || this.tray.length >= 7) {
-            console.log('Cannot collect: tray full or animation in progress');
-            return;
+            // Check if tray is full or tweening in progress
+            if (this.tweening || this.tray.length >= 7) {
+              console.log('Cannot collect: tray full or animation in progress');
+              return;
+            }
+
+            // Enhanced collection with sophisticated animations
+            this.gather(clickedMapObject);
           }
-
-          // Enhanced collection with sophisticated animations
-          this.gather(clickedMapObject);
         }
+      } else {
+        openStorePage();
       }
     });
   }
@@ -685,6 +779,13 @@ export default class ThreeGame {
         }
 
         this.matches++;
+        console.log('matches', this.matches);
+        console.log('winCount', this.winCount);
+        if (this.matches >= this.winCount) {
+          gsap.delayedCall(0.2, () => {
+            globals.pixiGame.nextLevel();
+          });
+        }
         if (
           this.matches >= data.xMatchesToOpenStore &&
           data.xMatchesToOpenStore > 0

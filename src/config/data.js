@@ -32,6 +32,16 @@ const data = window.gameData ?? {
   gameTime: 120,
   gameBgColor: 0x6b8cae, // Gri-mavi karışımı renk
 
+  //NEXT LEVEL
+  nextLevelText: 'NEXT LEVEL', // type "_" for new line
+  nextLevelTextColor: '#ffffff',
+  nextLevelTextStrokeThickness: 5, // default: 0, min: 0, max: 10, step: 1
+  nextLevelTextStrokeColor: '#000000',
+  nextLevelTextFontSize: 60, // default: 60, min: 10, max: 100, step: 1
+  nextLevelBgAlpha: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  nextLevelBgColor: '#00ff00', // default: '#00ff00'
+  levelTransitionDuration: 1, // default: 1, min: 1, max: 3, step: 0.5
+
   //HAND
   handScale: 0.3,
   handSrc: null,
@@ -55,8 +65,8 @@ const data = window.gameData ?? {
   barbieHouseScale: 1,
   barbieHouseCount: 15, //max 15 min 3 step 3
   barbieKenSrc: null,
-  barbieKenScale: 1.5,
-  barbieKenCount: 15, //max 15 min 3 step 3
+  barbieKenScale: 15,
+  barbieKenCount: 0, //max 15 min 3 step 3
 
   //REMAINING OBJ
   isBarbieBoatRemainingOpen: true,
@@ -101,8 +111,6 @@ const data = window.gameData ?? {
   powerupTornadoCounter: 2,
 
   //SOTORE && MARKET PARAMETERS
-
-  //ENDCARD
   xSecondsToOpenEndcard: 0, //step 1 min 0 max 200
   xSecondsToOpenStore: 0, //step 1 min 0 max 200
 
@@ -115,7 +123,7 @@ const data = window.gameData ?? {
   xObjCollectedToOpenStore: 0, //step 1 min 0 max 90
   xObjCollectedToOpenEndcard: 0, //step 1 min 0 max 90
 
-  //LOGO
+  //ENDCARD
   isEndcardLogoOpen: true,
   endcardBackgroundColor: 0x000000,
   endcardBackgroundAlpha: 0.5,
@@ -127,7 +135,6 @@ const data = window.gameData ?? {
   endcardLogoPosXVertical: 0.5,
   endcardLogoPosYVertical: 0.2,
 
-  //HEADER TEXT
   isEndcardHeaderTextOpen: true,
   endcardHeaderText: 'GAME OVER',
   endcardHeaderTextFontColor: 0xffffff,
@@ -139,7 +146,6 @@ const data = window.gameData ?? {
   endcardHeaderTextPosYVertical: 0.5,
   endcardHeaderTextPosXVertical: 0.5,
 
-  //BUTTON
   isEndcardButtonOpen: true,
   endcardButtonSrc: null,
   endcardButtonScale: 0.75,
