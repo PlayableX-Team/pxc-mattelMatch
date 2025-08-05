@@ -70,6 +70,11 @@ const assets = {
       src: require('@assets/2d/Snow.png'),
       type: 'image',
     },
+    {
+      name: 'backRay',
+      src: require('@assets/2d/endcard/backRay.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [
@@ -177,7 +182,61 @@ export function insertAssets(data) {
     assets.audio.bgm = {
       src: data.bgmSrc,
       loop: true,
-      volume: 0.5,
+      volume: data.bgmVolume,
+    };
+  }
+  if (data.collectSrc) {
+    assets.audio.collect = {
+      src: data.collectSrc,
+      volume: data.collectVolume,
+    };
+  }
+  if (data.addTraySrc) {
+    assets.audio.addTray = {
+      src: data.addTraySrc,
+      volume: data.addTrayVolume,
+    };
+  }
+  if (data.clickSrc) {
+    assets.audio.click = {
+      src: data.clickSrc,
+      volume: data.clickVolume,
+    };
+  }
+  if (data.matchSrc) {
+    assets.audio.match = {
+      src: data.matchSrc,
+      volume: data.matchVolume,
+    };
+  }
+  if (data.reverseSrc) {
+    assets.audio.reverse = {
+      src: data.reverseSrc,
+      volume: data.reverseVolume,
+    };
+  }
+  if (data.magnetSrc) {
+    assets.audio.magnet = {
+      src: data.magnetSrc,
+      volume: data.magnetVolume,
+    };
+  }
+  if (data.tornadoSrc) {
+    assets.audio.tornado = {
+      src: data.tornadoSrc,
+      volume: data.tornadoVolume,
+    };
+  }
+  if (data.timeSrc) {
+    assets.audio.time = {
+      src: data.timeSrc,
+      volume: data.timeVolume,
+    };
+  }
+  if (data.nextLevelSrc) {
+    assets.audio.nextLevel = {
+      src: data.nextLevelSrc,
+      volume: data.nextLevelVolume,
     };
   }
   if (data.endcardButtonSrc) {
@@ -254,6 +313,13 @@ export function insertAssets(data) {
     assets.pixi.push({
       name: 'powerupTornado',
       src: data.powerupTornadoSrc,
+      type: 'image',
+    });
+  }
+  if (data.middleImageSrc) {
+    assets.pixi.push({
+      name: 'middleImage',
+      src: data.middleImageSrc,
       type: 'image',
     });
   }

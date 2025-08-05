@@ -18,8 +18,63 @@ export default class Endcard {
     // this.addBackground();
     this.drawBackground();
     this.addLogo();
-    this.addHeaderText();
+    //this.addHeaderText();
     this.addButton();
+    this.addMiddleImage();
+  }
+
+  addMiddleImage() {
+    const cont = new PIXI.Container();
+    pixiScene.addChild(cont);
+    const backRay = PIXI.Sprite.from(TextureCache['backRay']);
+    backRay.anchor.set(0.5);
+    cont.addChild(backRay);
+    cont.iWidth = backRay.width;
+    cont.iHeight = backRay.height;
+
+    const middleImage = PIXI.Sprite.from(TextureCache['middleImage']);
+    middleImage.anchor.set(0.5);
+    cont.addChild(middleImage);
+    cont.visible = data.isMiddleImageOpen;
+
+    cont.resize = (w, h) => {
+      if (w < h) {
+        // Portrait mode
+        cont.scale.set(
+          Math.min((w * 0.8) / cont.iWidth, (h * 0.5) / cont.iHeight) *
+            data.middleImageScaleVertical
+        );
+        cont.x = w * data.middleImagePosXVertical;
+        cont.y = h * data.middleImagePosYVertical;
+      } else {
+        // Landscape mode
+        cont.scale.set(
+          Math.min((w * 0.5) / cont.iWidth, (h * 0.5) / cont.iHeight) *
+            data.middleImageScaleHorizontal
+        );
+        cont.x = w * data.middleImagePosXHorizontal;
+        cont.y = h * data.middleImagePosYHorizontal;
+      }
+    };
+    cont.resize(window.innerWidth, window.innerHeight);
+    gsap.fromTo(
+      backRay,
+      { pixi: { scale: 0 } },
+      { pixi: { scale: 1 }, duration: 0.8, ease: 'back.out(1.3)' }
+    );
+    gsap.fromTo(
+      middleImage,
+      { pixi: { scale: 0 } },
+      { pixi: { scale: 1 }, duration: 0.8, ease: 'back.out(1.3)' }
+    );
+
+    gsap.to(backRay, {
+      rotation: backRay.rotation + Math.PI * 2,
+      duration: 10,
+      repeat: -1,
+      ease: 'none',
+    });
+    backRay.visible = data.isMiddleImageBackRayOpen;
   }
 
   addButton() {

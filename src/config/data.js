@@ -27,6 +27,25 @@ const data = window.gameData ?? {
 
   //AUDIO
   bgmSrc: null, // background music source
+  bgmVolume: 0, // default: 0.5, min: 0, max: 1, step: 0.01
+  collectSrc: null,
+  collectVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  addTraySrc: null,
+  addTrayVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  clickSrc: null,
+  clickVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  matchSrc: null,
+  matchVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  reverseSrc: null,
+  reverseVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  magnetSrc: null,
+  magnetVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  tornadoSrc: null,
+  tornadoVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  timeSrc: null,
+  timeVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
+  nextLevelSrc: null,
+  nextLevelVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
 
   //GAME OPTIONS
   gameTime: 120,
@@ -54,19 +73,19 @@ const data = window.gameData ?? {
   barbieBoatCount: 15, //max 15 min 3 step 3
   barbieCarSrc: null,
   barbieCarScale: 1,
-  barbieCarCount: 15, //max 15 min 3 step 3
+  barbieCarCount: 0, //max 15 min 3 step 3
   barbieGirl1Src: null,
-  barbieGirl1Scale: 1.5,
+  barbieGirl1Scale: 1.2,
   barbieGirl1Count: 15, //max 15 min 3 step 3
   barbieGirl2Src: null,
-  barbieGirl2Scale: 1.5,
+  barbieGirl2Scale: 1.2,
   barbieGirl2Count: 15, //max 15 min 3 step 3
   barbieHouseSrc: null,
   barbieHouseScale: 1,
   barbieHouseCount: 15, //max 15 min 3 step 3
   barbieKenSrc: null,
-  barbieKenScale: 15,
-  barbieKenCount: 0, //max 15 min 3 step 3
+  barbieKenScale: 1.2,
+  barbieKenCount: 15, //max 15 min 3 step 3
 
   //REMAINING OBJ
   isBarbieBoatRemainingOpen: true,
@@ -153,6 +172,16 @@ const data = window.gameData ?? {
   endcardButtonPosYHorizontal: 0.8,
   endcardButtonPosXVertical: 0.5,
   endcardButtonPosYVertical: 0.8,
+
+  isMiddleImageOpen: true,
+  isMiddleImageBackRayOpen: true,
+  middleImageSrc: null,
+  middleImagePosXHorizontal: 0.5,
+  middleImagePosYHorizontal: 0.5,
+  middleImagePosXVertical: 0.5,
+  middleImagePosYVertical: 0.5,
+  middleImageScaleHorizontal: 0.75,
+  middleImageScaleVertical: 0.75,
 };
 
 export default data;

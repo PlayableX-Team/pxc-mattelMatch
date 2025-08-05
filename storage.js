@@ -20,9 +20,185 @@ function collectStorage(data) {
   data.powerupTimeGraySrc = storage.powerupTimeGray.items.powerupTimeGray.src;
   data.powerupTornadoGraySrc =
     storage.powerupTornadoGray.items.powerupTornadoGray.src;
+  data.middleImageSrc = storage.middleImage.items.middleImage.src;
+  data.collectSrc = storage.collect.items.collect.src;
+  data.addTraySrc = storage.addTray.items.addTray.src;
+  data.clickSrc = storage.click.items.click.src;
+  data.matchSrc = storage.match.items.match.src;
+  data.reverseSrc = storage.reverse.items.reverse.src;
+  data.magnetSrc = storage.magnet.items.magnet.src;
+  data.tornadoSrc = storage.tornado.items.tornado.src;
+  data.timeSrc = storage.time.items.time.src;
+  data.nextLevelSrc = storage.nextLevel.items.nextLevel.src;
 }
 
 const storage = {
+  nextLevel: {
+    label: 'Next Level',
+    description: 'Uploaded Next Level for the game.',
+    aiDescription: 'a collection of Next Level for branding',
+    items: {
+      nextLevel: {
+        label: 'Next Level',
+        description: 'The Next Level for the game.',
+        aiDescription: 'Next Level used in game',
+        src: require('./assets/audio/nextLevel.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  time: {
+    label: 'Time',
+    description: 'Uploaded Time for the game.',
+    aiDescription: 'a collection of Time for branding',
+    items: {
+      time: {
+        label: 'Time',
+        description: 'The Time for the game.',
+        aiDescription: 'Time used in game',
+        src: require('./assets/audio/time.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  tornado: {
+    label: 'Tornado',
+    description: 'Uploaded Tornado for the game.',
+    aiDescription: 'a collection of Tornado for branding',
+    items: {
+      tornado: {
+        label: 'Tornado',
+        description: 'The Tornado for the game.',
+        aiDescription: 'Tornado used in game',
+        src: require('./assets/audio/tornado.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  magnet: {
+    label: 'Magnet',
+    description: 'Uploaded Magnet for the game.',
+    aiDescription: 'a collection of Magnet for branding',
+    items: {
+      magnet: {
+        label: 'Magnet',
+        description: 'The Magnet for the game.',
+        aiDescription: 'Magnet used in game',
+        src: require('./assets/audio/magnet.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  reverse: {
+    label: 'Reverse',
+    description: 'Uploaded Reverse for the game.',
+    aiDescription: 'a collection of Reverse for branding',
+    items: {
+      reverse: {
+        label: 'Reverse',
+        description: 'The Reverse for the game.',
+        aiDescription: 'Reverse used in game',
+        src: require('./assets/audio/reverse.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  match: {
+    label: 'Match',
+    description: 'Uploaded Match for the game.',
+    aiDescription: 'a collection of Match for branding',
+    items: {
+      match: {
+        label: 'Match',
+        description: 'The Match for the game.',
+        aiDescription: 'Match used in game',
+        src: require('./assets/audio/match.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  click: {
+    label: 'Click',
+    description: 'Uploaded Click for the game.',
+    aiDescription: 'a collection of Click for branding',
+    items: {
+      click: {
+        label: 'Click',
+        description: 'The Click for the game.',
+        aiDescription: 'Click used in game',
+        src: require('./assets/audio/click.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  addTray: {
+    label: 'Add Tray',
+    description: 'Uploaded Add Tray for the game.',
+    aiDescription: 'a collection of Add Tray for branding',
+    items: {
+      addTray: {
+        label: 'Add Tray',
+        description: 'The Add Tray for the game.',
+        aiDescription: 'Add Tray used in game',
+        src: require('./assets/audio/addTray.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  collect: {
+    label: 'Collect',
+    description: 'Uploaded Collect for the game.',
+    aiDescription: 'a collection of Collect for branding',
+    items: {
+      collect: {
+        label: 'Collect',
+        description: 'The Collect for the game.',
+        aiDescription: 'Collect used in game',
+        src: require('./assets/audio/collect.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+
+  bgms: {
+    label: 'Background Music',
+    description: 'Uploaded Background Music for the game.',
+    aiDescription: 'a collection of Background Music for branding',
+    items: {
+      default: {
+        label: 'Default',
+        description: 'The Background Music for the game.',
+        aiDescription: 'Background Music used in game',
+        src: require('./assets/audio/bgm.mp3'),
+        type: 'audio',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  middleImage: {
+    label: 'Middle Image',
+    description: 'Uploaded Middle Image for the game.',
+    aiDescription: 'a collection of Middle Image for branding',
+    items: {
+      middleImage: {
+        label: 'Middle Image',
+        description: 'The Middle Image for the game.',
+        aiDescription: 'Middle Image used in game',
+        src: require('./assets/2d/endcard/middleImage.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
   powerupMagnetGray: {
     label: 'Powerup Magnet Gray',
     description: 'Uploaded Powerup Magnet Gray for the game.',
@@ -215,22 +391,6 @@ const storage = {
         aiDescription: 'Barbie Ken used in game',
         src: require('./assets/models/items/barbie_ken-v1.glb'),
         type: 'glb',
-        previewIcon: 'base64-preview-primary',
-      },
-    },
-  },
-
-  bgms: {
-    label: 'Background Music',
-    description: 'Uploaded Background Music for the game.',
-    aiDescription: 'a collection of Background Music for branding',
-    items: {
-      default: {
-        label: 'Default',
-        description: 'The Background Music for the game.',
-        aiDescription: 'Background Music used in game',
-        src: require('./assets/audio/bgm.mp3'),
-        type: 'audio',
         previewIcon: 'base64-preview-primary',
       },
     },

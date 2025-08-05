@@ -451,9 +451,8 @@ export default class ThreeGame {
     this.itemsCollected++;
 
     // Play collection sound effect
-    if (AudioManager) {
-      AudioManager.playSFX('collect'); // Add collect sound to your audio assets
-    }
+
+    AudioManager.playSFX('collect'); // Add collect sound to your audio assets
 
     const platformCount = 7;
     const diff = Math.abs(platformCount - 5);
@@ -509,7 +508,7 @@ export default class ThreeGame {
           onComplete: () => {
             // Platform landing sound
             if (AudioManager) {
-              AudioManager.playSFX('platform');
+              AudioManager.playSFX('addTray');
             }
 
             globals.pixiGame.reversePowerup.checkReverseGrayAsset();
@@ -642,6 +641,7 @@ export default class ThreeGame {
       dest.y += 0.3;
       dest.z -= 0.32;
       item.dest = dest;
+      globals.pixiGame.reversePowerup.checkReverseGrayAsset();
 
       gsap.killTweensOf(item.position);
 
@@ -784,6 +784,7 @@ export default class ThreeGame {
         if (this.matches >= this.winCount) {
           gsap.delayedCall(0.2, () => {
             globals.pixiGame.nextLevel();
+            AudioManager.playSFX('nextLevel');
           });
         }
         if (
@@ -907,6 +908,7 @@ export default class ThreeGame {
         globals.EventEmitter.emit('gameFinished');
       });
     }
+    globals.pixiGame.reversePowerup.checkReverseGrayAsset();
   }
 
   tornado() {

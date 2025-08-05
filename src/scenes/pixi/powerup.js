@@ -34,11 +34,15 @@ export default class Powerup {
     this.powerupConfigs = {
       magnet: {
         canActivate: () => this.count > 0,
-        action: () => globals.threeGame.magnet(),
+        action: () => {
+          AudioManager.playSFX('magnet');
+          globals.threeGame.magnet();
+        },
       },
       reverse: {
         canActivate: () => this.count > 0 && globals.threeGame.tray.length > 0,
         action: () => {
+          AudioManager.playSFX('reverse');
           globals.threeGame.reverse();
           gsap.delayedCall(0.1, () => {
             this.checkReverseGrayAsset();
@@ -48,6 +52,7 @@ export default class Powerup {
       time: {
         canActivate: () => this.count > 0 && globals.pixiGame.isTimerRunning,
         action: () => {
+          AudioManager.playSFX('time');
           globals.pixiGame.pauseTimer();
           globals.pixiGame.timerBgAnimation();
           globals.pixiGame.addGlow();
@@ -67,6 +72,7 @@ export default class Powerup {
       tornado: {
         canActivate: () => this.count > 0,
         action: () => {
+          AudioManager.playSFX('tornado');
           globals.threeGame.tornado();
           this.grayAsset.visible = true;
           this.button.visible = false;
@@ -162,6 +168,7 @@ export default class Powerup {
   activatePowerup() {
     if (globals.gameFinished) return;
     const config = this.powerupConfigs[this.type];
+    AudioManager.playSFX('click');
 
     if (!config || !config.canActivate()) {
       return;
