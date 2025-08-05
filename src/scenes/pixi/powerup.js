@@ -187,7 +187,9 @@ export default class Powerup {
     this.counterText = new PIXI.Text(this.count, {
       fontFamily: 'game-font',
       fontSize: 24,
-      fill: 0x000000,
+      fill: 'white',
+      stroke: 'black',
+      strokeThickness: 6,
     });
     counterBg.addChild(this.counterText);
     this.counterText.anchor.set(0.5);
