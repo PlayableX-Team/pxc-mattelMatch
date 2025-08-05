@@ -11,20 +11,6 @@ const data = window.gameData ?? {
   //hand
   handSrc: null,
 
-  //HEADER
-  isHeaderTextOpen: true,
-  headerText: 'Lets Collect All The Barbie Toys!',
-  headerTextColor: 0x000000,
-  headerTextScale: 0.75,
-  headerTextPosYHorizontal: 0.5,
-  headerTextPosXHorizontal: 0.5,
-  headerTextPosYVertical: 0.5,
-  headerTextPosXVertical: 0.5,
-  headerTextFontSize: 30,
-  headerTextFontColor: 0xffffff,
-  headerTextFontStroke: 0x000000,
-  headerTextFontStrokeThickness: 6,
-
   //AUDIO
   bgmSrc: null, // background music source
   bgmVolume: 0, // default: 0.5, min: 0, max: 1, step: 0.01
@@ -50,6 +36,20 @@ const data = window.gameData ?? {
   //GAME OPTIONS
   gameTime: 120,
   gameBgColor: 0x6b8cae, // Gri-mavi karışımı renk
+  isStartTransitionOpen: true,
+  //START TRANSITION TEXT
+  isHeaderTextOpen: true,
+  headerText: 'Lets Collect All The Barbie Toys!',
+  headerTextColor: 0x000000,
+  headerTextScale: 0.75,
+  headerTextPosYHorizontal: 0.5,
+  headerTextPosXHorizontal: 0.5,
+  headerTextPosYVertical: 0.5,
+  headerTextPosXVertical: 0.5,
+  headerTextFontSize: 30,
+  headerTextFontColor: 0xffffff,
+  headerTextFontStroke: 0x000000,
+  headerTextFontStrokeThickness: 6,
 
   //NEXT LEVEL
   nextLevelText: 'NEXT LEVEL', // type "_" for new line

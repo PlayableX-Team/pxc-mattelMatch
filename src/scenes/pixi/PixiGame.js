@@ -40,7 +40,6 @@ export default class PixiGame {
     console.log('Game start pixi');
 
     // this.addBackground();
-    //this.addHeaderText();
 
     globals.EventEmitter.on('gameFinished', (isWin) => {
       if (globals.gameFinished) return;
@@ -115,27 +114,31 @@ export default class PixiGame {
       }
     });
 
-    // pixiScene.children.forEach((child) => {
-    //   if (child.name == 'headerText') return;
-    //   child.alpha = 0;
-    // });
-    // gsap.delayedCall(4, () => {
-    //   pixiScene.children.forEach((child) => {
-    //     if (child.name == 'blueBg' || child.name == 'headerText') return;
-    //     gsap.to(child, {
-    //       pixi: { alpha: 1 },
-    //       duration: 0.5,
-    //       ease: 'power2.out',
-    //     });
-    //   });
-    // });
+    if (data.isStartTransitionOpen) {
+      this.addHeaderText();
 
-    // gsap.to(this.headerText, {
-    //   pixi: { scale: 0 },
-    //   duration: 0.5,
-    //   ease: 'power2.out',
-    //   delay: 3.8,
-    // });
+      pixiScene.children.forEach((child) => {
+        if (child.name == 'headerText') return;
+        child.alpha = 0;
+      });
+      gsap.delayedCall(2, () => {
+        pixiScene.children.forEach((child) => {
+          if (child.name == 'blueBg' || child.name == 'headerText') return;
+          gsap.to(child, {
+            pixi: { alpha: 1 },
+            duration: 0.5,
+            ease: 'power2.out',
+          });
+        });
+      });
+
+      gsap.to(this.headerText, {
+        pixi: { scale: 0 },
+        duration: 0.5,
+        ease: 'power2.out',
+        delay: 1.5,
+      });
+    }
   }
 
   addGlow() {
