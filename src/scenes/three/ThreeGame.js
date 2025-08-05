@@ -295,6 +295,7 @@ export default class ThreeGame {
   }
 
   createClickListener() {
+    if (globals.gameFinished) return;
     // Initialize TouchTransformer with the camera
     this.touchTransformer = new TouchTransformer(globals.threeCamera);
 
@@ -801,7 +802,9 @@ export default class ThreeGame {
 
     if (!isMatch && this.tray.length === this.platforms.length) {
       console.log('Tray full - no matches possible');
-      // Handle game over state here
+      gsap.delayedCall(0.2, () => {
+        globals.EventEmitter.emit('gameFinished');
+      });
     }
   }
 

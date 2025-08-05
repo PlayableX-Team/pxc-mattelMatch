@@ -160,6 +160,7 @@ export default class Powerup {
 
   // Powerup aktivasyonu için ortak metod
   activatePowerup() {
+    if (globals.gameFinished) return;
     const config = this.powerupConfigs[this.type];
 
     if (!config || !config.canActivate()) {

@@ -40,7 +40,7 @@ export default class PixiGame {
     console.log('Game start pixi');
 
     // this.addBackground();
-    // this.addHeaderText();
+    //this.addHeaderText();
 
     globals.EventEmitter.on('gameFinished', () => {
       if (globals.gameFinished) return;
@@ -114,6 +114,28 @@ export default class PixiGame {
         });
       }
     });
+
+    // pixiScene.children.forEach((child) => {
+    //   if (child.name == 'headerText') return;
+    //   child.alpha = 0;
+    // });
+    // gsap.delayedCall(4, () => {
+    //   pixiScene.children.forEach((child) => {
+    //     if (child.name == 'blueBg' || child.name == 'headerText') return;
+    //     gsap.to(child, {
+    //       pixi: { alpha: 1 },
+    //       duration: 0.5,
+    //       ease: 'power2.out',
+    //     });
+    //   });
+    // });
+
+    // gsap.to(this.headerText, {
+    //   pixi: { scale: 0 },
+    //   duration: 0.5,
+    //   ease: 'power2.out',
+    //   delay: 3.8,
+    // });
   }
 
   addGlow() {
@@ -232,6 +254,7 @@ export default class PixiGame {
     };
     blueBg.resize(window.innerWidth, window.innerHeight);
     this.blueBg = blueBg;
+    this.blueBg.name = 'blueBg';
   }
 
   timerBgAnimation() {
@@ -699,30 +722,49 @@ export default class PixiGame {
   }
 
   addHeaderText() {
-    const style = new PIXI.TextStyle({
+    const cont = new PIXI.Container();
+    pixiScene.addChild(cont);
+    cont.name = 'headerText'; // Bunu ekleyin
+    cont.visible = data.isHeaderTextOpen;
+    cont.width = cont.iWidth = 100;
+    cont.height = cont.iHeight = 100;
+    const text = new PIXI.Text(data.headerText, {
       fontFamily: 'game-font',
-      fontSize: 85,
-      fill: data.headerTextColor,
-      strokeThickness: 0,
-      wordWrap: false,
+      fontSize: data.headerTextFontSize,
+      fill: data.headerTextFontColor,
       align: 'center',
+      stroke: data.headerTextFontStroke,
+      strokeThickness: data.headerTextFontStrokeThickness,
+      lineJoin: 'round',
+      wordWrap: true,
+      wordWrapWidth: 300,
     });
+    text.anchor.set(0.5);
+    cont.addChild(text);
+    this.headerText = text;
+    this.headerText.name = 'headerText';
 
-    this.text = new PIXI.Text(data.headerText, style);
-    pixiScene.addChild(this.text);
-
-    this.text.iWidth = this.text.width;
-    this.text.iHeight = this.text.height;
-    this.text.anchor.set(0.5);
-
-    this.text.resize = (w, h) => {
-      this.text.x = w / 2;
-      this.text.y = h * 0.3;
-      this.text.scale.set(
-        Math.min(w / this.text.iWidth, h / this.text.iHeight)
+    cont.resize = (w, h) => {
+      cont.scale.set(
+        Math.min((w / cont.iWidth) * 0.8, (h / cont.iHeight) * 0.2) *
+          data.headerTextScale
       );
+      if (w < h) {
+        cont.y = h * data.headerTextPosYVertical;
+        cont.x = w * data.headerTextPosXVertical;
+      } else {
+        cont.y = h * data.headerTextPosYHorizontal;
+        cont.x = w * data.headerTextPosXHorizontal;
+      }
     };
-    this.text.resize(window.innerWidth, window.innerHeight);
+    cont.resize(window.innerWidth, window.innerHeight);
+
+    //animate header text
+    gsap.fromTo(
+      text,
+      { pixi: { scale: 0 } },
+      { pixi: { scale: 1 }, duration: 0.8, ease: 'back.out(1.3)' }
+    );
   }
 
   addBackground() {

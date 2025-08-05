@@ -12,8 +12,18 @@ const data = window.gameData ?? {
   handSrc: null,
 
   //HEADER
-  headerText: 'placeholder text!',
+  isHeaderTextOpen: true,
+  headerText: 'Lets Collect All The Barbie Toys!',
   headerTextColor: 0x000000,
+  headerTextScale: 0.75,
+  headerTextPosYHorizontal: 0.5,
+  headerTextPosXHorizontal: 0.5,
+  headerTextPosYVertical: 0.5,
+  headerTextPosXVertical: 0.5,
+  headerTextFontSize: 30,
+  headerTextFontColor: 0xffffff,
+  headerTextFontStroke: 0x000000,
+  headerTextFontStrokeThickness: 6,
 
   //AUDIO
   bgmSrc: null, // background music source
@@ -36,16 +46,16 @@ const data = window.gameData ?? {
   barbieCarScale: 1,
   barbieCarCount: 15, //max 15 min 3 step 3
   barbieGirl1Src: null,
-  barbieGirl1Scale: 1,
+  barbieGirl1Scale: 1.5,
   barbieGirl1Count: 15, //max 15 min 3 step 3
   barbieGirl2Src: null,
-  barbieGirl2Scale: 1,
+  barbieGirl2Scale: 1.5,
   barbieGirl2Count: 15, //max 15 min 3 step 3
   barbieHouseSrc: null,
   barbieHouseScale: 1,
   barbieHouseCount: 15, //max 15 min 3 step 3
   barbieKenSrc: null,
-  barbieKenScale: 1,
+  barbieKenScale: 1.5,
   barbieKenCount: 15, //max 15 min 3 step 3
 
   //REMAINING OBJ
