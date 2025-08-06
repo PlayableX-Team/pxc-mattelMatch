@@ -39,6 +39,9 @@ export default class ThreeGame {
     this.itemsCollected = 0;
     this.tornadoTime = 2500;
 
+    // Ground positioning
+    this.groundZPosition = 5;
+
     this.gameMap = new GameMap(
       this.slotPositions,
       this.slotAvailable,
@@ -58,8 +61,8 @@ export default class ThreeGame {
     globals.physicsManager = this.physicsManager;
 
     // Ground parametrelerini tanımla (tüm sistemde kullanılacak)
-    this.groundHalfX = 7;
-    this.groundHalfZ = 8;
+    this.groundHalfX = 5;
+    this.groundHalfZ = 5;
     this.groundHeight = 0.1;
 
     let test_cube = new THREE.Mesh(
@@ -74,8 +77,6 @@ export default class ThreeGame {
 
     // Create array to store 30 MapObjects
     this.mapObjects = [];
-    // objOffset'i ground size'a göre dinamik hesapla (güvenli buffer için biraz küçük tut)
-    this.objOffset = Math.min(this.groundHalfX - 0.5, this.groundHalfZ - 0.5);
     this.usedPositions = []; // Track used positions to prevent overlap
 
     let yPosition = 10;
@@ -86,7 +87,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieBoat',
         data.barbieBoatScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
         1
       );
       this.mapObjects.push(mapObject);
@@ -100,7 +101,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieCar',
         data.barbieCarScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
         2
       );
       this.mapObjects.push(mapObject);
@@ -113,7 +114,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl1',
         data.barbieGirl1Scale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
         3
       );
       this.mapObjects.push(mapObject);
@@ -126,7 +127,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl2',
         data.barbieGirl2Scale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
         4
       );
       this.mapObjects.push(mapObject);
@@ -139,7 +140,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
         5
       );
       this.mapObjects.push(mapObject);
@@ -152,7 +153,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieKen',
         data.barbieKenScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 2, safePos.z), // Ground merkez z=2'ye göre
         6
       );
       this.mapObjects.push(mapObject);
@@ -273,9 +274,15 @@ export default class ThreeGame {
     let attempts = 0;
     let randomX, randomZ;
 
+    // Ground collider'ın gerçek sınırlarını hesapla
+    const groundMinX = -this.groundHalfX + 0.5; // Buffer için 0.5 birim içeride
+    const groundMaxX = this.groundHalfX - 0.5;
+    const groundMinZ = this.groundZPosition - this.groundHalfZ + 0.5;
+    const groundMaxZ = this.groundZPosition + this.groundHalfZ - 0.5;
+
     do {
-      randomX = randFloat(-this.objOffset, this.objOffset);
-      randomZ = randFloat(-this.objOffset, this.objOffset);
+      randomX = randFloat(groundMinX, groundMaxX);
+      randomZ = randFloat(groundMinZ, groundMaxZ);
       attempts++;
     } while (
       !this.isSafePosition(randomX, randomZ, minDistance) &&
@@ -292,6 +299,9 @@ export default class ThreeGame {
     const groundSizeX = this.groundHalfX * 2;
     const groundSizeZ = this.groundHalfZ * 2;
 
+    // Class değişkeninden ground z pozisyonunu kullan
+    const groundZPosition = this.groundZPosition;
+
     // Create a very flat box as ground
     const groundShape = new CANNON.Box(
       new CANNON.Vec3(this.groundHalfX, this.groundHeight, this.groundHalfZ)
@@ -302,7 +312,7 @@ export default class ThreeGame {
     });
 
     groundBody.addShape(groundShape);
-    groundBody.position.set(0, -this.groundHeight, 2); // Biraz aşağıda konumlandır
+    groundBody.position.set(0, -this.groundHeight, groundZPosition);
 
     // Add body to physics world
     this.physicsManager.world.addBody(groundBody);
@@ -314,7 +324,7 @@ export default class ThreeGame {
     );
     ground.material.opacity = 0;
     ground.material.transparent = true;
-    ground.position.set(0, 0, 0);
+    ground.position.set(0, 0, groundZPosition);
     ground.rotateX(-Math.PI / 2);
     globals.threeScene.add(ground);
 
@@ -322,7 +332,7 @@ export default class ThreeGame {
     const wallHeight = 100;
     const wallThickness = 0.2;
 
-    // North wall (positive Z) - ground size'a göre otomatik pozisyonlama
+    // North wall (positive Z) - ground z pozisyonuna göre dinamik pozisyonlama
     let northWall = new THREE.Mesh(
       new THREE.BoxGeometry(groundSizeX, wallHeight, wallThickness),
       new THREE.MeshBasicMaterial({
@@ -331,14 +341,18 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    northWall.position.set(0, wallHeight / 2, this.groundHalfZ + 2); // Ground'un z pozisyonuna göre ayarla
+    northWall.position.set(
+      0,
+      wallHeight / 2,
+      this.groundHalfZ + groundZPosition
+    );
     globals.threeScene.add(northWall);
     northWall.body = this.physicsManager.createBodyFromObject(northWall, {
       type: 'static',
       mass: 0,
     });
 
-    // South wall (negative Z) - ground size'a göre otomatik pozisyonlama
+    // South wall (negative Z) - ground z pozisyonuna göre dinamik pozisyonlama
     let southWall = new THREE.Mesh(
       new THREE.BoxGeometry(groundSizeX, wallHeight, wallThickness),
       new THREE.MeshBasicMaterial({
@@ -347,14 +361,18 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    southWall.position.set(0, wallHeight / 2, -this.groundHalfZ + 2); // Ground'un z pozisyonuna göre ayarla
+    southWall.position.set(
+      0,
+      wallHeight / 2,
+      -this.groundHalfZ + groundZPosition
+    );
     globals.threeScene.add(southWall);
     southWall.body = this.physicsManager.createBodyFromObject(southWall, {
       type: 'static',
       mass: 0,
     });
 
-    // East wall (positive X) - ground size'a göre otomatik pozisyonlama
+    // East wall (positive X) - ground z pozisyonuna göre dinamik pozisyonlama
     let eastWall = new THREE.Mesh(
       new THREE.BoxGeometry(wallThickness, wallHeight, groundSizeZ),
       new THREE.MeshBasicMaterial({
@@ -363,14 +381,14 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    eastWall.position.set(this.groundHalfX, wallHeight / 2, 2); // Ground'un z pozisyonuna göre ayarla
+    eastWall.position.set(this.groundHalfX, wallHeight / 2, groundZPosition);
     globals.threeScene.add(eastWall);
     eastWall.body = this.physicsManager.createBodyFromObject(eastWall, {
       type: 'static',
       mass: 0,
     });
 
-    // West wall (negative X) - ground size'a göre otomatik pozisyonlama
+    // West wall (negative X) - ground z pozisyonuna göre dinamik pozisyonlama
     let westWall = new THREE.Mesh(
       new THREE.BoxGeometry(wallThickness, wallHeight, groundSizeZ),
       new THREE.MeshBasicMaterial({
@@ -379,7 +397,7 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    westWall.position.set(-this.groundHalfX, wallHeight / 2, 2); // Ground'un z pozisyonuna göre ayarla
+    westWall.position.set(-this.groundHalfX, wallHeight / 2, groundZPosition);
     globals.threeScene.add(westWall);
     westWall.body = this.physicsManager.createBodyFromObject(westWall, {
       type: 'static',

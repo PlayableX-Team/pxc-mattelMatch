@@ -73,7 +73,7 @@ const data = window.gameData ?? {
   barbieBoatCount: 15, //max 15 min 3 step 3
   barbieCarSrc: null,
   barbieCarScale: 1,
-  barbieCarCount: 0, //max 15 min 3 step 3
+  barbieCarCount: 15, //max 15 min 3 step 3
   barbieGirl1Src: null,
   barbieGirl1Scale: 1.2,
   barbieGirl1Count: 15, //max 15 min 3 step 3
