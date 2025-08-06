@@ -253,6 +253,8 @@ export default class ThreeGame {
     );
     bgPlane.position.set(0, -5, 0);
     bgPlane.rotation.x = -Math.PI / 2;
+    bgPlane.receiveShadow = true;
+    bgPlane.castShadow = true;
     globals.threeScene.add(bgPlane);
   }
 
@@ -1037,6 +1039,7 @@ export default class ThreeGame {
       `3 adet ${selectedType} tipinde obje magnet pozisyonuna çekiliyor...`
     );
     globals.pixiGame.updateRemainingObjCount(selectedType, 3);
+    this.matches++;
 
     // Ses efekti çal
     if (AudioManager) {

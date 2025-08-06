@@ -4,12 +4,15 @@ import gsap from 'gsap';
 import AudioManager from '../../../engine/audio/AudioManager';
 import data from '../../config/data';
 import * as CANNON from 'cannon-es';
+import { mod } from 'three/tsl';
 
 export default class MapObject extends THREE.Object3D {
   constructor(model, scale, position = new THREE.Vector3(0, 0, 0), objectType) {
     super();
     this.animations = {};
     this.model = globals.cloneModel(model);
+    this.model.castShadow = true;
+    this.model.receiveShadow = true;
     this.originalScale = scale; // Orijinal scale'i sakla
     this.scale.setScalar(scale);
     this.add(this.model);
