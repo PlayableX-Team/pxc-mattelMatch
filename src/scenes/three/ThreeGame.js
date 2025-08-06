@@ -601,6 +601,15 @@ export default class ThreeGame {
       // Add visual enhancements
       platform.receiveShadow = true;
 
+      // Tray objelerine kırmızı renk ver
+      platform.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshLambertMaterial({
+            color: data.gameBoardTrayColor,
+          });
+        }
+      });
+
       tray.add(platform);
       this.platforms.push(platform);
 
@@ -696,7 +705,7 @@ export default class ThreeGame {
 
             // Complex multi-stage bounce sequence
             gsap.to(item.position, {
-              z: '-=0.8',
+              z: '-=0.6',
               duration: 0.15,
               ease: 'sine.inOut',
               delay: 0.1,

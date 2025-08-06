@@ -37,6 +37,7 @@ const data = window.gameData ?? {
   gameTime: 120,
   gameBgColor: 0x6b8cae, // Gri-mavi karışımı renk
   isStartTransitionOpen: true,
+  gameBoardTrayColor: 0x5f7c8a,
   //START TRANSITION TEXT
   isHeaderTextOpen: true,
   headerText: 'Lets Collect All The Barbie Toys!',
