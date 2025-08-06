@@ -43,7 +43,7 @@ export default class MapObject extends THREE.Object3D {
     // Düşük sürtünme ve yüksek sekme için materyal oluştur
     const bouncyMaterial = new CANNON.Material('bouncy');
     bouncyMaterial.friction = 0; // Düşük sürtünme (0-1 arası, 0 = sürtünmesiz)
-    bouncyMaterial.restitution = 0.5; // Yüksek sekme (0-1 arası, 1 = tam sekme)
+    bouncyMaterial.restitution = 1; // Yüksek sekme (0-1 arası, 1 = tam sekme)
 
     //Materyali physics body'ye ata
     this.body.material = bouncyMaterial;

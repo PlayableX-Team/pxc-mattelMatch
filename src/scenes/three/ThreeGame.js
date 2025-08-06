@@ -574,10 +574,10 @@ export default class ThreeGame {
   // Enhanced tray system with sophisticated platform management
   addEnhancedTray(count) {
     const diff = Math.abs(count - 5);
-    let scalar = 1.3;
+    let scalar = 1.1;
 
     const platformScale = scalar - diff * 0.01;
-    const offset = 1.5 - diff * 0.01;
+    const offset = 1.2 - diff * 0.01;
     let tray = new THREE.Object3D();
     this.trayObj = tray;
 
@@ -592,7 +592,7 @@ export default class ThreeGame {
       }
 
       // Position and scale platforms
-      platform.position.set(i * offset, 0, 1.5);
+      platform.position.set(i * offset, 0, 2.5);
       platform.scale.set(platformScale, platformScale, platformScale);
       platform.rotation.x = -Math.PI / 4;
       platform.oScale = platformScale;
@@ -953,16 +953,28 @@ export default class ThreeGame {
 
   // Tornado kuvvetlerini sürekli uygulayan yardımcı metod
   applyTornadoForces() {
-    const tornadoStrength = 100; // Sürekli efekt için dairesel hareket gücü artırıldı
-    const upwardForce = 20;
-    const centerPoint = new THREE.Vector3(0, 0, 0);
-    const maxTornadoDistance = 300; // Maksimum tornado etki mesafesi (yeni!)
+    // Dar alan için optimize edilmiş parametreler
+    const tornadoStrength = 500; // Daha düşük kuvvet - sıkışmayı önler
+    const upwardForce = 15; // Daha yumuşak yukarı kuvvet
+    const centerPoint = new THREE.Vector3(0, 0, this.groundZPosition); // Ground merkezini kullan
+    const maxTornadoDistance =
+      Math.max(this.groundHalfX, this.groundHalfZ) * 10; // Ground boyutuna göre dinamik
+    const minDistance = 0.1; // Minimum mesafe artırıldı
+
+    // Objeleri yüksekliklerine göre grupla (katman sistemi)
+    const heightLayers = {};
+    this.mapObjects.forEach((mapObject) => {
+      if (!mapObject.body) return;
+      const layerIndex = Math.floor(mapObject.body.position.y / 2); // Her 2 birimde bir katman
+      if (!heightLayers[layerIndex]) heightLayers[layerIndex] = [];
+      heightLayers[layerIndex].push(mapObject);
+    });
 
     this.mapObjects.forEach((mapObject) => {
       if (!mapObject.body) return;
 
-      // Angular damping'i artır (objelerin dönmesini yavaşlatır)
-      // mapObject.body.angularDamping = 0.8; // 0-1 arası, yüksek değer daha fazla dampening
+      // Daha güçlü angular damping - dönmeyi kontrol et
+      mapObject.body.angularDamping = 0.5;
 
       const objPosition = new THREE.Vector3(
         mapObject.body.position.x,
@@ -973,43 +985,105 @@ export default class ThreeGame {
       const radialVector = objPosition.clone().sub(centerPoint);
       const distance = radialVector.length();
 
-      // Distance kontrolü güncellendi
-      if (distance < 0.5 || distance > maxTornadoDistance) return; // 0.1'den 0.5'e artırıldı
+      // Dar alan için güncellenmiş mesafe kontrolü
+      if (distance < minDistance || distance > maxTornadoDistance) return;
 
-      // Dairesel hareket
+      // Yükseklik bazlı kuvvet modifikasyonu
+      const heightFactor = Math.max(0.3, Math.min(1.0, objPosition.y / 15));
+
+      // Dairesel hareket - daha yumuşak
       const tangentVector = new THREE.Vector3(
         -radialVector.z,
         0,
         radialVector.x
       ).normalize();
 
-      // Merkeze çekme - daha az çekme kuvveti
-      const pullVector = radialVector.clone().normalize().multiplyScalar(-2);
+      // Merkeze çekme kuvvetini azalt - sıkışmayı önle
+      const pullStrength = Math.max(0.5, 3 - distance); // Mesafeye bağlı çekme
+      const pullVector = radialVector
+        .clone()
+        .normalize()
+        .multiplyScalar(-pullStrength);
 
-      // Distance multiplier güncellendi - uzak objeler için daha iyi
-      const distanceMultiplier = Math.max(0.2, Math.min(1.5, 15 / distance)); // 10'dan 15'e artırıldı, min 0.3
-      const tangentForce = tangentVector.multiplyScalar(
-        tornadoStrength * distanceMultiplier
+      // Dar alan için optimize edilmiş distance multiplier
+      const distanceMultiplier = Math.max(
+        0.1,
+        Math.min(1.0, 8 / (distance + 1))
       );
+
+      // Kuvvetleri hesapla
+      const tangentForce = tangentVector.multiplyScalar(
+        tornadoStrength * distanceMultiplier * heightFactor
+      );
+
       const upwardForceVector = new THREE.Vector3(
         0,
-        upwardForce * distanceMultiplier,
+        upwardForce * distanceMultiplier * heightFactor,
         0
       );
 
-      // Kuvveti kütle merkezine uygula (dönmeyi azaltır)
+      // Dağılma kuvveti ekle - objelerin üst üste yığılmasını önle
+      const separationForce = this.calculateSeparationForce(mapObject);
+
+      // Toplam kuvveti uygula
       mapObject.body.applyForce(
         new CANNON.Vec3(
-          tangentForce.x + pullVector.x * 0.3, // Pull kuvvetini daha da azalt
-          upwardForceVector.y,
-          tangentForce.z + pullVector.z * 0.3
+          tangentForce.x + pullVector.x * 0.2 + separationForce.x,
+          upwardForceVector.y + separationForce.y,
+          tangentForce.z + pullVector.z * 0.2 + separationForce.z
         ),
-        new CANNON.Vec3(0, 0, 0) // Kütle merkezine uygula (yerel koordinat sistemi)
+        new CANNON.Vec3(0, 0, 0)
       );
 
-      // Angular velocity'i tamamen sıfırlamak yerine yumuşak bir şekilde azalt
-      mapObject.body.angularVelocity.scale(0.9); // Mevcut dönme hızını yarıya indir
+      // Angular velocity'i daha agresif şekilde kontrol et
+      mapObject.body.angularVelocity.scale(0.5);
+
+      // Hız sınırlaması - çok hızlı hareket etmeyi önle
+      const maxVelocity = 8;
+      const velocity = mapObject.body.velocity;
+      const speed = Math.sqrt(
+        velocity.x * velocity.x + velocity.z * velocity.z
+      );
+      if (speed > maxVelocity) {
+        const scale = maxVelocity / speed;
+        velocity.x *= scale;
+        velocity.z *= scale;
+      }
     });
+  }
+
+  // Objelerin birbirinden ayrılmasını sağlayan kuvvet hesapla
+  calculateSeparationForce(targetObject) {
+    const separationDistance = 100; // Minimum ayrılık mesafesi
+    const separationStrength = 100; // Ayrılma kuvveti
+    let separationForce = new THREE.Vector3(0, 0, 0);
+    let neighborCount = 0;
+
+    this.mapObjects.forEach((otherObject) => {
+      if (otherObject === targetObject || !otherObject.body) return;
+
+      const distance = targetObject.body.position.distanceTo(
+        otherObject.body.position
+      );
+
+      if (distance < separationDistance && distance > 0) {
+        // Komşu objeden uzaklaştırıcı kuvvet hesapla
+        const diff = new THREE.Vector3()
+          .subVectors(targetObject.body.position, otherObject.body.position)
+          .normalize()
+          .multiplyScalar(separationStrength / (distance + 0.1));
+
+        separationForce.add(diff);
+        neighborCount++;
+      }
+    });
+
+    // Ortalama al
+    if (neighborCount > 0) {
+      separationForce.divideScalar(neighborCount);
+    }
+
+    return separationForce;
   }
 
   magnet() {
