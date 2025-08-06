@@ -171,7 +171,7 @@ export default class ThreeGame {
 
   createFakeLevel() {
     globals.gameFinished = true;
-    // Create objects with safe positions to prevent overlap
+
     for (let i = 0; i < data.barbieBoatCount; i++) {
       const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
 
@@ -183,6 +183,7 @@ export default class ThreeGame {
       );
       this.mapObjects.push(mapObject);
       console.log(mapObject.objectType);
+      this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieCarCount; i++) {
@@ -195,6 +196,7 @@ export default class ThreeGame {
         2
       );
       this.mapObjects.push(mapObject);
+      this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieGirl1Count; i++) {
@@ -207,6 +209,7 @@ export default class ThreeGame {
         3
       );
       this.mapObjects.push(mapObject);
+      this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieGirl2Count; i++) {
@@ -219,6 +222,7 @@ export default class ThreeGame {
         4
       );
       this.mapObjects.push(mapObject);
+      this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieHouseCount; i++) {
@@ -231,6 +235,7 @@ export default class ThreeGame {
         5
       );
       this.mapObjects.push(mapObject);
+      this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieKenCount; i++) {
@@ -243,18 +248,19 @@ export default class ThreeGame {
         6
       );
       this.mapObjects.push(mapObject);
+      this.totalGameObject++;
     }
   }
 
   addBgPlane() {
     let bgPlane = new THREE.Mesh(
       new THREE.PlaneGeometry(100, 100),
-      new THREE.MeshBasicMaterial({ color: data.gameBgColor })
+      new THREE.MeshStandardMaterial({ color: data.gameBgColor })
     );
     bgPlane.position.set(0, -5, 0);
     bgPlane.rotation.x = -Math.PI / 2;
     bgPlane.receiveShadow = true;
-    bgPlane.castShadow = true;
+    bgPlane.castShadow = false; // Zemin gölge atmaz, sadece alır
     globals.threeScene.add(bgPlane);
   }
 
@@ -586,6 +592,13 @@ export default class ThreeGame {
       // Clone the tray model
       let platform = globals.cloneModel('tray');
 
+      platform.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
       if (!platform) {
         console.error('Tray model could not be loaded!');
         continue;
@@ -724,7 +737,7 @@ export default class ThreeGame {
 
                     // Disable shadows for performance
                     item.traverse((child) => {
-                      child.castShadow = false;
+                      //child.castShadow = false;
                     });
                   },
                 });
@@ -964,7 +977,7 @@ export default class ThreeGame {
   applyTornadoForces() {
     // Dar alan için optimize edilmiş parametreler
     const tornadoStrength = 500; // Daha düşük kuvvet - sıkışmayı önler
-    const upwardForce = 15; // Daha yumuşak yukarı kuvvet
+    const upwardForce = 20; // Daha yumuşak yukarı kuvvet
     const centerPoint = new THREE.Vector3(0, 0, this.groundZPosition); // Ground merkezini kullan
     const maxTornadoDistance =
       Math.max(this.groundHalfX, this.groundHalfZ) * 10; // Ground boyutuna göre dinamik
@@ -1141,6 +1154,13 @@ export default class ThreeGame {
     globals.pixiGame.updateRemainingObjCount(selectedType, 3);
     this.matches++;
 
+    if (this.matches >= this.winCount) {
+      gsap.delayedCall(0.2, () => {
+        globals.pixiGame.nextLevel();
+        AudioManager.playSFX('nextLevel');
+      });
+    }
+
     // Ses efekti çal
     if (AudioManager) {
       AudioManager.playSFX('collect');
@@ -1198,7 +1218,7 @@ export default class ThreeGame {
 
       // Y-axis movement - parabolic arc (gather stilinde)
       gsap.to(obj.position, {
-        y: dest.y + 3,
+        y: dest.y + 10,
         duration: 0.2,
         delay: delay,
         ease: 'sine.in',
@@ -1300,7 +1320,7 @@ export default class ThreeGame {
 
     // Ground collider alanı içinde güvenli pozisyon oluştur (x ve z için)
     const safePos = this.getSafePosition(0.5);
-    const targetPosition = new THREE.Vector3(safePos.x, 2, safePos.z);
+    const targetPosition = new THREE.Vector3(safePos.x, 15, safePos.z);
 
     // GSAP ile pozisyon animasyonu
     gsap.to(lastObject.position, {

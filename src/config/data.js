@@ -34,7 +34,7 @@ const data = window.gameData ?? {
   nextLevelVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
 
   //GAME OPTIONS
-  gameTime: 120,
+  gameTime: 150,
   gameBgColor: 0x6b8cae, // Gri-mavi karışımı renk
   isStartTransitionOpen: true,
   gameBoardTrayColor: 0x5f7c8a,
@@ -106,14 +106,14 @@ const data = window.gameData ?? {
   powerupMagnetGraySrc: null,
   powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 2,
+  powerupMagnetCounter: 5,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
   powerupReverseGraySrc: null,
   powerupReverseGrayScale: 0.4,
   powerupReverseScale: 0.4,
-  powerupReverseCounter: 2,
+  powerupReverseCounter: 5,
 
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,

@@ -75,6 +75,11 @@ const assets = {
       src: require('@assets/2d/endcard/backRay.png'),
       type: 'image',
     },
+    {
+      name: 'cartoonSmoke',
+      src: require('@assets/2d/cartoonSmoke.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

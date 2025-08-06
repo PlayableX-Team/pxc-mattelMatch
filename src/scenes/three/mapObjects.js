@@ -11,8 +11,15 @@ export default class MapObject extends THREE.Object3D {
     super();
     this.animations = {};
     this.model = globals.cloneModel(model);
-    this.model.castShadow = true;
-    this.model.receiveShadow = true;
+
+    // Modelin tüm mesh'lerinde gölge ayarlarını etkinleştir
+    this.model.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
     this.originalScale = scale; // Orijinal scale'i sakla
     this.scale.setScalar(scale);
     this.add(this.model);
@@ -43,19 +50,10 @@ export default class MapObject extends THREE.Object3D {
     // Düşük sürtünme ve yüksek sekme için materyal oluştur
     const bouncyMaterial = new CANNON.Material('bouncy');
     bouncyMaterial.friction = 0; // Düşük sürtünme (0-1 arası, 0 = sürtünmesiz)
-    bouncyMaterial.restitution = 1; // Yüksek sekme (0-1 arası, 1 = tam sekme)
+    bouncyMaterial.restitution = 0.1; // Yüksek sekme (0-1 arası, 1 = tam sekme)
 
     //Materyali physics body'ye ata
     this.body.material = bouncyMaterial;
-
-    // // // Rastgele başlangıç hareketi ver
-    // const randomImpulse = new CANNON.Vec3(
-    //   (Math.random() - 0.5) * 1, // X yönünde rastgele hareket (-10 ile +10 arası)
-    //   0, // Y yönünde yukarı doğru hareket (5-15 arası)
-    //   (Math.random() - 0.5) * 1 // Z yönünde rastgele hareket (-10 ile +10 arası)
-    // );
-
-    //this.body.applyLocalImpulse(randomImpulse);
 
     this.body.linearDamping = 0.7; // Hareketi yavaş yavaş durdur
     this.body.angularDamping = 0.7; // Dönmeyi yavaş yavaş durdur

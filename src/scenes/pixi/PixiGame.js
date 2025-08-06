@@ -130,6 +130,7 @@ export default class PixiGame {
             ease: 'power2.out',
           });
         });
+        this.startTimer();
       });
 
       gsap.to(this.headerText, {
@@ -659,9 +660,6 @@ export default class PixiGame {
 
     // İlk timer maskesini uygula
     this.updateTimerBar();
-
-    // Timer'ı başlat
-    this.startTimer();
   }
 
   timerPowerUpTextOpen() {
@@ -921,6 +919,36 @@ export default class PixiGame {
     });
   }
 
+  // Timer'ı sıfırlayıp yeniden başlatan fonksiyon
+  resetTimer() {
+    console.log('Timer reset ediliyor...');
+
+    // Mevcut timer animasyonlarını durdur
+    gsap.killTweensOf(this);
+
+    // Timer değerlerini sıfırla
+    this.timerProgress = 1; // Tam dolu başla
+    this.timerDuration = data.gameTime; // data.js'ten gameTime değerini al
+    this.isTimerRunning = false;
+
+    // Timer bar'ını orijinal rengine döndür
+    if (this.originalTimerFillBarTint) {
+      this.timerFillBar.tint = this.originalTimerFillBarTint;
+    }
+
+    // Timer bar'ını görsel olarak güncelle
+    this.updateTimerBar();
+
+    // Timer'ı yeniden başlat
+    this.startTimer();
+
+    console.log(
+      'Timer reset edildi ve yeniden başlatıldı!',
+      this.timerDuration,
+      'saniye'
+    );
+  }
+
   // Asset isminden veya sayıdan obje tipini çıkaran fonksiyon
   getObjectTypeFromAsset(asset) {
     const typeMap = {
@@ -1070,6 +1098,7 @@ export default class PixiGame {
       delay: 0.5,
       onComplete: () => {
         globals.threeGame.createFakeLevel();
+        this.resetTimer();
       },
     });
   }
