@@ -139,7 +139,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
         5
       );
       this.mapObjects.push(mapObject);
@@ -227,7 +227,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
         5
       );
       this.mapObjects.push(mapObject);
