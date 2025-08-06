@@ -79,7 +79,6 @@ export default class ThreeGame {
     this.mapObjects = [];
     this.usedPositions = []; // Track used positions to prevent overlap
 
-    let yPosition = 10;
     // Create objects with safe positions to prevent overlap
     for (let i = 0; i < data.barbieBoatCount; i++) {
       const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
@@ -179,7 +178,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieBoat',
         data.barbieBoatScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
         1
       );
       this.mapObjects.push(mapObject);
@@ -192,7 +191,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieCar',
         data.barbieCarScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
         2
       );
       this.mapObjects.push(mapObject);
@@ -204,7 +203,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl1',
         data.barbieGirl1Scale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
         3
       );
       this.mapObjects.push(mapObject);
@@ -216,7 +215,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl2',
         data.barbieGirl2Scale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
         4
       );
       this.mapObjects.push(mapObject);
@@ -228,7 +227,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
         5
       );
       this.mapObjects.push(mapObject);
@@ -240,7 +239,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieKen',
         data.barbieKenScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z + 2), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 2, safePos.z), // Ground merkez z=2'ye göre
         6
       );
       this.mapObjects.push(mapObject);
