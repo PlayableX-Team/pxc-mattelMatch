@@ -325,8 +325,10 @@ export default class PixiGame {
       return;
     }
 
-    // İlk type 5 objesini kullan
-    const targetObject = type5Objects[0];
+    // Y değeri en büyük olan type 5 objesini bul
+    const targetObject = type5Objects.reduce((highest, current) => {
+      return current.position.y > highest.position.y ? current : highest;
+    });
 
     // 3D objenin dünya pozisyonunu al
     const worldPosition = new THREE.Vector3();
