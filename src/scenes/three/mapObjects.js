@@ -44,6 +44,7 @@ export default class MapObject extends THREE.Object3D {
       sizeMultiplier: new THREE.Vector3(1, 1, 1),
     });
     this.body.position.copy(this.position);
+
     // Quaternion'ı da kopyala
     this.body.quaternion.copy(this.quaternion);
 
@@ -57,6 +58,14 @@ export default class MapObject extends THREE.Object3D {
 
     this.body.linearDamping = 0.7; // Hareketi yavaş yavaş durdur
     this.body.angularDamping = 0.7; // Dönmeyi yavaş yavaş durdur
+  }
+
+  // Rotasyonu ayarla ve physics body'yi güncelle
+  setRotation(x, y, z) {
+    this.rotation.set(x, y, z);
+    if (this.body) {
+      this.body.quaternion.copy(this.quaternion);
+    }
   }
 
   update(ratio, delta) {

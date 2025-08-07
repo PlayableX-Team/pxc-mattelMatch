@@ -61,8 +61,8 @@ export default class ThreeGame {
     globals.physicsManager = this.physicsManager;
 
     // Ground parametrelerini tanımla (tüm sistemde kullanılacak)
-    this.groundHalfX = 5;
-    this.groundHalfZ = 5;
+    this.groundHalfX = 6;
+    this.groundHalfZ = 6;
     this.groundHeight = 0.1;
 
     let test_cube = new THREE.Mesh(
@@ -79,6 +79,24 @@ export default class ThreeGame {
     this.mapObjects = [];
     this.usedPositions = []; // Track used positions to prevent overlap
 
+    for (let i = 0; i < data.barbieHouseCount; i++) {
+      const safePos = this.getSafePosition(2.0); // Larger objects need more space
+
+      const mapObject = new MapObject(
+        'barbieHouse',
+        data.barbieHouseScale,
+        new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
+        5
+      );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
+      this.mapObjects.push(mapObject);
+      this.totalGameObject++;
+    }
+
     // Create objects with safe positions to prevent overlap
     for (let i = 0; i < data.barbieBoatCount; i++) {
       const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
@@ -89,6 +107,13 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
         1
       );
+
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
+
       this.mapObjects.push(mapObject);
       console.log(mapObject.objectType);
       this.totalGameObject++;
@@ -103,6 +128,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
         2
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -116,6 +146,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
         3
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -129,19 +164,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
         4
       );
-      this.mapObjects.push(mapObject);
-      this.totalGameObject++;
-    }
-
-    for (let i = 0; i < data.barbieHouseCount; i++) {
-      const safePos = this.getSafePosition(2.0); // Larger objects need more space
-
-      const mapObject = new MapObject(
-        'barbieHouse',
-        data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
-        5
-      );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -155,6 +182,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 2, safePos.z), // Ground merkez z=2'ye göre
         6
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -181,6 +213,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
         1
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       console.log(mapObject.objectType);
       this.totalGameObject++;
@@ -195,6 +232,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
         2
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -208,6 +250,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
         3
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -221,6 +268,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
         4
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -234,6 +286,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
         5
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -247,6 +304,11 @@ export default class ThreeGame {
         new THREE.Vector3(safePos.x, 2, safePos.z), // Ground merkez z=2'ye göre
         6
       );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
@@ -280,10 +342,10 @@ export default class ThreeGame {
     let randomX, randomZ;
 
     // Ground collider'ın gerçek sınırlarını hesapla
-    const groundMinX = -this.groundHalfX + 0.5; // Buffer için 0.5 birim içeride
-    const groundMaxX = this.groundHalfX - 0.5;
-    const groundMinZ = this.groundZPosition - this.groundHalfZ + 0.5;
-    const groundMaxZ = this.groundZPosition + this.groundHalfZ - 0.5;
+    const groundMinX = -this.groundHalfX + 2; // Buffer için 0.5 birim içeride
+    const groundMaxX = this.groundHalfX - 2;
+    const groundMinZ = this.groundZPosition - this.groundHalfZ + 2;
+    const groundMaxZ = this.groundZPosition + this.groundHalfZ - 2;
 
     do {
       randomX = randFloat(groundMinX, groundMaxX);
