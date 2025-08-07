@@ -40,7 +40,7 @@ export default class ThreeGame {
     this.tornadoTime = 2500;
 
     // Ground positioning
-    this.groundZPosition = 5;
+    this.groundZPosition = 3;
 
     this.gameMap = new GameMap(
       this.slotPositions,
@@ -61,8 +61,8 @@ export default class ThreeGame {
     globals.physicsManager = this.physicsManager;
 
     // Ground parametrelerini tanımla (tüm sistemde kullanılacak)
-    this.groundHalfX = 6;
-    this.groundHalfZ = 6;
+    this.groundHalfX = 7;
+    this.groundHalfZ = 7;
     this.groundHeight = 0.1;
 
     let test_cube = new THREE.Mesh(
@@ -80,7 +80,7 @@ export default class ThreeGame {
     this.usedPositions = []; // Track used positions to prevent overlap
 
     for (let i = 0; i < data.barbieHouseCount; i++) {
-      const safePos = this.getSafePosition(2.0); // Larger objects need more space
+      const safePos = this.getSafePosition(); // Larger objects need more space
 
       const mapObject = new MapObject(
         'barbieHouse',
@@ -89,9 +89,9 @@ export default class ThreeGame {
         5
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
@@ -99,7 +99,7 @@ export default class ThreeGame {
 
     // Create objects with safe positions to prevent overlap
     for (let i = 0; i < data.barbieBoatCount; i++) {
-      const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
+      const safePos = this.getSafePosition(); // 1.5 unit minimum distance
 
       const mapObject = new MapObject(
         'barbieBoat',
@@ -109,9 +109,9 @@ export default class ThreeGame {
       );
 
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
 
       this.mapObjects.push(mapObject);
@@ -120,7 +120,7 @@ export default class ThreeGame {
     }
 
     for (let i = 0; i < data.barbieCarCount; i++) {
-      const safePos = this.getSafePosition(1.5);
+      const safePos = this.getSafePosition();
 
       const mapObject = new MapObject(
         'barbieCar',
@@ -129,16 +129,16 @@ export default class ThreeGame {
         2
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieGirl1Count; i++) {
-      const safePos = this.getSafePosition(1.5);
+      const safePos = this.getSafePosition();
 
       const mapObject = new MapObject(
         'barbieGirl1',
@@ -147,16 +147,16 @@ export default class ThreeGame {
         3
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieGirl2Count; i++) {
-      const safePos = this.getSafePosition(1.5);
+      const safePos = this.getSafePosition();
 
       const mapObject = new MapObject(
         'barbieGirl2',
@@ -165,16 +165,16 @@ export default class ThreeGame {
         4
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
     }
 
     for (let i = 0; i < data.barbieKenCount; i++) {
-      const safePos = this.getSafePosition(1.5);
+      const safePos = this.getSafePosition();
 
       const mapObject = new MapObject(
         'barbieKen',
@@ -183,9 +183,9 @@ export default class ThreeGame {
         6
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
       this.totalGameObject++;
@@ -337,7 +337,7 @@ export default class ThreeGame {
   }
 
   // Helper function to get safe random position
-  getSafePosition(minDistance = 2, maxAttempts = 50) {
+  getSafePosition(minDistance = 3, maxAttempts = 50) {
     let attempts = 0;
     let randomX, randomZ;
 

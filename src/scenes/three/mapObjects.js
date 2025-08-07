@@ -48,13 +48,15 @@ export default class MapObject extends THREE.Object3D {
     // Quaternion'ı da kopyala
     this.body.quaternion.copy(this.quaternion);
 
-    // Düşük sürtünme ve yüksek sekme için materyal oluştur
+    // // Düşük sürtünme ve yüksek sekme için materyal oluştur
     const bouncyMaterial = new CANNON.Material('bouncy');
     bouncyMaterial.friction = 0; // Düşük sürtünme (0-1 arası, 0 = sürtünmesiz)
     bouncyMaterial.restitution = 0.1; // Yüksek sekme (0-1 arası, 1 = tam sekme)
 
     //Materyali physics body'ye ata
-    this.body.material = bouncyMaterial;
+    gsap.delayedCall(1, () => {
+      this.body.material = bouncyMaterial;
+    });
 
     this.body.linearDamping = 0.7; // Hareketi yavaş yavaş durdur
     this.body.angularDamping = 0.7; // Dönmeyi yavaş yavaş durdur

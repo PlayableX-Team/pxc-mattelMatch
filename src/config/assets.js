@@ -89,81 +89,6 @@ const assets = {
   spine: [],
   three: [
     {
-      name: 'tyre-v1',
-      src: require('@assets/models/junks/tyre-last.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_07-v1',
-      src: require('@assets/models/junks/junk_07-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_00-v1',
-      src: require('@assets/models/junks/junk_00-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_06-v1',
-      src: require('@assets/models/junks/junk_06-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_02-v1',
-      src: require('@assets/models/junks/junk_02-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_04-v1',
-      src: require('@assets/models/junks/junk_04-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'tv-v1',
-      src: require('@assets/models/junks/tv-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_10-v1',
-      src: require('@assets/models/junks/junk_10-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'junk_08-v1',
-      src: require('@assets/models/junks/junk_08-v2.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'barbie_boat-v1',
-      src: require('@assets/models/items/barbie_boat-v1.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'barbie_car-v1',
-      src: require('@assets/models/items/barbie_car-v1.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'barbie_girl1-v1',
-      src: require('@assets/models/items/barbie_girl1-v1.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'barbie_girl2-v1',
-      src: require('@assets/models/items/barbie_girl2-v1.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'barbie_house-v1',
-      src: require('@assets/models/items/barbie_house-v1.glb'),
-      type: 'glb',
-    },
-    {
-      name: 'barbie_ken-v1',
-      src: require('@assets/models/items/barbie_ken-v1.glb'),
-      type: 'glb',
-    },
-    {
       name: 'tray',
       src: require('@assets/models/tray.glb'),
       type: 'glb',
@@ -373,6 +298,48 @@ export function insertAssets(data) {
       name: 'barbieKen',
       src: data.barbieKenSrc,
       type: 'glb',
+    });
+  }
+  if (data.barbieBoatRemainingSrc) {
+    assets.pixi.push({
+      name: 'barbieBoatRemaining',
+      src: data.barbieBoatRemainingSrc,
+      type: 'image',
+    });
+  }
+  if (data.barbieCarRemainingSrc) {
+    assets.pixi.push({
+      name: 'barbieCarRemaining',
+      src: data.barbieCarRemainingSrc,
+      type: 'image',
+    });
+  }
+  if (data.barbieGirl1RemainingSrc) {
+    assets.pixi.push({
+      name: 'barbieGirl1Remaining',
+      src: data.barbieGirl1RemainingSrc,
+      type: 'image',
+    });
+  }
+  if (data.barbieGirl2RemainingSrc) {
+    assets.pixi.push({
+      name: 'barbieGirl2Remaining',
+      src: data.barbieGirl2RemainingSrc,
+      type: 'image',
+    });
+  }
+  if (data.barbieHouseRemainingSrc) {
+    assets.pixi.push({
+      name: 'barbieHouseRemaining',
+      src: data.barbieHouseRemainingSrc,
+      type: 'image',
+    });
+  }
+  if (data.barbieKenRemainingSrc) {
+    assets.pixi.push({
+      name: 'barbieKenRemaining',
+      src: data.barbieKenRemainingSrc,
+      type: 'image',
     });
   }
 }

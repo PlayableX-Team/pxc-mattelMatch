@@ -30,9 +30,111 @@ function collectStorage(data) {
   data.tornadoSrc = storage.tornado.items.tornado.src;
   data.timeSrc = storage.time.items.time.src;
   data.nextLevelSrc = storage.nextLevel.items.nextLevel.src;
+  data.barbieBoatRemainingSrc =
+    storage.barbieBoatRemaining.items.barbieBoatRemaining.src;
+  data.barbieCarRemainingSrc =
+    storage.barbieCarRemaining.items.barbieCarRemaining.src;
+  data.barbieGirl1RemainingSrc =
+    storage.barbieGirl1Remaining.items.barbieGirl1Remaining.src;
+  data.barbieGirl2RemainingSrc =
+    storage.barbieGirl2Remaining.items.barbieGirl2Remaining.src;
+  data.barbieHouseRemainingSrc =
+    storage.barbieHouseRemaining.items.barbieHouseRemaining.src;
+  data.barbieKenRemainingSrc =
+    storage.barbieKenRemaining.items.barbieKenRemaining.src;
 }
 
 const storage = {
+  barbieBoatRemaining: {
+    label: 'Barbie Boat Remaining',
+    description: 'Uploaded Barbie Boat Remaining for the game.',
+    aiDescription: 'a collection of Barbie Boat Remaining for branding',
+    items: {
+      barbieBoatRemaining: {
+        label: 'Barbie Boat Remaining',
+        description: 'The Barbie Boat Remaining for the game.',
+        aiDescription: 'Barbie Boat Remaining used in game',
+        src: require('./assets/2d/RemainingObj/barbieBoatRemaining.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  barbieCarRemaining: {
+    label: 'Barbie Car Remaining',
+    description: 'Uploaded Barbie Car Remaining for the game.',
+    aiDescription: 'a collection of Barbie Car Remaining for branding',
+    items: {
+      barbieCarRemaining: {
+        label: 'Barbie Car Remaining',
+        description: 'The Barbie Car Remaining for the game.',
+        aiDescription: 'Barbie Car Remaining used in game',
+        src: require('./assets/2d/RemainingObj/barbieCarRemaining.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  barbieGirl1Remaining: {
+    label: 'Barbie Girl 1 Remaining',
+    description: 'Uploaded Barbie Girl 1 Remaining for the game.',
+    aiDescription: 'a collection of Barbie Girl 1 Remaining for branding',
+    items: {
+      barbieGirl1Remaining: {
+        label: 'Barbie Girl 1 Remaining',
+        description: 'The Barbie Girl 1 Remaining for the game.',
+        aiDescription: 'Barbie Girl 1 Remaining used in game',
+        src: require('./assets/2d/RemainingObj/barbieGirl1Remaining.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  barbieGirl2Remaining: {
+    label: 'Barbie Girl 2 Remaining',
+    description: 'Uploaded Barbie Girl 2 Remaining for the game.',
+    aiDescription: 'a collection of Barbie Girl 2 Remaining for branding',
+    items: {
+      barbieGirl2Remaining: {
+        label: 'Barbie Girl 2 Remaining',
+        description: 'The Barbie Girl 2 Remaining for the game.',
+        aiDescription: 'Barbie Girl 2 Remaining used in game',
+        src: require('./assets/2d/RemainingObj/barbieGirl2Remaining.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  barbieHouseRemaining: {
+    label: 'Barbie House Remaining',
+    description: 'Uploaded Barbie House Remaining for the game.',
+    aiDescription: 'a collection of Barbie House Remaining for branding',
+    items: {
+      barbieHouseRemaining: {
+        label: 'Barbie House Remaining',
+        description: 'The Barbie House Remaining for the game.',
+        aiDescription: 'Barbie House Remaining used in game',
+        src: require('./assets/2d/RemainingObj/barbieHouseRemaining.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
+  barbieKenRemaining: {
+    label: 'Barbie Ken Remaining',
+    description: 'Uploaded Barbie Ken Remaining for the game.',
+    aiDescription: 'a collection of Barbie Ken Remaining for branding',
+    items: {
+      barbieKenRemaining: {
+        label: 'Barbie Ken Remaining',
+        description: 'The Barbie Ken Remaining for the game.',
+        aiDescription: 'Barbie Ken Remaining used in game',
+        src: require('./assets/2d/RemainingObj/barbieKenRemaining.png'),
+        type: 'image',
+        previewIcon: 'base64-preview-primary',
+      },
+    },
+  },
   nextLevel: {
     label: 'Next Level',
     description: 'Uploaded Next Level for the game.',

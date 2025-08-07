@@ -8,13 +8,24 @@ const TextureCache = PIXI.utils.TextureCache;
 import AudioManager from '../../../engine/audio/AudioManager';
 
 export default class RemainingObj {
-  constructor(parent, bgAsset, bgScale, bgPosX, bgPosY, count) {
+  constructor(
+    parent,
+    bgAsset,
+    bgScale,
+    bgPosX,
+    bgPosY,
+    count,
+    RemainingObjAseet,
+    remainingObjScale
+  ) {
     this.parent = parent;
     this.bgAsset = bgAsset;
     this.bgScale = bgScale;
     this.bgPosX = bgPosX;
     this.bgPosY = bgPosY;
     this.count = count;
+    this.RemainingObjAseet = RemainingObjAseet;
+    this.remainingObjScale = remainingObjScale;
     this.init();
   }
 
@@ -26,14 +37,20 @@ export default class RemainingObj {
     this.parent.addChild(bg);
     bg.position.set(this.bgPosX, this.bgPosY);
 
+    const remainingObj = PIXI.Sprite.from(TextureCache[this.RemainingObjAseet]);
+    this.remainingObjSprite = remainingObj;
+    remainingObj.anchor.set(0.5);
+    remainingObj.scale.set(this.remainingObjScale);
+    bg.addChild(remainingObj);
+
     this.countText = new PIXI.Text(this.count, {
       fontFamily: 'game-font',
-      fontSize: 36,
+      fontSize: 20,
       fill: 0xffffff,
       stroke: 0x000000,
       strokeThickness: 5,
     });
-    this.countText.anchor.set(0.5, -0.3);
+    this.countText.anchor.set(0.5, -1.1);
     this.bgSprite.addChild(this.countText);
   }
 

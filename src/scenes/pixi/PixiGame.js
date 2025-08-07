@@ -483,31 +483,43 @@ export default class PixiGame {
         asset: 'obj1Bg',
         isOpen: data.isBarbieBoatRemainingOpen,
         count: data.barbieBoatCount,
+        remainingObjAsset: data.barbieBoatRemainingSrc,
+        remainingObjScale: data.barbieBoatRemainingScale,
       },
       {
         asset: 'obj2Bg',
         isOpen: data.isBarbieCarRemainingOpen,
         count: data.barbieCarCount,
+        remainingObjAsset: data.barbieCarRemainingSrc,
+        remainingObjScale: data.barbieCarRemainingScale,
       },
       {
         asset: 'obj3Bg',
         isOpen: data.isBarbieGirl1RemainingOpen,
         count: data.barbieGirl1Count,
+        remainingObjAsset: data.barbieGirl1RemainingSrc,
+        remainingObjScale: data.barbieGirl1RemainingScale,
       },
       {
         asset: 'obj4Bg',
         isOpen: data.isBarbieGirl2RemainingOpen,
         count: data.barbieGirl2Count,
+        remainingObjAsset: data.barbieGirl2RemainingSrc,
+        remainingObjScale: data.barbieGirl2RemainingScale,
       },
       {
         asset: 'obj5Bg',
         isOpen: data.isBarbieHouseRemainingOpen,
         count: data.barbieHouseCount,
+        remainingObjAsset: data.barbieHouseRemainingSrc,
+        remainingObjScale: data.barbieHouseRemainingScale,
       },
       {
         asset: 'obj6Bg',
         isOpen: data.isBarbieKenRemainingOpen,
         count: data.barbieKenCount,
+        remainingObjAsset: data.barbieKenRemainingSrc,
+        remainingObjScale: data.barbieKenRemainingScale,
       },
     ];
 
@@ -548,7 +560,9 @@ export default class PixiGame {
         1.85,
         xPosition,
         0,
-        config.count
+        config.count,
+        config.remainingObjAsset,
+        config.remainingObjScale
       );
 
       // RemainingObj'e obje tipini ekle (match kontrolü için)

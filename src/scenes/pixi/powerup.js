@@ -72,7 +72,7 @@ export default class Powerup {
         action: () => {
           this.grayAsset.visible = true;
           this.button.visible = false;
-          gsap.delayedCall(data.timerPowerUpEffect, () => {
+          gsap.delayedCall(1, () => {
             this.checkGrayAsset();
           });
         },
@@ -163,10 +163,10 @@ export default class Powerup {
       ease: 'power2.out',
       delay: 0.2,
     });
-    // 2. Scale %10 artar ve 60 derece döner
-    timeline.to([button.scale, button], {
-      scaleX: originalScaleX * 1.1,
-      scaleY: originalScaleY * 1.1,
+    // 2. Scale %10 artar
+    timeline.to(button.scale, {
+      x: originalScaleX * 1.5,
+      y: originalScaleY * 1.5,
       duration: 0.15,
       ease: 'power2.out',
       onStart: () => {
@@ -175,10 +175,10 @@ export default class Powerup {
       },
     });
 
-    // 3. Scale orijinal haline döner ve rotasyon da orijinal haline döner
-    timeline.to([button.scale, button], {
-      scaleX: originalScaleX,
-      scaleY: originalScaleY,
+    // 3. Scale orijinal haline döner
+    timeline.to(button.scale, {
+      x: originalScaleX,
+      y: originalScaleY,
       duration: 0.15,
       ease: 'power2.out',
       delay: 0.3,
@@ -219,12 +219,12 @@ export default class Powerup {
       ease: 'power2.out',
     });
 
-    // // 2. Rotasyon -60 ile +60 arasında değişim (tornado etkisi)
-    // timeline.to(button, {
-    //   rotation: originalRotation - (0 * Math.PI) / 180, // -60 derece
-    //   duration: 0.5,
-    //   ease: 'power2.out',
-    // });
+    timeline.to(button.scale, {
+      x: originalScaleX * 1.5,
+      y: originalScaleY * 1.5,
+      duration: 0.15,
+      ease: 'power2.out',
+    });
 
     timeline.to(button, {
       rotation: originalRotation + (60 * Math.PI) / 180, // +60 derece
@@ -235,6 +235,13 @@ export default class Powerup {
         this.tornadoEffect(button);
         AudioManager.playSFX('tornado');
       },
+    });
+
+    timeline.to(button.scale, {
+      x: originalScaleX,
+      y: originalScaleY,
+      duration: 0.15,
+      ease: 'power2.out',
     });
 
     // 3. Orijinal pozisyon ve rotasyonuna geri döner
@@ -253,6 +260,8 @@ export default class Powerup {
     // Orijinal değerleri kaydet
     const originalY = button.y;
     const originalRotation = button.rotation;
+    const originalScaleX = button.scale.x;
+    const originalScaleY = button.scale.y;
 
     // Animasyon zinciri oluştur
     const timeline = gsap.timeline({
@@ -269,11 +278,25 @@ export default class Powerup {
       ease: 'power2.out',
     });
 
+    timeline.to(button.scale, {
+      x: originalScaleX * 1.5,
+      y: originalScaleY * 1.5,
+      duration: 0.15,
+      ease: 'power2.out',
+    });
+
     // 2. Kendi etrafında 4 tam tur atar (4 * 360 derece = 1440 derece)
     timeline.to(button, {
       rotation: originalRotation + (1440 * Math.PI) / 180, // 4 tam tur
       duration: 1.2,
       ease: 'power2.inOut',
+    });
+
+    timeline.to(button.scale, {
+      x: originalScaleX,
+      y: originalScaleY,
+      duration: 0.15,
+      ease: 'power2.out',
     });
 
     // 3. Orijinal pozisyon ve rotasyonuna geri döner
@@ -292,6 +315,8 @@ export default class Powerup {
     // Orijinal değerleri kaydet
     const originalY = button.y;
     const originalRotation = button.rotation;
+    const originalScaleX = button.scale.x;
+    const originalScaleY = button.scale.y;
 
     // Animasyon zinciri oluştur
     const timeline = gsap.timeline({
@@ -308,11 +333,25 @@ export default class Powerup {
       ease: 'power2.out',
     });
 
+    timeline.to(button.scale, {
+      x: originalScaleX * 1.5,
+      y: originalScaleY * 1.5,
+      duration: 0.15,
+      ease: 'power2.out',
+    });
+
     // 2. 260 derece döner
     timeline.to(button, {
-      rotation: originalRotation + (360 * Math.PI) / 180, // 260 derece
+      rotation: originalRotation + (5 * 360 * Math.PI) / 180, // 260 derece
       duration: 0.8,
       ease: 'power2.inOut',
+    });
+
+    timeline.to(button.scale, {
+      x: originalScaleX,
+      y: originalScaleY,
+      duration: 0.15,
+      ease: 'power2.out',
     });
 
     // 3. Orijinal pozisyon ve rotasyonuna geri döner
@@ -345,7 +384,7 @@ export default class Powerup {
     // Dış halka animasyonu
     gsap.fromTo(
       outerRing.scale,
-      { x: 0.5, y: 0.5 },
+      { x: 1, y: 1 },
       {
         x: 1.5,
         y: 1.5,
@@ -371,10 +410,10 @@ export default class Powerup {
     // İç halka animasyonu
     gsap.fromTo(
       innerRing.scale,
-      { x: 0.8, y: 0.8 },
+      { x: 1.5, y: 1.6 },
       {
-        x: 1.2,
-        y: 1.2,
+        x: 2,
+        y: 2,
         duration: 1,
         yoyo: true,
         repeat: 3,
@@ -435,7 +474,7 @@ export default class Powerup {
 
         // Başlangıçta görünmez yap
         spark.alpha = 0;
-        spark.scale.set(0.15 + Math.random() * 0.3); // Rastgele boyut
+        spark.scale.set(0.1 + Math.random() * 0.2); // Rastgele boyut
         spark.rotation = finalAngle + Math.PI / 2; // Yıldırımı doğru yöne çevir
 
         // Renk efekti - mavi-beyaz yıldırım
