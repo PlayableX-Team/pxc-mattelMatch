@@ -66,7 +66,7 @@ export default class PixiGame {
     this.addHand();
     this.addTimeBg();
 
-    gsap.delayedCall(4, () => {
+    gsap.delayedCall(2.75, () => {
       this.canHandPointer = true;
       this.hand.visible = true;
     });

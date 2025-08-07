@@ -29,6 +29,7 @@ export default class ThreeGame {
     this.totalGameObject = 0;
     this.winCount = 0;
     this.isGameFinished = false;
+    this.canCollect = true;
 
     // Enhanced tray system
     this.tray = [];
@@ -204,81 +205,8 @@ export default class ThreeGame {
   createFakeLevel() {
     globals.gameFinished = true;
 
-    for (let i = 0; i < data.barbieBoatCount; i++) {
-      const safePos = this.getSafePosition(1.5); // 1.5 unit minimum distance
-
-      const mapObject = new MapObject(
-        'barbieBoat',
-        data.barbieBoatScale,
-        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
-        1
-      );
-      // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
-      this.mapObjects.push(mapObject);
-      console.log(mapObject.objectType);
-      this.totalGameObject++;
-    }
-
-    for (let i = 0; i < data.barbieCarCount; i++) {
-      const safePos = this.getSafePosition(1.5);
-
-      const mapObject = new MapObject(
-        'barbieCar',
-        data.barbieCarScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
-        2
-      );
-      // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = Math.random() * Math.PI; // 0 ile 2π arasında random açı
-      const randomRotationY = Math.random() * Math.PI; // 0 ile 2π arasında random açı
-      const randomRotationZ = Math.random() * Math.PI; // 0 ile 2π arasında random açı
-      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
-      this.mapObjects.push(mapObject);
-      this.totalGameObject++;
-    }
-
-    for (let i = 0; i < data.barbieGirl1Count; i++) {
-      const safePos = this.getSafePosition(1.5);
-
-      const mapObject = new MapObject(
-        'barbieGirl1',
-        data.barbieGirl1Scale,
-        new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
-        3
-      );
-      // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationY = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = (Math.random() * Math.PI) / 2; // 0 ile 2π arasında random açı
-      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
-      this.mapObjects.push(mapObject);
-      this.totalGameObject++;
-    }
-
-    for (let i = 0; i < data.barbieGirl2Count; i++) {
-      const safePos = this.getSafePosition(1.5);
-
-      const mapObject = new MapObject(
-        'barbieGirl2',
-        data.barbieGirl2Scale,
-        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
-        4
-      );
-      // Random rotasyon ekle (X, Y, Z eksenlerinde)
-      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
-      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
-      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
-      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
-      this.mapObjects.push(mapObject);
-      this.totalGameObject++;
-    }
-
     for (let i = 0; i < data.barbieHouseCount; i++) {
-      const safePos = this.getSafePosition(2.0); // Larger objects need more space
+      const safePos = this.getSafePosition(); // Larger objects need more space
 
       const mapObject = new MapObject(
         'barbieHouse',
@@ -292,11 +220,82 @@ export default class ThreeGame {
       const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
-      this.totalGameObject++;
+    }
+
+    // Create objects with safe positions to prevent overlap
+    for (let i = 0; i < data.barbieBoatCount; i++) {
+      const safePos = this.getSafePosition(); // 1.5 unit minimum distance
+
+      const mapObject = new MapObject(
+        'barbieBoat',
+        data.barbieBoatScale,
+        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
+        1
+      );
+
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
+
+      this.mapObjects.push(mapObject);
+      console.log(mapObject.objectType);
+    }
+
+    for (let i = 0; i < data.barbieCarCount; i++) {
+      const safePos = this.getSafePosition();
+
+      const mapObject = new MapObject(
+        'barbieCar',
+        data.barbieCarScale,
+        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
+        2
+      );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
+      this.mapObjects.push(mapObject);
+    }
+
+    for (let i = 0; i < data.barbieGirl1Count; i++) {
+      const safePos = this.getSafePosition();
+
+      const mapObject = new MapObject(
+        'barbieGirl1',
+        data.barbieGirl1Scale,
+        new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
+        3
+      );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
+      this.mapObjects.push(mapObject);
+    }
+
+    for (let i = 0; i < data.barbieGirl2Count; i++) {
+      const safePos = this.getSafePosition();
+
+      const mapObject = new MapObject(
+        'barbieGirl2',
+        data.barbieGirl2Scale,
+        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
+        4
+      );
+      // Random rotasyon ekle (X, Y, Z eksenlerinde)
+      const randomRotationX = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationY = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
+      mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
+      this.mapObjects.push(mapObject);
     }
 
     for (let i = 0; i < data.barbieKenCount; i++) {
-      const safePos = this.getSafePosition(1.5);
+      const safePos = this.getSafePosition();
 
       const mapObject = new MapObject(
         'barbieKen',
@@ -310,7 +309,6 @@ export default class ThreeGame {
       const randomRotationZ = Math.random() * Math.PI * 2; // 0 ile 2π arasında random açı
       mapObject.setRotation(randomRotationX, randomRotationY, randomRotationZ);
       this.mapObjects.push(mapObject);
-      this.totalGameObject++;
     }
   }
 
@@ -397,7 +395,7 @@ export default class ThreeGame {
 
     // Add walls around the ground perimeter - dinamik pozisyonlama
     const wallHeight = 100;
-    const wallThickness = 0.2;
+    const wallThickness = 10;
 
     // North wall (positive Z) - ground z pozisyonuna göre dinamik pozisyonlama
     let northWall = new THREE.Mesh(
@@ -411,7 +409,7 @@ export default class ThreeGame {
     northWall.position.set(
       0,
       wallHeight / 2,
-      this.groundHalfZ + groundZPosition
+      this.groundHalfZ + groundZPosition + wallThickness / 2
     );
     globals.threeScene.add(northWall);
     northWall.body = this.physicsManager.createBodyFromObject(northWall, {
@@ -431,7 +429,7 @@ export default class ThreeGame {
     southWall.position.set(
       0,
       wallHeight / 2,
-      -this.groundHalfZ + groundZPosition
+      -this.groundHalfZ + groundZPosition - wallThickness / 2
     );
     globals.threeScene.add(southWall);
     southWall.body = this.physicsManager.createBodyFromObject(southWall, {
@@ -448,7 +446,11 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    eastWall.position.set(this.groundHalfX, wallHeight / 2, groundZPosition);
+    eastWall.position.set(
+      this.groundHalfX + wallThickness / 2,
+      wallHeight / 2,
+      groundZPosition
+    );
     globals.threeScene.add(eastWall);
     eastWall.body = this.physicsManager.createBodyFromObject(eastWall, {
       type: 'static',
@@ -464,7 +466,11 @@ export default class ThreeGame {
         transparent: true,
       })
     );
-    westWall.position.set(-this.groundHalfX, wallHeight / 2, groundZPosition);
+    westWall.position.set(
+      -this.groundHalfX - wallThickness / 2,
+      wallHeight / 2,
+      groundZPosition
+    );
     globals.threeScene.add(westWall);
     westWall.body = this.physicsManager.createBodyFromObject(westWall, {
       type: 'static',
@@ -875,7 +881,7 @@ export default class ThreeGame {
         this.tweening = true;
 
         // İlk match olduğunda eli hemen gizle
-        if (!this.firstMatch) {
+        if (globals.pixiGame.hand.visible) {
           this.firstMatch = true;
           globals.pixiGame.canHandPointer = false;
           globals.pixiGame.hand.visible = false;
@@ -1004,13 +1010,14 @@ export default class ThreeGame {
         }
       }
     }
-
-    if (!isMatch && this.tray.length === this.platforms.length) {
-      console.log('Tray full - no matches possible');
-      gsap.delayedCall(0.2, () => {
-        globals.EventEmitter.emit('gameFinished');
-      });
-    }
+    gsap.delayedCall(1.5, () => {
+      if (!isMatch && this.tray.length === this.platforms.length) {
+        console.log('Tray full - no matches possible');
+        gsap.delayedCall(0.2, () => {
+          globals.EventEmitter.emit('gameFinished');
+        });
+      }
+    });
     globals.pixiGame.reversePowerup.checkReverseGrayAsset();
   }
 
