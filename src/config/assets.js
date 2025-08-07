@@ -80,6 +80,11 @@ const assets = {
       src: require('@assets/2d/cartoonSmoke.png'),
       type: 'image',
     },
+    {
+      name: 'spark',
+      src: require('@assets/2d/spark.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

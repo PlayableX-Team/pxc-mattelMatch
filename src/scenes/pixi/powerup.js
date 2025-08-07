@@ -171,6 +171,7 @@ export default class Powerup {
       ease: 'power2.out',
       onStart: () => {
         this.magnetEffect(button);
+        this.lightningEffect(button);
       },
     });
 
@@ -391,6 +392,113 @@ export default class Powerup {
           magnetFieldContainer.destroy();
         },
       });
+    });
+  }
+
+  lightningEffect(button) {
+    // Yıldırım efekti için container oluştur
+    const lightningContainer = new PIXI.Container();
+    button.addChild(lightningContainer);
+
+    // Buton içinde local koordinatlar kullan
+    const buttonX = 0; // Butonun kendi koordinat sisteminde merkez
+    const buttonY = 0;
+
+    // U şeklinde mıknatısın iki ucundan çıkan yıldırım efekti
+    const sparkCount = 4; // Her uç için yıldırım çizgilerinin sayısı
+    const lightningBolts = [];
+    const magnetXOffset = 50; // Mıknatıs uçları arasındaki mesafe
+
+    // Mıknatısın yönü (yukarı doğru)
+    const magnetDirection = -Math.PI / 2; // -90 derece (yukarı)
+
+    // İki uç için döngü: sol (-) ve sağ (+)
+    for (let side = -1; side <= 1; side += 2) {
+      for (let i = 0; i < sparkCount; i++) {
+        const spark = PIXI.Sprite.from(TextureCache['spark']);
+        spark.anchor.set(0.5, 1); // Alt ortadan anchor
+
+        // Mıknatısın ucundan başla (sol/sağ offseti ile)
+        const startOffsetY = -40; // Mıknatısın ucuna yerleştir
+        const startOffsetX = side * magnetXOffset; // Sol/sağ uç
+        spark.x = buttonX + startOffsetX;
+        spark.y = buttonY + startOffsetY;
+
+        // İleri doğru yayılma açısı (küçük açı farkları)
+        const spreadAngle = (Math.random() - 0.5) * 0.6; // ±0.3 radyan (±17 derece)
+        const finalAngle = magnetDirection + spreadAngle;
+        const distance = 60 + Math.random() * 80; // 60-140 pixel mesafe
+
+        // Yıldırım çizgisinin hedef pozisyonu
+        const targetX = spark.x + Math.cos(finalAngle) * distance;
+        const targetY = spark.y + Math.sin(finalAngle) * distance;
+
+        // Başlangıçta görünmez yap
+        spark.alpha = 0;
+        spark.scale.set(0.15 + Math.random() * 0.3); // Rastgele boyut
+        spark.rotation = finalAngle + Math.PI / 2; // Yıldırımı doğru yöne çevir
+
+        // Renk efekti - mavi-beyaz yıldırım
+        spark.tint = Math.random() > 0.3 ? 0x00ffff : 0xffffff;
+
+        lightningContainer.addChild(spark);
+        lightningBolts.push({
+          sprite: spark,
+          targetX: targetX,
+          targetY: targetY,
+          originalX: spark.x,
+          originalY: spark.y,
+          angle: finalAngle,
+          side: side, // Hangi taraf olduğunu kaydet
+        });
+      }
+    }
+
+    // Yıldırım animasyonu - daha hızlı ve titreşimli
+    lightningBolts.forEach((bolt, index) => {
+      const delay = index * 0.05; // Daha belirgin sıralı animasyon
+
+      // Yıldırım çizgisini hızlıca göster
+      gsap.to(bolt.sprite, {
+        alpha: 0.9,
+        duration: 0.03,
+        delay: delay,
+        ease: 'power2.out',
+      });
+
+      // Pozisyon animasyonu - titreşerek ileri git
+      const timeline = gsap.timeline({ delay: delay });
+
+      // 1. Hızlıca ileri git
+      timeline.to(bolt.sprite, {
+        x: bolt.targetX,
+        y: bolt.targetY,
+        duration: 0.1,
+        ease: 'power2.out',
+      });
+
+      // 2. Titreşim efekti - yıldırım boyunca titreşir
+      for (let shake = 0; shake < 4; shake++) {
+        timeline.to(bolt.sprite, {
+          x: bolt.targetX + (Math.random() - 0.5) * 15,
+          y: bolt.targetY + (Math.random() - 0.5) * 8,
+          duration: 0.04,
+          ease: 'power2.inOut',
+        });
+      }
+
+      // 3. Yıldırımı kaybet
+      timeline.to(bolt.sprite, {
+        alpha: 0,
+        duration: 0.1,
+        ease: 'power2.out',
+      });
+    });
+
+    // Tüm efekti temizle
+    gsap.delayedCall(0.8, () => {
+      button.removeChild(lightningContainer);
+      lightningContainer.destroy();
     });
   }
 
