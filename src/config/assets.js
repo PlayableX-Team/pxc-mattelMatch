@@ -97,11 +97,16 @@ const assets = {
   three_textures: [],
   audio: {},
   quarks: [
-    // {
-    //   name: "Gold_Shower",
-    //   src: require("@assets/quarks/Gold_Shower.json"),
-    //   poolCount: 5,
-    // },
+    {
+      name: 'magnet_ground',
+      src: require('@assets/quarks/magnet_ground.json'),
+      poolCount: 10,
+    },
+    {
+      name: 'tornadoEffect',
+      src: require('@assets/quarks/tornadoEffect4.json'),
+      poolCount: 5,
+    },
   ],
   fonts: [
     {

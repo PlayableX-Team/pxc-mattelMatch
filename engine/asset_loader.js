@@ -1,18 +1,18 @@
-import * as PIXI from "pixi.js";
-import * as THREE from "three";
+import * as PIXI from 'pixi.js';
+import * as THREE from 'three';
 
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
-import assets from "../src/config/assets";
-import globals from "../globals";
-import AudioManager from "./audio/AudioManager";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import assets from '../src/config/assets';
+import globals from '../globals';
+import AudioManager from './audio/AudioManager';
 // import {
 //   SkeletonJson,
 //   AtlasAttachmentLoader,
 //   TextureAtlas,
 // } from "@pixi-spine/all-4.1";
-import { settings } from "../settings";
-import { SkeletonUtils } from "three/examples/jsm/Addons.js";
+import { settings } from '../settings';
+import { SkeletonUtils } from 'three/examples/jsm/Addons.js';
 
 class AssetLoader {
   constructor() {
@@ -52,7 +52,7 @@ class AssetLoader {
         if (Object.keys(resources).length === assets.pixi.length) {
           resolve(resources);
         } else {
-          reject(new Error("Pixi asset loading failed"));
+          reject(new Error('Pixi asset loading failed'));
         }
       });
     });
@@ -101,14 +101,14 @@ class AssetLoader {
 
       // Handle both base64 and URL formats
       let url = assetSrc;
-      if (typeof url !== "string") {
+      if (typeof url !== 'string') {
         // console.warn("Asset source is not a string, might be a webpack module");
         url = assetSrc.default || assetSrc;
       }
 
       // If it's a base64 data URL, we need to handle it properly
-      if (url.startsWith("data:application/octet-stream;base64,")) {
-        const base64Data = url.split(",")[1];
+      if (url.startsWith('data:application/octet-stream;base64,')) {
+        const base64Data = url.split(',')[1];
         const binaryString = window.atob(base64Data);
         const bytes = new Uint8Array(binaryString.length);
         for (let i = 0; i < binaryString.length; i++) {
@@ -117,7 +117,7 @@ class AssetLoader {
 
         this.gltfLoader.parse(
           bytes.buffer,
-          "",
+          '',
           (gltf) => {
             // console.log("GLB loaded successfully from base64");
             resolve(gltf);
@@ -155,7 +155,7 @@ class AssetLoader {
       globals.cloneModel = (modelName) => {
         const model = this.models[modelName];
         if (!model) {
-          console.warn("Model not found:", modelName);
+          console.warn('Model not found:', modelName);
           return null;
         }
 
@@ -183,12 +183,12 @@ class AssetLoader {
         const model2 = this.models[model2Name];
 
         if (!model1 || !model2) {
-          console.warn("Model not found:", model1Name, model2Name);
+          console.warn('Model not found:', model1Name, model2Name);
           return null;
         }
 
         if (!model1.animations || Object.keys(model1.animations).length === 0) {
-          console.warn("No animations found for model:", model1Name);
+          console.warn('No animations found for model:', model1Name);
           return null;
         }
 

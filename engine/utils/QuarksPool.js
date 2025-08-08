@@ -1,8 +1,8 @@
-import { BatchedParticleRenderer, QuarksLoader } from "three.quarks";
-import { assetLoader } from "../asset_loader";
-import * as THREE from "three";
-import gsap from "gsap";
-import globals from "../../globals";
+import { BatchedParticleRenderer, QuarksLoader } from 'three.quarks';
+import { assetLoader } from '../asset_loader';
+import * as THREE from 'three';
+import gsap from 'gsap';
+import globals from '../../globals';
 
 export default class QuarksPool {
   constructor(threeScene) {
@@ -10,7 +10,7 @@ export default class QuarksPool {
     this.batchSystem = new BatchedParticleRenderer();
     this.threeScene.add(this.batchSystem);
     this.quarksLoader = new QuarksLoader();
-    this.quarksLoader.setCrossOrigin("");
+    this.quarksLoader.setCrossOrigin('');
 
     this.createPool();
   }
@@ -23,8 +23,8 @@ export default class QuarksPool {
     Object.keys(quarkDatas).forEach((key) => {
       let quarkData = quarkDatas[key];
       let speedMultiplier = quarkData.speedMultiplier || 1;
-      console.log("quarkData:", quarkData);
-      
+      console.log('quarkData:', quarkData);
+
       let pool = [];
       for (let i = 0; i < quarkData.poolCount; i++) {
         this.quarksLoader.parse(quarkData, (quark) => {

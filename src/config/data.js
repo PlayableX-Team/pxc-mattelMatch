@@ -13,7 +13,7 @@ const data = window.gameData ?? {
 
   //AUDIO
   bgmSrc: null, // background music source
-  bgmVolume: 0, // default: 0.5, min: 0, max: 1, step: 0.01
+  bgmVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
   collectSrc: null,
   collectVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
   addTraySrc: null,
@@ -35,9 +35,9 @@ const data = window.gameData ?? {
 
   //GAME OPTIONS
   gameTime: 150,
-  gameBgColor: 0x6b8cae, // Gri-mavi karışımı renk
+  gameBgColor: 0xffa8e2, // Pembe renk
   isStartTransitionOpen: true,
-  gameBoardTrayColor: 0x5f7c8a,
+  gameBoardTrayColor: 0xfc60c9,
   //START TRANSITION TEXT
   isHeaderTextOpen: true,
   headerText: 'Lets Collect All The Barbie Toys!',
@@ -61,7 +61,8 @@ const data = window.gameData ?? {
   nextLevelBgAlpha: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
   nextLevelBgColor: '#00ff00', // default: '#00ff00'
   levelTransitionDuration: 1, // default: 1, min: 1, max: 3, step: 0.5
-
+  level2BgColor: 0xe6b3f0,
+  level2TrayColor: 0xd147a3,
   //HAND
   handScale: 0.3,
   handSrc: null,

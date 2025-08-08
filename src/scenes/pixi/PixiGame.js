@@ -460,7 +460,7 @@ export default class PixiGame {
     cont.resize = (w, h) => {
       globals.threesc;
       cont.scale.set(
-        Math.min((w * 0.8) / cont.iWidth, (h * 0.1) / cont.iHeight)
+        Math.min((w * 0.8) / cont.iWidth, (h * 0.1) / cont.iHeight) * 1.1
       );
 
       if (w < h) {
@@ -1092,27 +1092,57 @@ export default class PixiGame {
 
     gsap.to(endingText, { alpha: 1, duration: 0.5 });
 
-    endingText.x = -100;
+    endingText.x = 0;
     textParent.zIndex = 300;
 
     gsap.to(endingText, {
-      x: 0,
-      duration: 0.5,
-      delay: 0.5,
-    });
-    gsap.to(endingText, {
-      x: 100,
+      x: 300,
       alpha: 0,
-      duration: 0.5,
+      duration: 1,
       delay: 0.5,
     });
     gsap.to(endingBgLayer, {
       alpha: 0,
-      duration: 0.5,
+      duration: 1,
       delay: 0.5,
       onComplete: () => {
         globals.threeGame.createFakeLevel();
         this.resetTimer();
+
+        // Platform renklerini güvenli bir şekilde değiştir
+        if (
+          globals.threeGame.platforms &&
+          globals.threeGame.platforms.length > 0
+        ) {
+          globals.threeGame.platforms.forEach((platform) => {
+            platform.traverse((child) => {
+              if (child.isMesh && child.material) {
+                const currentColor = child.material.color;
+                const targetColor = new THREE.Color(data.level2TrayColor);
+
+                gsap.to(currentColor, {
+                  r: targetColor.r,
+                  g: targetColor.g,
+                  b: targetColor.b,
+                  duration: 0.5,
+                  ease: 'power2.inOut',
+                });
+              }
+            });
+          });
+        }
+
+        // Arka plan rengi değişimi
+        const currentColor = globals.threeGame.bgPlane.material.color;
+        const targetColor = new THREE.Color(data.level2BgColor);
+
+        gsap.to(currentColor, {
+          r: targetColor.r,
+          g: targetColor.g,
+          b: targetColor.b,
+          duration: 0.5,
+          ease: 'power2.inOut',
+        });
       },
     });
   }

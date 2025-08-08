@@ -55,6 +55,11 @@ export default class ThreeGame {
     // Store animations and mixers
     this.animations = {};
     globals.threeUpdateList = [];
+    gsap.delayedCall(1, () => {
+      console.log('Spawning tornado effect...');
+
+      console.log(this.tornadoQuark);
+    });
   }
   start() {
     console.log('ThreeGame start');
@@ -317,11 +322,12 @@ export default class ThreeGame {
       new THREE.PlaneGeometry(100, 100),
       new THREE.MeshStandardMaterial({ color: data.gameBgColor })
     );
-    bgPlane.position.set(0, -5, 0);
+    bgPlane.position.set(0, -1, 0);
     bgPlane.rotation.x = -Math.PI / 2;
     bgPlane.receiveShadow = true;
     bgPlane.castShadow = false; // Zemin gölge atmaz, sadece alır
     globals.threeScene.add(bgPlane);
+    this.bgPlane = bgPlane;
   }
 
   // Helper function to check if position is safe (no overlap)
@@ -706,7 +712,7 @@ export default class ThreeGame {
 
     // Position the entire tray
     tray.position.x = ((-offset * (count - 1)) / 2) * 1.4;
-    tray.position.z = 11;
+    tray.position.z = 10.8;
     tray.scale.setScalar(1.4);
     //tray.rotation.x = -Math.PI / 2;
 
@@ -1010,20 +1016,29 @@ export default class ThreeGame {
         }
       }
     }
-    gsap.delayedCall(1.5, () => {
-      if (!isMatch && this.tray.length === this.platforms.length) {
-        console.log('Tray full - no matches possible');
-        gsap.delayedCall(0.2, () => {
-          globals.EventEmitter.emit('gameFinished');
-        });
-      }
-    });
+    if (
+      !isMatch &&
+      this.onTray.length === this.platforms.length &&
+      !this.tweening
+    ) {
+      console.log('Tray full - no matches possible');
+      gsap.delayedCall(0.2, () => {
+        globals.EventEmitter.emit('gameFinished');
+      });
+    }
     globals.pixiGame.reversePowerup.checkReverseGrayAsset();
   }
 
   tornado() {
     // Tüm map objelerine tornado efekti uygula
+    this.tornadoQuark = globals.quarksPool.spawnQuarkAtPos(
+      'tornadoEffect',
+      new THREE.Vector3(0, 10, 5), // Pozisyonu kameranın önüne taşı
+      -2.5
+    );
 
+    // Tornado efektini opacity ile yavaşça bitirmek için fadeOutOpacity kullan
+    gsap.delayedCall(2, () => {});
     // Tornado efektinin sürekli olması için interval kullan (5 saniye)
     if (this.tornadoInterval) {
       clearInterval(this.tornadoInterval);
