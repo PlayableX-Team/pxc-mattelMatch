@@ -119,7 +119,7 @@ const data = window.gameData ?? {
   powerupMagnetGraySrc: null,
   powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 2,
+  powerupMagnetCounter: 100,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
@@ -134,7 +134,7 @@ const data = window.gameData ?? {
   powerupTimeGrayScale: 0.4,
   powerupTimeScale: 0.4,
   powerupTimeCounter: 2,
-  timerPowerUpEffect: 15,
+  timerPowerUpEffect: 5,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,

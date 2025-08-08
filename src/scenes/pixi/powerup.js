@@ -189,9 +189,8 @@ export default class Powerup {
       y: originalY,
       duration: 0.3,
       rotation: originalRotation,
-
       ease: 'power2.out',
-      delay: 0.3,
+      delay: 0.8,
     });
   }
 

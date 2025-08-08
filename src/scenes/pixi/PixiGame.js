@@ -662,7 +662,7 @@ export default class PixiGame {
 
     const timerPowerUpText = new PIXI.Text(data.timerPowerUpEffect, {
       fontFamily: 'game-font',
-      fontSize: 20,
+      fontSize: 30,
       fill: 0xffffff,
       strokeThickness: 5,
       stroke: 0x000000,
@@ -907,6 +907,16 @@ export default class PixiGame {
       duration: 0.5,
       ease: 'power2.out',
     });
+
+    this.baseTimerScale = this.timerContainer.scale.x;
+
+    gsap.to(this.timerContainer, {
+      pixi: { scale: this.timerContainer.scale.x * 0.9 },
+      duration: 0.5,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: -1,
+    });
   }
   // Timer'ı devam ettirme fonksiyonu (isteğe bağlı)
   resumeTimer() {
@@ -916,6 +926,12 @@ export default class PixiGame {
     // GSAP ile orijinal renge yumuşak geçiş
     gsap.to(this.timerFillBar, {
       pixi: { tint: this.originalTimerFillBarTint },
+      duration: 0.5,
+      ease: 'power2.out',
+    });
+    gsap.killTweensOf(this.timerContainer);
+    gsap.to(this.timerContainer, {
+      pixi: { scale: this.baseTimerScale },
       duration: 0.5,
       ease: 'power2.out',
     });
