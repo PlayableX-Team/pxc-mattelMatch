@@ -71,23 +71,23 @@ const data = window.gameData ?? {
 
   //MAP MODELS
   barbieBoatSrc: null,
-  barbieBoatScale: 1,
-  barbieBoatCount: 15, //max 15 min 3 step 3
+  barbieBoatScale: 7,
+  barbieBoatCount: 18, //max 18 min 3 step 3
   barbieCarSrc: null,
-  barbieCarScale: 1,
-  barbieCarCount: 15, //max 15 min 3 step 3
+  barbieCarScale: 7,
+  barbieCarCount: 18, //max 18 min 3 step 3
   barbieGirl1Src: null,
-  barbieGirl1Scale: 1.5,
-  barbieGirl1Count: 15, //max 15 min 3 step 3
+  barbieGirl1Scale: 7,
+  barbieGirl1Count: 18, //max 18 min 3 step 3
   barbieGirl2Src: null,
-  barbieGirl2Scale: 1.5,
-  barbieGirl2Count: 15, //max 15 min 3 step 3
+  barbieGirl2Scale: 7,
+  barbieGirl2Count: 18, //max 18 min 3 step 3
   barbieHouseSrc: null,
-  barbieHouseScale: 1,
-  barbieHouseCount: 15, //max 15 min 3 step 3
+  barbieHouseScale: 7,
+  barbieHouseCount: 6, //max 18 min 3 step 3
   barbieKenSrc: null,
-  barbieKenScale: 1.5,
-  barbieKenCount: 15, //max 15 min 3 step 3
+  barbieKenScale: 7,
+  barbieKenCount: 18, //max 18 min 3 step 3
 
   //REMAINING OBJ
   isBarbieBoatRemainingOpen: true,
@@ -119,7 +119,7 @@ const data = window.gameData ?? {
   powerupMagnetGraySrc: null,
   powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 5,
+  powerupMagnetCounter: 2,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
@@ -141,7 +141,7 @@ const data = window.gameData ?? {
   powerupTornadoGraySrc: null,
   powerupTornadoGrayScale: 0.4,
   powerupTornadoScale: 0.4,
-  powerupTornadoCounter: 2,
+  powerupTornadoCounter: 20,
 
   //SOTORE && MARKET PARAMETERS
   xSecondsToOpenEndcard: 0, //step 1 min 0 max 200

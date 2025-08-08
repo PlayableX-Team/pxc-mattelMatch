@@ -55,11 +55,6 @@ export default class ThreeGame {
     // Store animations and mixers
     this.animations = {};
     globals.threeUpdateList = [];
-    gsap.delayedCall(1, () => {
-      console.log('Spawning tornado effect...');
-
-      console.log(this.tornadoQuark);
-    });
   }
   start() {
     console.log('ThreeGame start');
@@ -91,7 +86,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
         5
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -110,7 +105,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieBoat',
         data.barbieBoatScale,
-        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 7, safePos.z), // Ground merkez z=2'ye göre
         1
       );
 
@@ -131,7 +126,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieCar',
         data.barbieCarScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
         2
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -149,7 +144,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl1',
         data.barbieGirl1Scale,
-        new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 5, safePos.z), // Ground merkez z=2'ye göre
         3
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -167,7 +162,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl2',
         data.barbieGirl2Scale,
-        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 4, safePos.z), // Ground merkez z=2'ye göre
         4
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -185,7 +180,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieKen',
         data.barbieKenScale,
-        new THREE.Vector3(safePos.x, 2, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 3, safePos.z), // Ground merkez z=2'ye göre
         6
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -216,7 +211,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieHouse',
         data.barbieHouseScale,
-        new THREE.Vector3(safePos.x, 16, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
         5
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -227,14 +222,13 @@ export default class ThreeGame {
       this.mapObjects.push(mapObject);
     }
 
-    // Create objects with safe positions to prevent overlap
     for (let i = 0; i < data.barbieBoatCount; i++) {
       const safePos = this.getSafePosition(); // 1.5 unit minimum distance
 
       const mapObject = new MapObject(
         'barbieBoat',
         data.barbieBoatScale,
-        new THREE.Vector3(safePos.x, 12, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 7, safePos.z), // Ground merkez z=2'ye göre
         1
       );
 
@@ -254,7 +248,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieCar',
         data.barbieCarScale,
-        new THREE.Vector3(safePos.x, 10, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
         2
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -271,7 +265,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl1',
         data.barbieGirl1Scale,
-        new THREE.Vector3(safePos.x, 8, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 5, safePos.z), // Ground merkez z=2'ye göre
         3
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -288,7 +282,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieGirl2',
         data.barbieGirl2Scale,
-        new THREE.Vector3(safePos.x, 6, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 4, safePos.z), // Ground merkez z=2'ye göre
         4
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -305,7 +299,7 @@ export default class ThreeGame {
       const mapObject = new MapObject(
         'barbieKen',
         data.barbieKenScale,
-        new THREE.Vector3(safePos.x, 2, safePos.z), // Ground merkez z=2'ye göre
+        new THREE.Vector3(safePos.x, 3, safePos.z), // Ground merkez z=2'ye göre
         6
       );
       // Random rotasyon ekle (X, Y, Z eksenlerinde)
@@ -555,10 +549,10 @@ export default class ThreeGame {
 
     const platformCount = 7;
     const diff = Math.abs(platformCount - 5);
-    const scaleRatio = 0.8 - diff * 0.1; // Platform scale ratio
+    const scaleRatio = 1 - diff * 0.1; // Platform scale ratio
 
     // Objenin mevcut scale'ini al ve ratio'yu uygula
-    const currentScale = obj.scale.x; // x, y, z aynı olduğunu varsayıyoruz
+    const currentScale = obj.scale.x * 0.5; // x, y, z aynı olduğunu varsayıyoruz
     const targetScale = currentScale * scaleRatio;
 
     // Remove physics body
@@ -657,7 +651,7 @@ export default class ThreeGame {
     let scalar = 1.1;
 
     const platformScale = scalar - diff * 0.01;
-    const offset = 1.2 - diff * 0.01;
+    const offset = 1.42 - diff * 0.01;
     let tray = new THREE.Object3D();
     this.trayObj = tray;
 
