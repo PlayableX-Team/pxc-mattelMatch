@@ -593,6 +593,7 @@ export default class PixiGame {
       );
     };
     cont.resize(window.innerWidth, window.innerHeight);
+    this.remainingObjContainer = cont;
   }
 
   addUpsidePanel() {
@@ -1132,6 +1133,7 @@ export default class PixiGame {
       onComplete: () => {
         globals.threeGame.createFakeLevel();
         this.resetTimer();
+        this.remainingObjContainer.visible = false;
 
         // Platform renklerini güvenli bir şekilde değiştir
         if (

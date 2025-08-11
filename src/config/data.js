@@ -119,7 +119,7 @@ const data = window.gameData ?? {
   powerupMagnetGraySrc: null,
   powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 2,
+  powerupMagnetCounter: 200,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
