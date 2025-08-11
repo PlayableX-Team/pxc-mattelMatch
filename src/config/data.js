@@ -119,14 +119,14 @@ const data = window.gameData ?? {
   powerupMagnetGraySrc: null,
   powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 200,
+  powerupMagnetCounter: 2,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
   powerupReverseGraySrc: null,
   powerupReverseGrayScale: 0.4,
   powerupReverseScale: 0.4,
-  powerupReverseCounter: 5,
+  powerupReverseCounter: 2,
 
   isPowerUpTimeOpen: true,
   powerupTimeSrc: null,
@@ -134,14 +134,14 @@ const data = window.gameData ?? {
   powerupTimeGrayScale: 0.4,
   powerupTimeScale: 0.4,
   powerupTimeCounter: 2,
-  timerPowerUpEffect: 15,
+  timerPowerUpEffect: 2,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
   powerupTornadoGraySrc: null,
   powerupTornadoGrayScale: 0.4,
   powerupTornadoScale: 0.4,
-  powerupTornadoCounter: 20,
+  powerupTornadoCounter: 2,
 
   //SOTORE && MARKET PARAMETERS
   xSecondsToOpenEndcard: 0, //step 1 min 0 max 200
