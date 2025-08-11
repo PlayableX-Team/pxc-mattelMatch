@@ -85,6 +85,11 @@ const assets = {
       src: require('@assets/2d/spark.png'),
       type: 'image',
     },
+    {
+      name: 'timerEndRedLine',
+      src: require('@assets/2d/timerEndRedLine.png'),
+      type: 'image',
+    },
   ],
   spine: [],
   three: [

@@ -1,6 +1,6 @@
 const data = window.gameData ?? {
   //CAMERA
-  camFov: 50,
+  camFov: 60,
   camRadius: 34,
   camTheta: 0, // -3.14 3.14
   camPhi: 0.26, // -3.14 3.14
@@ -34,10 +34,11 @@ const data = window.gameData ?? {
   nextLevelVolume: 0.5, // default: 0.5, min: 0, max: 1, step: 0.01
 
   //GAME OPTIONS
-  gameTime: 150,
+  gameTime: 120,
   gameBgColor: 0xffa8e2, // Pembe renk
   isStartTransitionOpen: true,
   gameBoardTrayColor: 0xfc60c9,
+  onBoardItemScale: 2.5,
   //START TRANSITION TEXT
   isHeaderTextOpen: true,
   headerText: 'Lets Collect All The Barbie Toys!',
@@ -134,7 +135,7 @@ const data = window.gameData ?? {
   powerupTimeGrayScale: 0.4,
   powerupTimeScale: 0.4,
   powerupTimeCounter: 2,
-  timerPowerUpEffect: 2,
+  timerPowerUpEffect: 15,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,

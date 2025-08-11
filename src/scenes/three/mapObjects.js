@@ -61,7 +61,7 @@ export default class MapObject extends THREE.Object3D {
 
     // Physics shape oluştur
     const shape = new CANNON.Box(
-      new CANNON.Vec3(size.x * 3.3, size.y * 3.3, size.z * 3.3)
+      new CANNON.Vec3(size.x * 3.7, size.y * 3.7, size.z * 3.7)
     );
 
     // Shape'i SIFIR offset ile ekle (shape merkezini body merkezine hizala)
@@ -87,6 +87,35 @@ export default class MapObject extends THREE.Object3D {
 
     // World'e ekle
     globals.physicsManager.world.addBody(this.body);
+  }
+
+  addReversePhysicsBody() {
+    // Eğer mevcut bir physics body varsa önce onu temizle
+    if (this.body) {
+      globals.physicsManager.world.removeBody(this.body);
+      this.body = null;
+    }
+
+    this.body = globals.physicsManager.createBodyFromObject(this.model, {
+      type: 'dynamic',
+      mass: 1.5,
+      sizeMultiplier: new THREE.Vector3(1, 1, 1),
+    });
+    this.body.position.copy(this.position);
+
+    // Quaternion'ı da kopyala
+    this.body.quaternion.copy(this.quaternion);
+
+    // // Düşük sürtünme ve yüksek sekme için materyal oluştur
+    const bouncyMaterial = new CANNON.Material('bouncy');
+    bouncyMaterial.friction = 0; // Düşük sürtünme (0-1 arası, 0 = sürtünmesiz)
+    bouncyMaterial.restitution = 0.1; // Yüksek sekme (0-1 arası, 1 = tam sekme)
+
+    //Materyali physics body'ye ata
+    this.body.material = bouncyMaterial;
+
+    this.body.linearDamping = 0.7; // Hareketi yavaş yavaş durdur
+    this.body.angularDamping = 0.7; // Dönmeyi yavaş yavaş durdur
   }
 
   // Rotasyonu ayarla ve physics body'yi güncelle

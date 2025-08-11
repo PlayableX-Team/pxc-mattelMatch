@@ -34,6 +34,7 @@ export default class PixiGame {
     this.timerText = null; // Timer text referansı
     this.remainingObjs = []; // RemainingObj referansları
     this.clickCount = 0;
+    this.redLineAnimFlag = false;
   }
 
   start() {
@@ -44,6 +45,7 @@ export default class PixiGame {
     globals.EventEmitter.on('gameFinished', (isWin) => {
       if (globals.gameFinished) return;
       pixiScene.children.forEach((child) => {
+        gsap.killTweensOf(child);
         gsap.to(child, {
           pixi: { alpha: 0 },
           duration: 0.5,
@@ -881,10 +883,17 @@ export default class PixiGame {
       onStart: () => {
         // Animasyon başladığında ilk güncellemeyi yap
         this.updateTimerBar();
+
         console.log('Timer başladı!');
       },
       onUpdate: () => {
         // Her frame'de timer bar'ını güncelle
+        console.log(this.timerProgress);
+
+        if (!this.redLineAnimFlag && this.timerProgress < 0.3) {
+          this.redLineAnimFlag = true;
+          this.addRedLines();
+        }
         this.updateTimerBar();
       },
       onComplete: () => {
@@ -1059,6 +1068,11 @@ export default class PixiGame {
     text = text.replace('_', '\n');
 
     globals.gameFinished = true;
+    if (this.redLines) {
+      gsap.killTweensOf(this.redLines);
+      this.redLines.alpha = 0;
+      this.redLines.visible = false;
+    }
     // this.panelImg.hidePanel();
 
     let endingBgLayer = new PIXI.Graphics();
@@ -1170,6 +1184,32 @@ export default class PixiGame {
           ease: 'power2.inOut',
         });
       },
+    });
+  }
+
+  addRedLines() {
+    const redLines = new PIXI.Sprite.from(TextureCache['timerEndRedLine']);
+    redLines.anchor.set(0.5);
+    redLines.position.set(window.innerWidth / 2, window.innerHeight / 2);
+    redLines.alpha = 0;
+    pixiScene.addChild(redLines);
+    this.redLines = redLines;
+    const resizeRedLines = () => {
+      redLines.width = window.innerWidth;
+      redLines.height = window.innerHeight;
+      redLines.position.set(window.innerWidth / 2, window.innerHeight / 2);
+    };
+
+    window.addEventListener('resize', resizeRedLines);
+    resizeRedLines();
+
+    // gsap kullanarak alpha animasyonu ekle
+    gsap.to(redLines, {
+      alpha: 1,
+      duration: 1,
+      yoyo: true,
+      repeat: -1,
+      ease: 'power1.inOut',
     });
   }
 

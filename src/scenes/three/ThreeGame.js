@@ -58,7 +58,7 @@ export default class ThreeGame {
   }
   start() {
     console.log('ThreeGame start');
-    this.physicsManager = new PhysicsManager(true);
+    this.physicsManager = new PhysicsManager(false);
     globals.physicsManager = this.physicsManager;
 
     // Ground parametrelerini tanımla (tüm sistemde kullanılacak)
@@ -553,7 +553,9 @@ export default class ThreeGame {
 
     // Objenin mevcut scale'ini al ve ratio'yu uygula
     const currentScale = obj.scale.x * 0.5; // x, y, z aynı olduğunu varsayıyoruz
-    const targetScale = currentScale * scaleRatio;
+    //const targetScale = currentScale * scaleRatio;
+
+    const targetScale = data.onBoardItemScale;
 
     // Remove physics body
     if (obj.body) {
@@ -747,8 +749,8 @@ export default class ThreeGame {
       }
 
       let dest = item.platform.oPos.clone();
-      dest.y += 0.3;
-      dest.z -= 0.32;
+      dest.z -= 0.8;
+      dest.y += 0.5;
       item.dest = dest;
       globals.pixiGame.reversePowerup.checkReverseGrayAsset();
 
@@ -767,6 +769,7 @@ export default class ThreeGame {
           },
           onComplete: () => {
             // First bounce forward
+            gsap.killTweensOf(item.position);
             gsap.to(item.position, {
               z: '+=0.2',
               duration: 0.1,
@@ -839,24 +842,32 @@ export default class ThreeGame {
         gsap.killTweensOf(item.position);
         gsap.to(item.position, {
           x: dest.x,
-          y: dest.y,
           ease: 'sine.inOut',
           duration: 0.2,
           delay: 0.2,
         });
-        gsap.to(item.position, {
-          z: dest.z - 0.2,
-          duration: 0.1,
+        gsap.to(item.scale, {
+          x: data.onBoardItemScale * 1.1,
+          y: data.onBoardItemScale * 1.1,
+          z: data.onBoardItemScale * 1.1,
+          duration: 0.2,
           ease: 'sine.inOut',
-          delay: 0.2,
-          onComplete: () => {
-            gsap.to(item.position, {
-              z: dest.z,
-              duration: 0.1,
-              ease: 'sine.inOut',
-            });
-          },
+          yoyo: true,
+          repeat: 1,
         });
+        // gsap.to(item.position, {
+        //   z: dest.z - 0.2,
+        //   duration: 0.1,
+        //   ease: 'sine.inOut',
+        //   delay: 0.2,
+        //   onComplete: () => {
+        //     gsap.to(item.position, {
+        //       z: dest.z,
+        //       duration: 0.1,
+        //       ease: 'sine.inOut',
+        //     });
+        //   },
+        // });
       }
     });
   }
@@ -1393,7 +1404,6 @@ export default class ThreeGame {
     if (lastObject.parent === this.trayObj) {
       this.scene.attach(lastObject); // Ana scene'e attach et
       lastObject.isTapped = false;
-      lastObject.isReversed = true;
     }
 
     // Ground collider alanı içinde güvenli pozisyon oluştur (x ve z için)
@@ -1409,7 +1419,7 @@ export default class ThreeGame {
       ease: 'back.out(1.7)',
       onComplete: () => {
         // Animasyon tamamlandıktan sonra physics body'sini ekle
-        lastObject.addPhysicsBody();
+        lastObject.addReversePhysicsBody();
 
         // mapObjects array'ine geri ekle
         this.mapObjects.push(lastObject);
