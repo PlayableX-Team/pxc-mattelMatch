@@ -38,26 +38,55 @@ export default class MapObject extends THREE.Object3D {
       this.body = null;
     }
 
-    this.body = globals.physicsManager.createBodyFromObject(this.model, {
-      type: 'dynamic',
+    // Önce boş body oluştur
+    this.body = new CANNON.Body({
       mass: 1.5,
-      sizeMultiplier: new THREE.Vector3(1, 1, 1),
+      type: CANNON.Body.DYNAMIC,
+      position: new CANNON.Vec3(
+        this.position.x,
+        this.position.y,
+        this.position.z
+      ),
     });
-    this.body.position.copy(this.position);
+
+    // Model geometrisinin bounding box'ını hesapla
+    const boundingBox = new THREE.Box3().setFromObject(this.model);
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+    boundingBox.getSize(size);
+    boundingBox.getCenter(center);
+
+    console.log('Model center:', center);
+    console.log('Model size:', size);
+
+    // Physics shape oluştur
+    const shape = new CANNON.Box(
+      new CANNON.Vec3(size.x * 3.3, size.y * 3.3, size.z * 3.3)
+    );
+
+    // Shape'i SIFIR offset ile ekle (shape merkezini body merkezine hizala)
+    this.body.addShape(shape, new CANNON.Vec3(0, 0, 0));
+
+    // Model merkezini physics body merkezine taşı
+    // Model pivot'ı center kadar offsetli ise, modeli o kadar ters yönde kaydır
+    this.model.position.set(-center.x, -center.y, -center.z);
+
+    console.log('Model offset applied:', -center.x, -center.y, -center.z);
 
     // Quaternion'ı da kopyala
     this.body.quaternion.copy(this.quaternion);
 
-    // // Düşük sürtünme ve yüksek sekme için materyal oluştur
+    // Düşük sürtünme ve yüksek sekme için materyal oluştur
     const bouncyMaterial = new CANNON.Material('bouncy');
-    bouncyMaterial.friction = 0; // Düşük sürtünme (0-1 arası, 0 = sürtünmesiz)
-    bouncyMaterial.restitution = 0.1; // Yüksek sekme (0-1 arası, 1 = tam sekme)
+    bouncyMaterial.friction = 0;
+    bouncyMaterial.restitution = 0.1;
 
-    //Materyali physics body'ye ata
     this.body.material = bouncyMaterial;
+    this.body.linearDamping = 0.7;
+    this.body.angularDamping = 0.7;
 
-    this.body.linearDamping = 0.6; // Hareketi yavaş yavaş durdur
-    this.body.angularDamping = 0.7; // Dönmeyi yavaş yavaş durdur
+    // World'e ekle
+    globals.physicsManager.world.addBody(this.body);
   }
 
   // Rotasyonu ayarla ve physics body'yi güncelle
@@ -72,6 +101,8 @@ export default class MapObject extends THREE.Object3D {
     // Body yoksa update yapma
     if (!this.body) return;
 
+    // Physics body pozisyonunu direkt kopyala
+    // Model artık doğru pozisyonda olmalı
     this.position.copy(this.body.position);
     this.quaternion.copy(this.body.quaternion);
   }

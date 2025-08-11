@@ -58,7 +58,7 @@ export default class ThreeGame {
   }
   start() {
     console.log('ThreeGame start');
-    this.physicsManager = new PhysicsManager(false);
+    this.physicsManager = new PhysicsManager(true);
     globals.physicsManager = this.physicsManager;
 
     // Ground parametrelerini tanımla (tüm sistemde kullanılacak)
