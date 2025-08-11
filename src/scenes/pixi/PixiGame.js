@@ -315,21 +315,29 @@ export default class PixiGame {
       return;
     }
 
-    // Type = 5 olan objeleri filtrele
-    const type5Objects = globals.threeGame.mapObjects.filter(
-      (obj) => obj.objectType === 5
-    );
+    // Öncelik sırasına göre obje tiplerini ara: 5 → 4 → 3 → 2 → 1 → 6
+    const priorityOrder = [5, 4, 3, 2, 1, 6];
+    let targetObject = null;
 
-    if (type5Objects.length === 0) {
-      // Eğer type 5 obje yoksa ekranın ortasına yerleştir
+    for (const objectType of priorityOrder) {
+      const objectsOfType = globals.threeGame.mapObjects.filter(
+        (obj) => obj.objectType === objectType
+      );
+
+      if (objectsOfType.length > 0) {
+        // Y değeri en büyük olan objeyi bul
+        targetObject = objectsOfType.reduce((highest, current) => {
+          return current.position.y > highest.position.y ? current : highest;
+        });
+        break; // İlk bulunan tipte dur
+      }
+    }
+
+    if (!targetObject) {
+      // Hiçbir obje bulunamazsa ekranın ortasına yerleştir
       this.hand.position.set(window.innerWidth * 0.5, window.innerHeight * 0.5);
       return;
     }
-
-    // Y değeri en büyük olan type 5 objesini bul
-    const targetObject = type5Objects.reduce((highest, current) => {
-      return current.position.y > highest.position.y ? current : highest;
-    });
 
     // 3D objenin dünya pozisyonunu al
     const worldPosition = new THREE.Vector3();

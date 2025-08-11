@@ -821,27 +821,17 @@ export default class ThreeGame {
           ease: 'sine.inOut',
         });
 
-        // Gerçek parabolik hareket için tek animasyon
-        const startY = item.position.y;
-        const peakY = Math.max(startY, dest.y) + 15; // En yüksek nokta
-
+        // Y-axis movement - parabolic arc
         gsap.to(item.position, {
-          y: dest.y,
-          duration: 0.8,
-          delay: 0.1, // X ve Z hareketinden sonra başla
-          ease: 'none', // Linear ease kullanıyoruz çünkü custom easing yapacağız
-          onUpdate: function () {
-            // Progress değeri 0'dan 1'e kadar
-            const progress = this.progress();
-
-            // Parabolik eğri hesaplama (y = ax² + bx + c formülü)
-            // Progress = 0.5'te maksimum yükseklik olsun
-            const parabolaY =
-              startY +
-              (dest.y - startY) * progress +
-              4 * 15 * progress * (1 - progress); // 15 = yükseklik
-
-            item.position.y = parabolaY;
+          y: dest.y + 10,
+          duration: 0.2,
+          ease: 'sine.in',
+          onComplete: () => {
+            gsap.to(item.position, {
+              y: dest.y,
+              duration: 0.2,
+              ease: 'sine.out',
+            });
           },
         });
       } else {
@@ -1306,7 +1296,7 @@ export default class ThreeGame {
 
       // Y-axis movement - gerçek parabolik hareket
       gsap.to(obj.position, {
-        y: dest.y + 15, // Maksimum yükseklik
+        y: dest.y + 10, // Maksimum yükseklik
         duration: 0.4,
         delay: delay,
         ease: 'sine.out', // Yukarı çıkarken yavaşla

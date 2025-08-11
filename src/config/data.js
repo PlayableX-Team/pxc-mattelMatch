@@ -92,10 +92,10 @@ const data = window.gameData ?? {
   //REMAINING OBJ
   isBarbieBoatRemainingOpen: true,
   barbieBoatRemainingSrc: null,
-  barbieBoatRemainingScale: 0.5,
+  barbieBoatRemainingScale: 0.3,
   isBarbieCarRemainingOpen: true,
   barbieCarRemainingSrc: null,
-  barbieCarRemainingScale: 0.5,
+  barbieCarRemainingScale: 0.3,
   isBarbieGirl1RemainingOpen: true,
   barbieGirl1RemainingSrc: null,
   barbieGirl1RemainingScale: 0.4,
@@ -104,12 +104,12 @@ const data = window.gameData ?? {
   barbieGirl2RemainingScale: 0.4,
   isBarbieHouseRemainingOpen: true,
   barbieHouseRemainingSrc: null,
-  barbieHouseRemainingScale: 0.5,
+  barbieHouseRemainingScale: 0.3,
   isBarbieKenRemainingOpen: true,
   barbieKenRemainingSrc: null,
   barbieKenRemainingScale: 0.4,
 
-  //POWERUP
+  //POWERRUP
   counterBgScale: 0.75,
   counterBgPosX: 20,
   counterBgPosY: 25,
@@ -119,7 +119,7 @@ const data = window.gameData ?? {
   powerupMagnetGraySrc: null,
   powerupMagnetGrayScale: 0.4,
   powerupMagnetScale: 0.4,
-  powerupMagnetCounter: 100,
+  powerupMagnetCounter: 2,
 
   isPowerUpReverseOpen: true,
   powerupReverseSrc: null,
@@ -134,7 +134,7 @@ const data = window.gameData ?? {
   powerupTimeGrayScale: 0.4,
   powerupTimeScale: 0.4,
   powerupTimeCounter: 2,
-  timerPowerUpEffect: 5,
+  timerPowerUpEffect: 15,
 
   isPowerUpTornadoOpen: true,
   powerupTornadoSrc: null,
